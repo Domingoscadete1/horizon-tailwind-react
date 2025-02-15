@@ -3,7 +3,8 @@
     "name": ["Marketplace", false],
     "quantity": 2458,
     "date": "12.Jan.2021",
-    "progress": 75.5
+    "progress": 75.5,
+    "acao": "activar, desactivar, excluir"
   },
   {
     "name": ["Venus DB PRO", true],

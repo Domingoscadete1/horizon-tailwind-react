@@ -96,10 +96,11 @@ export default function ComplexTable(props) {
         <div className="text-xl font-bold text-navy-700 dark:text-white">
           Complex Table
         </div>
-        <CardMenu />
+
+        {/* <CardMenu /> */}
       </div>
 
-      <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
+      <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">
         <table className="w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (

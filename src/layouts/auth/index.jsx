@@ -58,7 +58,7 @@ export default function Auth() {
                   />
                 </div>
               </div>
-              <Footer />
+              {/* <Footer /> */}
             </div>
           </div>
         </main>

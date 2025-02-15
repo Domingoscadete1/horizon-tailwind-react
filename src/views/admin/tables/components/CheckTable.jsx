@@ -15,11 +15,12 @@ function CheckTable(props) {
   const { tableData } = props;
   const [sorting, setSorting] = React.useState([]);
   let defaultData = tableData;
+  
   const columns = [
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>
       ),
       cell: (info) => (
         <div className="flex items-center">
@@ -38,7 +39,7 @@ function CheckTable(props) {
       id: "progress",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          PROGRESS
+          EMAIL
         </p>
       ),
       cell: (info) => (
@@ -51,7 +52,7 @@ function CheckTable(props) {
       id: "quantity",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          QUANTITY
+          NÚMERO
         </p>
       ),
       cell: (info) => (
@@ -63,7 +64,7 @@ function CheckTable(props) {
     columnHelper.accessor("date", {
       id: "date",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">DATA</p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -71,7 +72,7 @@ function CheckTable(props) {
         </p>
       ),
     }),
-  ]; // eslint-disable-next-line
+  ]; 
   const [data, setData] = React.useState(() => [...defaultData]);
   const table = useReactTable({
     data,
@@ -84,17 +85,31 @@ function CheckTable(props) {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
+  columnHelper.accessor("acao", {
+    id: "acao",
+    header: () => (
+      <p className="text-sm font-bold text-gray-600 dark:text-white">
+        Ação
+      </p>
+    ),
+    cell: (info) => (
+      <p className="text-sm font-bold text-navy-700 dark:text-white">
+        {info.getValue()}
+      </p>
+    ),
+  });
+
   return (
     <Card extra={"w-full h-full sm:overflow-auto px-6"}>
       <header className="relative flex items-center justify-between pt-4">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Check Table
+          Empresas Cadastradas
         </div>
 
-        <CardMenu />
+        {/* <CardMenu /> */}
       </header>
 
-      <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
+      <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">
         <table className="w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (

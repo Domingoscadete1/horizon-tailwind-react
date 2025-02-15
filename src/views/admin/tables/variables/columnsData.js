@@ -34,6 +34,10 @@ export const columnsDataCheck = [
     Header: "DATE",
     accessor: "date",
   },
+  {
+    Header: "Acao",
+    accessor: "acao",
+  },
 ];
 
 export const columnsDataColumns = [

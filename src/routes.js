@@ -17,18 +17,19 @@ import {
   MdBarChart,
   MdPerson,
   MdLock,
+  MdStorage,
 } from "react-icons/md";
 
 const routes = [
   {
-    name: "Main Dashboard",
+    name: "Dashboard",
     layout: "/admin",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
   },
   {
-    name: "NFT Marketplace",
+    name: "Produtos Divulgados",
     layout: "/admin",
     path: "nft-marketplace",
     icon: <MdOutlineShoppingCart className="h-6 w-6" />,
@@ -36,14 +37,14 @@ const routes = [
     secondary: true,
   },
   {
-    name: "Data Tables",
+    name: "Tabelas",
     layout: "/admin",
     icon: <MdBarChart className="h-6 w-6" />,
     path: "data-tables",
     component: <DataTables />,
   },
   {
-    name: "Profile",
+    name: "Perfil",
     layout: "/admin",
     path: "profile",
     icon: <MdPerson className="h-6 w-6" />,
@@ -57,11 +58,24 @@ const routes = [
     component: <SignIn />,
   },
   {
-    name: "RTL Admin",
-    layout: "/rtl",
-    path: "rtl",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <RTLDefault />,
+    name: "lkxjgk",
+    layout: "/auth",
+    path: "sign-in",
+    icon: <MdStorage className="h-6 w-6" />,
+    component: <SignIn />,
+  },{
+    name: "ubkbkb",
+    layout: "/auth",
+    path: "sign-in",
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignIn />,
   },
+  // {
+  //   name: "RTL Admin",
+  //   layout: "/rtl",
+  //   path: "rtl",
+  //   icon: <MdHome className="h-6 w-6" />,
+  //   component: <RTLDefault />,
+  // },
 ];
 export default routes;
