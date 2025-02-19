@@ -43,6 +43,20 @@ const routes = [
     path: "data-tables",
     component: <DataTables />,
   },
+  // {
+  //   name: "Sign In",
+  //   layout: "/auth",
+  //   path: "sign-in",
+  //   icon: <MdLock className="h-6 w-6" />,
+  //   component: <SignIn />,
+  // },
+  {
+    name: "Transações e Pagamentos",
+    layout: "/auth",
+    path: "sign-in",
+    icon: <MdStorage className="h-6 w-6" />,
+    component: <SignIn />,
+  },
   {
     name: "Perfil",
     layout: "/admin",
@@ -51,19 +65,6 @@ const routes = [
     component: <Profile />,
   },
   {
-    name: "Sign In",
-    layout: "/auth",
-    path: "sign-in",
-    icon: <MdLock className="h-6 w-6" />,
-    component: <SignIn />,
-  },
-  {
-    name: "lkxjgk",
-    layout: "/auth",
-    path: "sign-in",
-    icon: <MdStorage className="h-6 w-6" />,
-    component: <SignIn />,
-  },{
     name: "ubkbkb",
     layout: "/auth",
     path: "sign-in",

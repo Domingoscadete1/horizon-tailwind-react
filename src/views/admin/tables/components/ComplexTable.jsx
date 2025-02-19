@@ -4,6 +4,9 @@ import Card from "components/card";
 import Progress from "components/progress";
 import { MdCancel, MdCheckCircle, MdOutlineError } from "react-icons/md";
 
+import { FaCheck, FaTimes, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
 import {
   createColumnHelper,
   flexRender,
@@ -18,12 +21,55 @@ const columnHelper = createColumnHelper();
 export default function ComplexTable(props) {
   const { tableData } = props;
   const [sorting, setSorting] = React.useState([]);
+
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0, // Página inicial
+    pageSize: 5, // Itens por página
+  });
+
   let defaultData = tableData;
   const columns = [
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("descricao", {
+      id: "descricao",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          DESCRIÇÃO
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("valor", {
+      id: "valor",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">VALOR</p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("quantity", {
+      id: "quantity",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          QUANTIDADE
+        </p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -39,41 +85,37 @@ export default function ComplexTable(props) {
         </p>
       ),
       cell: (info) => (
-        <div className="flex items-center">
-          {info.getValue() === "Approved" ? (
-            <MdCheckCircle className="text-green-500 me-1 dark:text-green-300" />
-          ) : info.getValue() === "Disable" ? (
-            <MdCancel className="text-red-500 me-1 dark:text-red-300" />
-          ) : info.getValue() === "Error" ? (
-            <MdOutlineError className="text-amber-500 me-1 dark:text-amber-300" />
-          ) : null}
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {info.getValue()}
-          </p>
-        </div>
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
       ),
     }),
     columnHelper.accessor("date", {
       id: "date",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          DATA
+        </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
     }),
-    columnHelper.accessor("progress", {
-      id: "progress",
+    columnHelper.accessor("acao", {
+      id: "acao",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          PROGRESS
-        </p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÃO</p>
       ),
       cell: (info) => (
-        <div className="flex items-center">
-          <Progress width="w-[108px]" value={info.getValue()} />
+        <div className="flex items-center space-x-1">
+          <button
+            className="text-gray-500 hover:text-gray-700"
+            title="Excluir"
+          >
+            <FaTrash />
+          </button>
         </div>
       ),
     }),
@@ -84,9 +126,11 @@ export default function ComplexTable(props) {
     columns,
     state: {
       sorting,
+      pagination,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    onPaginationChange: setPagination,
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
@@ -94,7 +138,7 @@ export default function ComplexTable(props) {
     <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
       <div className="relative flex items-center justify-between pt-4">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Complex Table
+          Produtos Cadastrados
         </div>
 
         {/* <CardMenu /> */}
@@ -132,7 +176,7 @@ export default function ComplexTable(props) {
           <tbody>
             {table
               .getRowModel()
-              .rows.slice(0, 5)
+              .rows.slice(0, 7)
               .map((row) => {
                 return (
                   <tr key={row.id}>
@@ -154,6 +198,29 @@ export default function ComplexTable(props) {
               })}
           </tbody>
         </table>
+      </div>
+      {/* Controles de paginação com setas */}
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center space-x-2">
+          <button
+            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <FaArrowLeft className="mr-2" /> Anterior
+          </button>
+          <button
+            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Próxima <FaArrowRight className="ml-2" />
+          </button>
+        </div>
+        <span className="text-sm text-gray-600 dark:text-white">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
       </div>
     </Card>
   );

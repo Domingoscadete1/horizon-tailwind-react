@@ -1,80 +1,72 @@
 [
   {
-    "name": "Marketplace",
-    "tech": ["apple", "android", "windows"],
+    "name": ["Marketplace", false],
+    "quantity": 245946158,
     "date": "12.Jan.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Venus DB PRO",
-    "tech": ["apple"],
+    "name": ["Venus DB PRO", true],
+    "quantity": 149461585,
     "date": "21.Feb.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Venus DS",
-    "tech": ["apple", "windows"],
+    "name": ["Venus DS", true],
+    "quantity": 1024961454,
     "date": "13.Mar.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Venus 3D Asset",
-    "tech": ["apple", "android", "windows"],
+    "name": ["Venus 3D Asset", true],
+    "quantity": 87542258,
     "date": "24.Jan.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Marketplace",
-    "tech": ["apple", "windows"],
+    "name": ["Marketplace", false],
+    "quantity": 255465318,
     "date": "Oct 24, 2022",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Marketplace",
-    "tech": ["apple", "android", "windows"],
+    "name": ["Marketplace", false],
+    "quantity": 258,
     "date": "Oct 24, 2022",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Marketplace",
-    "tech": ["apple", "android", "windows"],
+    "name": ["Marketplace", false],
+    "quantity": 258,
     "date": "12.Jan.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Venus DB PRO",
-    "tech": ["apple"],
+    "name": ["Venus DB PRO", false],
+    "quantity": 858,
     "date": "21.Feb.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Venus DS",
-    "tech": ["apple", "windows"],
+    "name": ["Venus DS", false],
+    "quantity": 1024,
     "date": "13.Mar.2021",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   },
   {
-    "name": "Venus 3D Asset",
-    "tech": ["apple", "android", "windows"],
+    "name": ["Venus 3D Asset", false],
+    "quantity": 258,
     "date": "24.Jan.2021",
-    "progress": 30
-  },
-  {
-    "name": "Marketplace",
-    "tech": ["apple", "windows"],
-    "date": "Oct 24, 2022",
-    "progress": 30
-  },
-  {
-    "name": "Marketplace",
-    "tech": ["apple", "android", "windows"],
-    "date": "Oct 24, 2022",
-    "progress": 30
-  },
-  {
-    "name": "Marketplace",
-    "tech": ["apple", "android", "windows"],
-    "date": "Oct 24, 2022",
-    "progress": 30
+    "progress": "dilsond744@gmail.com",
+    "acao": "activar, desactivar, excluir"
   }
 ]

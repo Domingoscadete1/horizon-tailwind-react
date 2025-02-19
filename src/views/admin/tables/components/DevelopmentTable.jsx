@@ -5,6 +5,8 @@ import { DiAndroid } from "react-icons/di";
 import { DiWindows } from "react-icons/di";
 import Card from "components/card";
 import Progress from "components/progress";
+import { FaCheck, FaTimes, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 import {
   createColumnHelper,
@@ -17,6 +19,10 @@ import {
 function CheckTable(props) {
   const { tableData } = props;
   const [sorting, setSorting] = React.useState([]);
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0, // Página inicial
+    pageSize: 5, // Itens por página
+  });
   let defaultData = tableData;
   const columns = [
     columnHelper.accessor("name", {
@@ -25,112 +31,74 @@ function CheckTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("tech", {
-      id: "tech",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">EMAIL</p>
-      ),
-      cell: (info) => (
-        <div className="flex items-center gap-2">
-          {info.getValue().map((item, key) => {
-            if (item === "apple") {
-              return (
-                <div
-                  key={key}
-                  className="text-[22px] text-gray-600 dark:text-white"
-                >
-                  <DiApple />
-                </div>
-              );
-            } else if (item === "android") {
-              return (
-                <div
-                  key={key}
-                  className="text-[21px] text-gray-600 dark:text-white"
-                >
-                  <DiAndroid />
-                </div>
-              );
-            } else if (item === "windows") {
-              return (
-                <div
-                  key={key}
-                  className="text-xl text-gray-600 dark:text-white"
-                >
-                  <DiWindows />
-                </div>
-              );
-            } else return null;
-          })}
+        <div className="flex items-center">
+          <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+            {info.getValue()[0]}
+          </p>
         </div>
       ),
     }),
     columnHelper.accessor("progress", {
       id: "progress",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          NÚMERO
-        </p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">EMAIL</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
     }),
-    columnHelper.accessor("date", {
-      id: "date",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">DATA</p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("date", {
-      id: "date",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">ocug</p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("progress", {
+    columnHelper.accessor("quantity", {
       id: "quantity",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          QUANTITY
-        </p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">NÚMERO</p>
       ),
       cell: (info) => (
-        <div className="flex items-center gap-3">
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {info.getValue()}%
-          </p>
-          <Progress width="w-[68px]" value={info.getValue()} />
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("date", {
+      id: "date",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">DATA DE NASCIMENTO</p>
+      ),
+      cell: (info) => (
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("acao", {
+      id: "acao",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÃO</p>
+      ),
+      cell: (info) => (
+        <div className="flex items-center space-x-3">
+          <button
+            className="text-gray-500 hover:text-gray-700"
+            title="Excluir"
+          >
+            <FaTrash />
+          </button>
         </div>
       ),
     }),
-  ]; // eslint-disable-next-line
+  ];
   const [data, setData] = React.useState(() => [...defaultData]);
   const table = useReactTable({
     data,
     columns,
     state: {
       sorting,
+      pagination
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    onPaginationChange: setPagination,
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
@@ -198,6 +166,30 @@ function CheckTable(props) {
               })}
           </tbody>
         </table>
+      </div>
+
+      {/* Controles de paginação com setas */}
+      <div className="flex items-center justify-between mt-4 mb-4">
+        <div className="flex items-center space-x-2">
+          <button
+            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <FaArrowLeft className="mr-2" /> Anterior
+          </button>
+          <button
+            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Próxima <FaArrowRight className="ml-2" />
+          </button>
+        </div>
+        <span className="text-sm text-gray-600 dark:text-white">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
       </div>
     </Card>
   );

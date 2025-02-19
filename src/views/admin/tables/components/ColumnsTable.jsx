@@ -1,6 +1,8 @@
 import React from "react";
 import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
+import { FaCheck, FaTimes, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 import {
   createColumnHelper,
@@ -13,6 +15,12 @@ import {
 function ColumnsTable(props) {
   const { tableData } = props;
   const [sorting, setSorting] = React.useState([]);
+
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0, // Página inicial
+    pageSize: 5, // Itens por página
+  });
+
   let defaultData = tableData;
   const columns = [
     columnHelper.accessor("name", {
@@ -21,7 +29,7 @@ function ColumnsTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -34,7 +42,7 @@ function ColumnsTable(props) {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className=" cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -47,7 +55,20 @@ function ColumnsTable(props) {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("name", {
+      id: "name",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          VENDIDO A
+        </p>
+      ),
+      cell: (info) => (
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -58,11 +79,12 @@ function ColumnsTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">DATA</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
     }),
+    
   ]; // eslint-disable-next-line
   const [data, setData] = React.useState(() => [...defaultData]);
   const table = useReactTable({
@@ -70,10 +92,12 @@ function ColumnsTable(props) {
     columns,
     state: {
       sorting,
+      pagination,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    onPaginationChange: setPagination,
     debugTable: true,
   });
   return (
@@ -139,6 +163,29 @@ function ColumnsTable(props) {
               })}
           </tbody>
         </table>
+      </div>
+      {/* Controles de paginação com setas */}
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center space-x-2">
+          <button
+            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <FaArrowLeft className="mr-2" /> Anterior
+          </button>
+          <button
+            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Próxima <FaArrowRight className="ml-2" />
+          </button>
+        </div>
+        <span className="text-sm text-gray-600 dark:text-white">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
       </div>
     </Card>
   );
