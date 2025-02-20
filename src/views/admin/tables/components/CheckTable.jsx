@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom";
 
 function CheckTable(props) {
   const { tableData } = props;
@@ -17,6 +18,7 @@ function CheckTable(props) {
     pageSize: 5, // Itens por página
   });
 
+  const navigate = useNavigate();
   let defaultData = tableData;
 
   const columnHelper = createColumnHelper();
@@ -29,7 +31,10 @@ function CheckTable(props) {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          <p className="text-sm cursor-pointer font-bold text-navy-700 dark:text-white">
+          <p
+            className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white hover:text-brand-500"
+            onClick={() => navigate('')} 
+          >
             {info.getValue()[0]}
           </p>
         </div>

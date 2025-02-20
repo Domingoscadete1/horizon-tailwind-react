@@ -19,10 +19,8 @@ import Seguranca from "views/admin/seguranca";
 import {
   MdHome,
   MdOutlineShoppingCart,
-  MdBarChart,
   MdPerson,
   MdArchive,
-  MdStore,
   MdStorage,
 } from "react-icons/md";
 import { FaHeadset, FaShieldAlt,  FaCog, FaTable, FaBullhorn, FaExclamationTriangle } from 'react-icons/fa';
@@ -110,7 +108,7 @@ const routes = [
     name: "Perfil2",
     layout: "/admin",
     path: "Perfil2",
-    icon: <MdStorage className="h-6 w-6" />,
+    icon: <MdPerson className="h-6 w-6" />,
     component: <Perfil2 />,
   },
   

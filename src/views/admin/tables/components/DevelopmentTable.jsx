@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "components/card";
 import { FaArrowLeft, FaArrowRight, FaTrash } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 import {
   createColumnHelper,
   flexRender,
@@ -17,7 +17,9 @@ function CheckTable(props) {
     pageIndex: 0, // Página inicial
     pageSize: 5, // Itens por página
   });
+  const navigate = useNavigate();
   let defaultData = tableData;
+
   const columns = [
     columnHelper.accessor("name", {
       id: "name",
@@ -26,7 +28,10 @@ function CheckTable(props) {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+          <p
+            className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white hover:text-brand-500"
+            onClick={() => navigate('')} 
+          >
             {info.getValue()[0]}
           </p>
         </div>
@@ -38,7 +43,7 @@ function CheckTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">EMAIL</p>
       ),
       cell: (info) => (
-        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -49,7 +54,7 @@ function CheckTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">NÚMERO</p>
       ),
       cell: (info) => (
-        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -60,7 +65,7 @@ function CheckTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">DATA DE NASCIMENTO</p>
       ),
       cell: (info) => (
-        <p className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -82,13 +87,14 @@ function CheckTable(props) {
       ),
     }),
   ];
+
   const [data, setData] = React.useState(() => [...defaultData]);
   const table = useReactTable({
     data,
     columns,
     state: {
       sorting,
-      pagination
+      pagination,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -96,14 +102,13 @@ function CheckTable(props) {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
+
   return (
     <Card extra={"w-full h-full sm:overflow-auto px-6"}>
       <header className="relative flex items-center justify-between pt-4">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
           Usuários Cadastrados
         </div>
-
-        {/* <CardMenu /> */}
       </header>
 
       <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">
