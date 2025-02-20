@@ -22,9 +22,6 @@ const General = () => {
       <div className="grid grid-cols-2 gap-4 px-2">
         {/* Nome */}
         <div className="relative flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
           <p className="text-sm text-gray-600">Nome</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
             Domingos Délcio
@@ -33,9 +30,6 @@ const General = () => {
 
         {/* Email */}
         <div className="relative flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
           <p className="text-sm text-gray-600">Email</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
             delciodomingos@gmail.com
@@ -44,9 +38,6 @@ const General = () => {
 
         {/* Department */}
         <div className="relative flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
           <p className="text-sm text-gray-600">Department</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
             Product Design
@@ -55,9 +46,6 @@ const General = () => {
 
         {/* Número de Telefone */}
         <div className="relative flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
           <p className="text-sm text-gray-600">Número de Telefone</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
             +244 923 456 789
@@ -66,9 +54,6 @@ const General = () => {
 
         {/* Morada */}
         <div className="relative flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
           <p className="text-sm text-gray-600">Morada</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
             Bairro Paraíso, Viana
@@ -77,9 +62,6 @@ const General = () => {
 
         {/* Data de Nascimento */}
         <div className="relative flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
           <p className="text-sm text-gray-600">Data de Nascimento</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
             20 July 1986

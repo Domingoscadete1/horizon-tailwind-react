@@ -31,9 +31,18 @@ const NftCard = ({ title, author, price, image, bidders, extra }) => {
 
         <div className="mb-3 flex items-center justify-between px-1 md:flex-col md:items-start lg:flex-row lg:justify-between xl:flex-col xl:items-start 3xl:flex-row 3xl:justify-between">
           <div className="mb-2">
-            <p className="text-lg font-bold text-navy-700 dark:text-white">
-              {" "}
-              {title}{" "}
+            <div className="flex gap-2 items-center">
+              <img
+                src={image}
+                className="w-10 h-10 rounded-full "
+                alt=""
+              />
+              <p className="text-lg font-bold text-navy-700 dark:text-white">
+                Délcio Paiva
+              </p>
+            </div>
+            <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
+              Nome: Computador
             </p>
             <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
               Descrição: oerbsbierh erhvsdj
