@@ -14,8 +14,8 @@ import SuporteCliente from "views/admin/suporte";
 import ConfiguracaoPlataforma from "views/admin/configuracao";
 import Seguranca from "views/admin/seguranca";
 import GerenciamentoUsuarios from "views/admin/usuario";
-import GerenciamentoEmpresas from "views/empresa";
-import PerfilEmpresa from "views/empresa/perfil";
+import GerenciamentoEmpresas from "views/admin/empresa";
+import PerfilEmpresa from "views/admin/empresa/perfil.jsx";
 
 
 // Icon Imports
@@ -54,7 +54,7 @@ const routes = [
   {
     name: "Gerenciar Empresas",
     layout: "/admin",
-    path: "empresa",
+    path: "gerenciaremp",
     icon: <FaAccusoft className="h-6 w-6" />,
     component: <GerenciamentoEmpresas />,
   },
@@ -124,7 +124,7 @@ const routes = [
   {
     name: "Perfil Usuário",
     layout: "/admin",
-    path: "perfilusuario",
+    path: "perfiluser",
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilUsuario />,
   },
