@@ -4,7 +4,7 @@ import Card from "components/card";
 
 
 
-const NftCard = ({ price, extra, title, author, image, onImageClick }) => {
+const NftCard = ({ price, extra, title, author, image, onImageClick,quantidade,status,image_user }) => {
   return (
     <Card
       extra={`flex flex-col w-full h-full !p-4 3xl:p-![18px] bg-white ${extra}`}
@@ -25,25 +25,25 @@ const NftCard = ({ price, extra, title, author, image, onImageClick }) => {
           <div className="mb-2">
             <div className="flex gap-2 items-center">
               <img
-                src={image}
+                src={image_user}
                 className="w-10 h-10 rounded-full "
                 alt=""
               />
               <p className="text-lg font-bold text-navy-700 dark:text-white">
-                Délcio Paiva
+              {author}
               </p>
             </div>
             <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
-              Nome: Computador
+              Nome: {title}
             </p>
             <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
               Descrição: oerbsbierh erhvsdj
             </p>
             <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
-              Quantidade: 5
+              Quantidade: {quantidade}
             </p>
             <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
-              Status: Disponível
+              Status: {status}
               {/* reservado */}
               {/* esgotado */}
             </p>

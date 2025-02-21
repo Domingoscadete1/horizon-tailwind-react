@@ -6,13 +6,21 @@ import AdminLayout from "layouts/admin";
 import AuthLayout from "layouts/auth";
 
 const App = () => {
+  // Verifica se o usuário está logado (exemplo: verifica se há um token no localStorage)
+  const isAuthenticated = !!localStorage.getItem("accessToken");
+
   return (
     <Routes>
-      <Route path="auth/*" element={<AuthLayout />} />
-      <Route path="admin/*" element={<AdminLayout />} />
-      <Route path="admin/perfil" element={<Navigate to="/src/views/admin/perfil" />} />
+      {/* Bloqueia usuários logados de acessarem /auth */}
+      <Route path="auth/*" element={isAuthenticated ? <Navigate to="/admin" replace /> : <AuthLayout />} />
+
+      {/* Bloqueia usuários não logados de acessarem /admin */}
+      <Route path="admin/*" element={isAuthenticated ? <AdminLayout /> : <Navigate to="/auth/sign-in" replace />} />
+
       <Route path="rtl/*" element={<RtlLayout />} />
-      <Route path="/" element={<Navigate to="/admin" replace />} />
+
+      {/* Redireciona a raiz para o Admin se logado, senão para Login */}
+      <Route path="/" element={<Navigate to={isAuthenticated ? "/admin" : "/auth/sign-in"} replace />} />
     </Routes>
   );
 };
