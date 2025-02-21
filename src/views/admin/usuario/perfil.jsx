@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaUser, FaEdit, FaLock, FaSave, FaTimes } from 'react-icons/fa';
+import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import Project from "../perfil/components/Project";
 import banner from "assets/img/profile/banner.png";
@@ -14,6 +14,15 @@ const PerfilUsuario = () => {
         morada: 'Bairro Paraíso, Viana',
         foto: 'https://bonnierpublications.com/app/uploads/2022/05/digitalfoto.jpg',
     });
+
+    const [formData, setFormData] = useState({
+        status: 'Ativa',
+    });
+
+    const handleStatusConta = (novoStatus) => {
+        setFormData((prev) => ({ ...prev, status: novoStatus }));
+        alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
+    };
 
     // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);
@@ -236,9 +245,30 @@ const PerfilUsuario = () => {
 
 
             <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-1">
-                <div className="col-span-5 lg:col-span-6 lg:mb-0 3xl:col-span-4">
-                    <Project />
-                </div>
+                <Project />
+
+                <Card extra="w-full p-4 h-full">
+                    <header className="relative flex items-center justify-between pt-4">
+                        <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
+                    </header>
+                    <div className="mt-5">
+                        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {formData.status}</p>
+                        <div className="flex space-x-2 mt-4">
+                            {formData.status === 'Ativa' ? (
+                                <button onClick={() => handleStatusConta('Suspensa')} className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center">
+                                    <FaTimes className="mr-2" /> Suspender Conta
+                                </button>
+                            ) : (
+                                <button onClick={() => handleStatusConta('Ativa')} className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
+                                    <FaCheck className="mr-2" /> Ativar Conta
+                                </button>
+                            )}
+                            <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
+                                <FaTrash className="mr-2" /> Excluir Conta
+                            </button>
+                        </div>
+                    </div>
+                </Card>
             </div>
         </div>
     );

@@ -26,7 +26,7 @@ import {
   MdArchive,
   MdStorage,
 } from "react-icons/md";
-import { FaHeadset, FaShieldAlt,  FaCog, FaUsers, FaBullhorn, FaExclamationTriangle } from 'react-icons/fa';
+import { FaHeadset, FaShieldAlt,  FaCog, FaUsers, FaBullhorn, FaExclamationTriangle, FaAccusoft } from 'react-icons/fa';
 
 const routes = [
   {
@@ -55,7 +55,7 @@ const routes = [
     name: "Gerenciar Empresas",
     layout: "/admin",
     path: "empresa",
-    icon: <FaUsers className="h-6 w-6" />,
+    icon: <FaAccusoft className="h-6 w-6" />,
     component: <GerenciamentoEmpresas />,
   },
   // {
