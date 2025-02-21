@@ -2,34 +2,26 @@ import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import { useState } from "react";
 import Card from "components/card";
 
-const NftCard = ({ title, author, price, image, bidders, extra }) => {
-  const [heart, setHeart] = useState(true);
+
+
+const NftCard = ({ price, extra, title, author, image, onImageClick }) => {
   return (
     <Card
       extra={`flex flex-col w-full h-full !p-4 3xl:p-![18px] bg-white ${extra}`}
     >
-      <div className="h-full w-full">
-        <div className="relative w-full">
-          <img
-            src={image}
-            className="mb-3 h-full w-full rounded-xl 3xl:h-full 3xl:w-full"
-            alt=""
-          />
-          {/* <button
-            onClick={() => setHeart(!heart)}
-            className="absolute top-3 right-3 flex items-center justify-center rounded-full bg-white p-2 text-brand-500 hover:cursor-pointer"
-          >
-            <div className="flex h-full w-full items-center justify-center rounded-full text-xl hover:bg-gray-50 dark:text-navy-900">
-              {heart ? (
-                <IoHeartOutline />
-              ) : (
-                <IoHeart className="text-brand-500" />
-              )}
-            </div>
-          </button> */}
-        </div>
+<div className="h-full w-full">
+      <div className="relative w-full">
+        <img
+          src={image}
+          alt={title}
+          className="mb-3 h-full w-full rounded-xl 3xl:h-full 3xl:w-full cursor-pointer"
+          onClick={onImageClick}
+        />
+      </div>
+      
+      {/* Restante do conteúdo do NftCard */}
 
-        <div className="mb-3 flex items-center justify-between px-1 md:flex-col md:items-start lg:flex-row lg:justify-between xl:flex-col xl:items-start 3xl:flex-row 3xl:justify-between">
+      <div className="mb-3 flex items-center justify-between px-1 md:flex-col md:items-start lg:flex-row lg:justify-between xl:flex-col xl:items-start 3xl:flex-row 3xl:justify-between">
           <div className="mb-2">
             <div className="flex gap-2 items-center">
               <img
@@ -73,7 +65,9 @@ const NftCard = ({ title, author, price, image, bidders, extra }) => {
 
         </div>
       </div>
+
     </Card>
+    
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaHeadset, FaComments, FaStar, FaThumbsUp, FaPaperPlane, FaCheck, FaTrash } from 'react-icons/fa';
+import { FaTimes, FaComments, FaStar, FaThumbsUp, FaPaperPlane, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 
 const SuporteCliente = () => {
