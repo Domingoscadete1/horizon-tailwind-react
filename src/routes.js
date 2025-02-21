@@ -16,7 +16,7 @@ import Seguranca from "views/admin/seguranca";
 import GerenciamentoUsuarios from "views/admin/usuario";
 import GerenciamentoEmpresas from "views/admin/empresa";
 import PerfilEmpresa from "views/admin/empresa/perfil.jsx";
-
+import SignIn from "views/auth/SignIn";
 
 // Icon Imports
 import {
@@ -24,7 +24,7 @@ import {
   MdOutlineShoppingCart,
   MdPerson,
   MdArchive,
-  MdStorage,
+  MdLock,
 } from "react-icons/md";
 import { FaHeadset, FaShieldAlt,  FaCog, FaUsers, FaBullhorn, FaExclamationTriangle, FaAccusoft } from 'react-icons/fa';
 
@@ -134,6 +134,13 @@ const routes = [
     path: "perfilempresa",
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilEmpresa />,
+  },
+  {
+    name: "Sign In",
+    layout: "/auth",
+    path: "sign-in",
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignIn />,
   },
   
   
