@@ -57,13 +57,13 @@ const GerenciamentoUsuarios = () => {
   // Configuração da tabela
   const columnHelper = createColumnHelper();
   const columns = [
-    columnHelper.accessor("nome", {
-      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
-      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
-    }),
     columnHelper.accessor("user_id", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
       cell: (info) => <p className="text-sm text-gray-500">{info.getValue()}</p>,
+    }),
+    columnHelper.accessor("nome", {
+      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
+      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
     }),
     columnHelper.accessor("numero_telefone", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TELEFONE</p>,
@@ -128,7 +128,7 @@ const GerenciamentoUsuarios = () => {
   });
 
   return (
-    <div className="p-6">
+    <div>
       {/* Exibir indicador de carregamento */}
       {loading ? (
         <p className="text-center text-gray-500">Carregando usuários...</p>

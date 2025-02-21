@@ -89,6 +89,12 @@ const GerenciamentoEmpresas = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
             cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{info.getValue()}</p>,
         }),
+        columnHelper.accessor('foto', {
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
+            cell: (info) => (
+                <img src={`${API_BASE_URL}${info.getValue()}`}  alt="Foto" className="w-10 h-10 rounded-full" />
+            ),
+        }),
         columnHelper.accessor('usuario_username', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">USUÁRIO</p>,
             cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{info.getValue()}</p>,
@@ -106,17 +112,11 @@ const GerenciamentoEmpresas = () => {
             cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{new Date(info.getValue()).toLocaleDateString()}</p>,
         }),
         columnHelper.accessor('deleted', {
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ATIVO</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">STATUS</p>,
             cell: (info) => (
                 <p className={`text-sm font-bold ${info.getValue() ? 'text-red-500' : 'text-green-500'}`}>
                     {info.getValue() ? "Desativado" : "Ativo"}
                 </p>
-            ),
-        }),
-        columnHelper.accessor('foto', {
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
-            cell: (info) => (
-                <img src={`${API_BASE_URL}${info.getValue()}`}  alt="Foto" className="w-10 h-10 rounded-full" />
             ),
         }),
     ];
@@ -135,7 +135,7 @@ const GerenciamentoEmpresas = () => {
     });
 
     return (
-        <div className="p-6">
+        <div>
             <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Empresas</div>
