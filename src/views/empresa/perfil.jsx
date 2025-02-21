@@ -137,7 +137,40 @@ const PerfilEmpresa = () => {
             </div>
 
             <div className=""> 
+
+            <div className="text-xl mb-5 mt-2 ml-2 font-bold text-navy-700 dark:text-white">
+                        Produtos Divulgados
+                    </div>
+
                 <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
+                    <NftCard
+                        bidders={[avatar1, avatar2, avatar3]}
+                        title="Computador"
+                        author="Esthera Jackson"
+                        price="0.91"
+                        image={NFt3}
+                    />
+                    <NftCard
+                        bidders={[avatar1, avatar2, avatar3]}
+                        title="Telefone"
+                        author="Nick Wilson"
+                        price="0.7"
+                        image={NFt2}
+                    />
+                    <NftCard
+                        bidders={[avatar1, avatar2, avatar3]}
+                        title="Carro"
+                        author="Will Smith"
+                        price="2.91"
+                        image={NFt4}
+                    />
+                    <NftCard
+                        bidders={[avatar1, avatar2, avatar3]}
+                        title="Teclado"
+                        author="Esthera Jackson"
+                        price="0.91"
+                        image={NFt3}
+                    />
                     <NftCard
                         bidders={[avatar1, avatar2, avatar3]}
                         title="Computador"

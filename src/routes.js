@@ -6,7 +6,7 @@ import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
 import Transacao from "views/admin/transacao";
-import Perfil2 from "views/admin/perfil";
+import PerfilUsuario from "views/admin/usuario/perfil.jsx";
 import Relatorio from "views/admin/relatorio";
 import Marketing from "views/admin/marketing";
 import ModeracaoConteudo from "views/admin/moderacao";
@@ -122,11 +122,11 @@ const routes = [
     component: <Profile />,
   },
   {
-    name: "Perfil2",
+    name: "Perfil Usuário",
     layout: "/admin",
-    path: "Perfil2",
+    path: "perfilusuario",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <Perfil2 />,
+    component: <PerfilUsuario />,
   },
   {
     name: "Perfil Empresa",
