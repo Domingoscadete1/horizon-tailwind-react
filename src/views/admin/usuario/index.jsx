@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app/api/usuarios/";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app/api/usuarios/";
 
 const GerenciamentoUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);

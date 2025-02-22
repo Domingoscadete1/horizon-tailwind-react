@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 
-const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const GerenciamentoPostos = () => {
     const [postos, setPostos] = useState([]); // Começa vazio

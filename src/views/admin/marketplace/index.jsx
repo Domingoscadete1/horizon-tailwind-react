@@ -12,7 +12,7 @@ import NFt5 from "assets/img/nfts/Nft5.png";
 import NFt6 from "assets/img/nfts/Nft6.png";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app/api/produtos/";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app/api/produtos/";
 
 const Marketplace = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
