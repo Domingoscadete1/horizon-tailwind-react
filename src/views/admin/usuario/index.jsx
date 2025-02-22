@@ -7,10 +7,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom"; // Importação necessária
 
 const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app/api/usuarios/";
 
 const GerenciamentoUsuarios = () => {
+  const navigate = useNavigate(); // Hook de navegação
+
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +22,9 @@ const GerenciamentoUsuarios = () => {
 
   // Estado para armazenar os dados temporários durante a edição
   const [dadosEditados, setDadosEditados] = useState({});
-
+  const handleUsuarioClick = (usuarioId) => {
+    navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
+};
   // Fetch dos usuários
   const fetchUsuarios = async () => {
     try {
@@ -99,6 +104,8 @@ const GerenciamentoUsuarios = () => {
           src={info.getValue() || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
           alt="Foto do usuário"
           className="w-10 h-10 rounded-full object-cover"
+          onClick={() => handleUsuarioClick(info.row.original.id)}
+
         />
       ),
     }),

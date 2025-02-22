@@ -55,11 +55,11 @@ const GerenciamentoEmpresas = () => {
                 {info.getValue()}
             </p>,
         }),
-        columnHelper.accessor("foto", {
+        columnHelper.accessor("imagens[0].imagem", {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
               <img
-                src={info.getValue() || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
+                src={`${API_BASE_URL}${info.getValue()}` || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
                 alt="Foto da Empresa"
                 className="w-10 h-10 rounded-full object-cover cursor-pointer"
                 onClick={() => handleEmpresaClick(info.row.original.id)}

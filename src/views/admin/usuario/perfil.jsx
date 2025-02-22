@@ -1,32 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import Project from "../perfil/components/Project";
 import banner from "assets/img/profile/banner.png";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
     // Estado para gerenciar informações do usuário
-    const [usuario, setUsuario] = useState({
-        nome: 'João Silva',
-        email: 'delciodomingos@gmail.com',
-        telefone: '+244 923 456 789',
-        aniversario: '05 Abril 2006',
-        morada: 'Bairro Paraíso, Viana',
-        foto: 'https://bonnierpublications.com/app/uploads/2022/05/digitalfoto.jpg',
-    });
-
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [usuario, setUsuario] = useState(null);
+    const [produtos, setProdutos] = useState([]);
+    // Estado para controlar o modo de edição
+    const [editando, setEditando] = useState(false);
     const [formData, setFormData] = useState({
         status: 'Ativa',
     });
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                const data = await response.json();
+                setUsuario(data);
+            } catch (error) {
+                console.error('Erro ao buscar empresa:', error);
+            }
+        };
+
+        const fetchProdutos = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/produtos/usuario/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                const data = await response.json();
+                console.log(data);
+
+                setProdutos(data.produtos);
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        };
+
+        const fetchData = async () => {
+            await fetchUsuario();
+            await fetchProdutos();
+            setLoading(false); // Agora só desativa o loading após buscar os dados
+        };
+
+        fetchData();
+    }, [id]);
+
+    if (loading) {
+        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+    }
+
+    if (!usuario) {
+        return <div className="mt-10 text-center text-gray-500">Empresa não encontrada.</div>;
+    }
+
+    
 
     const handleStatusConta = (novoStatus) => {
         setFormData((prev) => ({ ...prev, status: novoStatus }));
         alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
     };
 
-    // Estado para controlar o modo de edição
-    const [editando, setEditando] = useState(false);
-
+    
     // Função para salvar as alterações do perfil
     const salvarPerfil = () => {
         alert('Perfil atualizado com sucesso!');
@@ -52,7 +102,7 @@ const PerfilUsuario = () => {
                             <img
                                 src={usuario.foto}
                                 alt="Foto de Perfil"
-                                className="w-full h-full rounded-full object-cover"
+                                className= "w-full h-full rounded-full object-cover"
                             />
                             {editando && (
                                 <label className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer">
@@ -76,9 +126,9 @@ const PerfilUsuario = () => {
                     {/* Nome e Email */}
                     <div className="mt-16 flex flex-col items-center">
                         <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-                            Bernardo Valdir
+                            {usuario.nome}
                         </h4>
-                        <p className="text-base font-normal text-gray-600">tesedanilo@gmail.com</p>
+                        <p className="text-base font-normal text-gray-600">{usuario.email}</p>
                     </div>
 
                     {/* Contadores */}
@@ -191,13 +241,13 @@ const PerfilUsuario = () => {
                                 {editando ? (
                                     <input
                                         type="text"
-                                        value={usuario.telefone}
+                                        value={usuario.numero_telefone}
                                         onChange={(e) => setUsuario({ ...usuario, telefone: e.target.value })}
                                         className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                     />
                                 ) : (
                                     <p className="text-base font-medium text-navy-700 dark:text-white">
-                                        {usuario.telefone}
+                                        {usuario.numero_telefone}
                                     </p>
                                 )}
                             </div>
@@ -209,13 +259,13 @@ const PerfilUsuario = () => {
                                 {editando ? (
                                     <input
                                         type="morada"
-                                        value={usuario.morada}
+                                        value={usuario.endereco}
                                         onChange={(e) => setUsuario({ ...usuario, morada: e.target.value })}
                                         className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                     />
                                 ) : (
                                     <p className="text-base font-medium text-navy-700 dark:text-whitee">
-                                        {usuario.morada}
+                                        {usuario.endereco}
                                     </p>
                                 )}
                             </div>
@@ -227,13 +277,13 @@ const PerfilUsuario = () => {
                                 {editando ? (
                                     <input
                                         type="aniversario"
-                                        value={usuario.aniversario}
+                                        value={usuario.data_nascimento}
                                         onChange={(e) => setUsuario({ ...usuario, aniversario: e.target.value })}
                                         className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                     />
                                 ) : (
                                     <p className="text-base font-medium text-navy-700 dark:text-whitee">
-                                        {usuario.aniversario}
+                                        {usuario.data_nascimento }
                                     </p>
                                 )}
 
@@ -251,9 +301,9 @@ const PerfilUsuario = () => {
                         <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
                     </header>
                     <div className="mt-5">
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {formData.status}</p>
+                        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {usuario.status}</p>
                         <div className="flex space-x-2 mt-4">
-                            {formData.status === 'Ativa' ? (
+                            {usuario.status === 'ativo' ? (
                                 <button onClick={() => handleStatusConta('Suspensa')} className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center">
                                     <FaTimes className="mr-2" /> Suspender Conta
                                 </button>

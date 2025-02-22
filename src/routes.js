@@ -133,7 +133,7 @@ const routes = [
   {
     name: "Perfil Usuário",
     layout: "/admin",
-    path: "perfiluser",
+    path: "perfiluser/:id",
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilUsuario />,
   },
