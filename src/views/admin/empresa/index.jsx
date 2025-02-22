@@ -13,23 +13,23 @@ const GerenciamentoEmpresas = () => {
     const [empresas, setEmpresas] = useState([]);
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
-    
+
     useEffect(() => {
-        fetch(`${API_BASE_URL}/api/empresas`,{
+        fetch(`${API_BASE_URL}/api/empresas`, {
             headers: {
-              "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
             },
-          })
+        })
             .then((response) => response.json())
             .then((data) => setEmpresas(data.results));
     }, []);
 
     const fetchFuncionarios = (empresaId) => {
-        fetch(`${API_BASE_URL}/api/empresa/funcionarios/${empresaId}/`,{
+        fetch(`${API_BASE_URL}/api/empresa/funcionarios/${empresaId}/`, {
             headers: {
-              "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
             },
-          })
+        })
             .then((response) => response.json())
             .then((data) => {
                 setFuncionarios(data.funcionarios);
@@ -92,7 +92,7 @@ const GerenciamentoEmpresas = () => {
         columnHelper.accessor('foto', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
-                <img src={`${API_BASE_URL}${info.getValue()}`}  alt="Foto" className="w-10 h-10 rounded-full" />
+                <img src={`${API_BASE_URL}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full" />
             ),
         }),
         columnHelper.accessor('usuario_username', {
@@ -120,7 +120,7 @@ const GerenciamentoEmpresas = () => {
             ),
         }),
     ];
-    
+
 
     const table = useReactTable({
         data: empresas,
@@ -167,12 +167,12 @@ const GerenciamentoEmpresas = () => {
                     </table>
                 </div>
             </Card>
-            
+
             {empresaSelecionada && (
                 <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                     <header className="relative flex items-center justify-between pt-4">
                         <div className="text-xl font-bold text-navy-700 dark:text-white">
-                            Funcionários da Empresa
+                            Funcionários da Empresa 
                         </div>
                     </header>
                     <div className="mt-5 overflow-x-auto">
