@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 
-const GerenciamentoPostos = () => {
-    // Estado para gerenciar a lista de postos
-    const [postos, setPostos] = useState([
-        { id: 1, nome: 'Posto A', criadoPor: 'Admin', dataCriacao: '2023-10-01' },
-        { id: 2, nome: 'Posto B', criadoPor: 'Gerente', dataCriacao: '2023-10-05' },
-    ]);
+const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app";
 
+const GerenciamentoPostos = () => {
+    const [postos, setPostos] = useState([]); // Começa vazio
+    const [loading, setLoading] = useState(true); // Para indicar carregamento
     // Estado para controlar a exibição do modal de cadastro
     const [mostrarModal, setMostrarModal] = useState(false);
 
@@ -18,7 +16,94 @@ const GerenciamentoPostos = () => {
         criadoPor: '',
         dataCriacao: '',
     });
+    const [funcionarios, setFuncionarios] = useState([]);
+    const [atividades, setAtividades] = useState([]);
+    const [postoSelecionado, setPostoSelecionado] = useState(null);
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [proximaPagina, setProximaPagina] = useState(null);
+    const [paginaAnterior, setPaginaAnterior] = useState(null);
 
+    const fetchFuncionarios = async (postoId) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/funcionarios/posto/?posto_id=${postoId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao buscar funcionários");
+            }
+
+            const data = await response.json();
+            setFuncionarios(data.funcionarios || []);
+        } catch (error) {
+            console.error("Erro ao buscar funcionários:", error);
+        }
+    };
+
+
+    // Buscar atividades do posto selecionado
+    const fetchAtividades = async (postoId, page = 1) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/posto/registro/${postoId}/?page=${page}`, {
+                method: "GET",
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setAtividades(data.results.latest || []);
+            setPaginaAtual(page);
+            setProximaPagina(data.next);
+            setPaginaAnterior(data.previous);
+        } catch (error) {
+            console.error("Erro ao buscar atividades:", error);
+        }
+    };
+
+
+    // Quando o usuário clica em um posto, busca os detalhes
+    const selecionarPosto = (posto) => {
+        if (postoSelecionado && postoSelecionado.id === posto.id) {
+            setPostoSelecionado(null);
+            setFuncionarios([]);
+            setAtividades([]);
+        } else {
+            setPostoSelecionado(posto);
+            fetchFuncionarios(posto.id);
+            fetchAtividades(posto.id);
+        }
+    };
+
+
+
+    // 🔥 Função para buscar postos da API
+    const fetchPostos = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/postos/`, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                },
+            }); // URL da API
+            if (!response.ok) {
+                throw new Error("Erro ao buscar postos");
+            }
+            const data = await response.json();
+            setPostos(data); // Atualiza o estado com os postos da API
+        } catch (error) {
+            console.error("Erro ao buscar postos:", error);
+        } finally {
+            setLoading(false); // Finaliza o carregamento
+        }
+    };
+
+    useEffect(() => {
+        fetchPostos();
+    }, []);
     // Função para abrir o modal de cadastro
     const abrirModal = () => {
         setMostrarModal(true);
@@ -69,66 +154,161 @@ const GerenciamentoPostos = () => {
 
     return (
         <div className="p-2">
-            {/* Tabela de postos registrados */}
-            <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
-                <header className="relative flex items-center justify-between pt-4">
-                    <div className="text-xl font-bold text-navy-700 dark:text-white">
-                        Lista de Postos Registrados
-                    </div>
-                </header>
+            {loading ? (
+                <p>Carregando postos...</p>
+            ) : (
+                <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
+                    <header className="relative flex items-center justify-between pt-4">
+                        <div className="text-xl font-bold text-navy-700 dark:text-white">
+                            Lista de Postos Registrados
+                        </div>
+                    </header>
 
-                <div className="mt-5 overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="!border-px !border-gray-400">
-                                <th className="text-sm font-bold text-gray-600 dark:text-white text-left p-2">
-                                    ID
-                                </th>
-                                <th className="text-sm font-bold text-gray-600 dark:text-white text-left p-2">
-                                    Nome do Posto
-                                </th>
-                                <th className="text-sm font-bold text-gray-600 dark:text-white text-left p-2">
-                                    Criado Por
-                                </th>
-                                <th className="text-sm font-bold text-gray-600 dark:text-white text-left p-2">
-                                    Data de Criação
-                                </th>
-                                <th className="text-sm font-bold text-gray-600 dark:text-white text-left p-2">
-                                    Ação
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {postos.map((posto) => (
-                                <tr key={posto.id} className="border-b border-gray-200">
-                                    <td className="p-2">{posto.id}</td>
-                                    <td className="p-2 text-sm font-bold text-blue-500 cursor-pointer hover:underline">{posto.nome}</td>
-                                    <td className="p-2">{posto.criadoPor}</td>
-                                    <td className="p-2">{posto.dataCriacao}</td>
-                                    <td className="p-2">
-                                        <div className="flex space-x-2">
-                                            <button
-                                                onClick={() => editarPosto(posto.id)}
-                                                className="text-blue-500 hover:text-blue-700"
-                                                title="Editar"
-                                            >
-                                                <FaEdit />
-                                            </button>
-                                            <button
-                                                onClick={() => excluirPosto(posto.id)}
-                                                className="text-red-500 hover:text-red-700"
-                                                title="Excluir"
-                                            >
-                                                <FaTrash />
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="mt-5 overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="!border-px !border-gray-400">
+                                    <th className="p-2">ID</th>
+                                    <th className="p-2">Nome</th>
+                                    <th className="p-2">Localização</th>
+                                    <th className="p-2">Responsável</th>
+                                    <th className="p-2">Telefone</th>
+                                    <th className="p-2">Ação</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </Card>
+                            </thead>
+                            <tbody>
+                                {postos.map((posto) => (
+                                    <React.Fragment key={posto.id}>
+                                        <tr
+                                            className="border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+                                            onClick={() => selecionarPosto(posto)}
+                                        >
+                                            <td className="p-2">{posto.id}</td>
+                                            <td className="p-2">{posto.nome}</td>
+                                            <td className="p-2">{posto.localizacao || "Não informado"}</td>
+                                            <td className="p-2">{posto.responsavel || "Não informado"}</td>
+                                            <td className="p-2">{posto.telefone || "Sem telefone"}</td>
+                                            <td className="p-2">
+                                                <div className="flex space-x-2">
+                                                    <button className="text-blue-500 hover:text-blue-700">
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button className="text-red-500 hover:text-red-700">
+                                                        <FaTrash />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {postoSelecionado && postoSelecionado.id === posto.id && (
+                                            <tr>
+                                                <td colSpan="6">
+                                                    <div className="p-4 bg-gray-100">
+                                                        <h3 className="text-lg font-bold mb-2">Funcionários do Posto</h3>
+                                                        <table className="w-full border-collapse border">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className="border p-2">Nome</th>
+                                                                    <th className="border p-2">Nome</th>
+                                                                    <th className="border p-2">Email</th>
+                                                                    <th className="border p-2">Telefone</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {funcionarios.length > 0 ? (
+                                                                    funcionarios.map((func) => (
+                                                                        <tr key={func.id}>
+                                                                            <td className="border p-2"><img
+                                                                                src={`${API_BASE_URL}${func.foto}` || "fallback.jpg"}
+                                                                                alt="Produto"
+                                                                                className="w-16 h-16 object-cover"
+                                                                            />
+                                                                            </td>
+                                                                            <td className="border p-2">{func.nome}</td>
+                                                                            <td className="border p-2">{func.email}</td>
+                                                                            <td className="border p-2">{func.numero_telefone}</td>
+                                                                        </tr>
+                                                                    ))
+                                                                ) : (
+                                                                    <tr>
+                                                                        <td colSpan="3" className="border p-2 text-center">
+                                                                            Nenhum funcionário encontrado
+                                                                        </td>
+                                                                    </tr>
+                                                                )}
+                                                            </tbody>
+                                                        </table>
+
+                                                        <h3 className="text-lg font-bold mt-4 mb-2">Últimas Atividades</h3>
+                                                        <table className="w-full border-collapse border">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className="border p-2"></th>
+                                                                    <th className="border p-2">Produto</th>
+                                                                    <th className="border p-2">Preço</th>
+                                                                    <th className="border p-2">Tipo</th>
+
+                                                                    <th className="border p-2">Responsável</th>
+                                                                    <th className="border p-2">Data</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {atividades.length > 0 ? (
+                                                                    atividades.map((atividade, index) => (
+                                                                        <tr key={index}>
+                                                                            <td className="border p-2"><img
+                                                                                src={`${API_BASE_URL}${atividade?.transacao?.lance?.produto?.imagens?.[0]?.imagem}` || "fallback.jpg"}
+                                                                                alt="Produto"
+                                                                                className="w-16 h-16 object-cover"
+                                                                            />
+                                                                            </td>
+
+                                                                            <td className="border p-2">{atividade.transacao.lance.produto.nome || "Sem produto"}</td>
+                                                                            <td className="border p-2">{atividade.transacao.lance.preco || "Sem preco"} AOA</td>
+
+                                                                            <td className="border p-2">{atividade.tipo || "Sem Tipo"}</td>
+                                                                            <td className="border p-2">{atividade.responsavel.nome || "Responsavel"}</td>
+                                                                            <td className="border p-2">{new Date(atividade.data_operacao).toLocaleString()}</td>
+                                                                        </tr>
+                                                                    ))
+                                                                ) : (
+                                                                    <tr>
+                                                                        <td colSpan="2" className="border p-2 text-center">
+                                                                            Nenhuma atividade recente
+                                                                        </td>
+                                                                    </tr>
+                                                                )}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className="flex justify-between mt-4">
+                            <button
+                                onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual - 1)}
+                                disabled={!paginaAnterior}
+                                className={`px-4 py-2 rounded ${paginaAnterior ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                            >
+                                Página Anterior
+                            </button>
+
+                            <span className="px-4 py-2">Página {paginaAtual}</span>
+
+                            <button
+                                onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual + 1)}
+                                disabled={!proximaPagina}
+                                className={`px-4 py-2 rounded ${proximaPagina ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                            >
+                                Próxima Página
+                            </button>
+                        </div>
+
+                    </div>
+                </Card>)}
 
             {/* Botão para abrir o modal de cadastro */}
             <div className="flex justify-end">
