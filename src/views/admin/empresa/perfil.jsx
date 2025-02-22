@@ -96,13 +96,12 @@ const PerfilEmpresa = () => {
     }, [id]);
 
     if (loading) {
-        return <div>Carregando...</div>;
+        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
     }
 
     if (!empresa) {
-        return <div>Empresa não encontrada.</div>;
+        return <div className="mt-10 text-center text-gray-500">Empresa não encontrada.</div>;
     }
-
 
     const handleSalvarEdicao = () => {
         setEditing(false);

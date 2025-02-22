@@ -50,9 +50,22 @@ const GerenciamentoEmpresas = () => {
     const columns = [
         columnHelper.accessor('id', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
-            cell: (info) => <p className="text-sm text-navy-700 dark:text-white"             onClick={() => handleEmpresaClick(info.row.original.id)} // Redireciona ao clicar
->{info.getValue()}</p>,
+            cell: (info) => 
+            <p className="text-sm text-navy-700 dark:text-white">
+                {info.getValue()}
+            </p>,
         }),
+        columnHelper.accessor("foto", {
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
+            cell: (info) => (
+              <img
+                src={info.getValue() || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
+                alt="Foto da Empresa"
+                className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                onClick={() => handleEmpresaClick(info.row.original.id)}
+              />
+            ),
+          }),
         columnHelper.accessor('nome', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
             cell: (info) => (
