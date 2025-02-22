@@ -147,7 +147,7 @@ const routes = [
   {
     name: "Perfil Empresa",
     layout: "/admin",
-    path: "perfilempresa",
+    path: "perfilempresa/:id", // Adiciona o ID como parâmetro dinâmico
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilEmpresa />,
   },

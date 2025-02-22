@@ -40,33 +40,35 @@ const PerfilUsuario = () => {
 
     return (
         <div>
-
             <div className=' mb-10 grid h-full grid-cols-1 gap-5 md:grid-cols-2'>
-                <Card extra={"items-center w-full h-full p-[16px] mt-6 bg-cover"}>
+                <Card extra={"items-center w-full h-full p-[16px] mt-3 bg-cover"}>
                     {/* Background and Foto */}
 
                     <div
                         className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover"
                         style={{ backgroundImage: `url(${banner})` }}
                     >
-                        <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-navy-700">
+                        <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-white dark:!border-navy-700">
                             <img
                                 src={usuario.foto}
                                 alt="Foto de Perfil"
-                                className="h-full w-full rounded-full"
+                                className="w-full h-full rounded-full object-cover"
                             />
                             {editando && (
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        if (file) {
-                                            setUsuario({ ...usuario, foto: URL.createObjectURL(file) });
-                                        }
-                                    }}
-                                    className="ml-4 "
-                                />
+                                <label className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                setUsuario({ ...usuario, foto: URL.createObjectURL(file) });
+                                            }
+                                        }}
+                                        className="hidden"
+                                    />
+                                    <FaEdit />
+                                </label>
                             )}
                         </div>
                     </div>
@@ -100,7 +102,7 @@ const PerfilUsuario = () => {
                     </div>
                 </Card>
 
-                <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+                <Card extra={"w-full h-full sm:overflow-auto px-6 mt-3 mb-6"}>
                     <div className="col-span-5 lg:col-span-6 lg:mb-0 3xl:col-span-5">
                         <header className="relative flex mb-8 mt-4 items-center justify-between pt-4">
                             <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -133,6 +135,7 @@ const PerfilUsuario = () => {
                                 </div>
                             )}
                         </header>
+                        
                         {/* Cards */}
                         <div className="grid grid-cols-2 gap-4 px-2">
                             {/* Nome */}
@@ -238,11 +241,7 @@ const PerfilUsuario = () => {
                         </div>
                     </div>
                 </Card>
-
-
             </div>
-
-
 
             <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-1">
                 <Project />

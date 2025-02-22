@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes } from 'react-icons/fa';
 import Card from 'components/card';
 import avatar from "assets/img/avatars/avatar11.png";
@@ -20,8 +22,15 @@ const nfts = [
     { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
     { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
 ];
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const PerfilEmpresa = () => {
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedNft, setSelectedNft] = useState(null);
+    const [empresa, setEmpresa] = useState(null);
+    const [produtos, setProdutos] = useState([]);
     const [editing, setEditing] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar a imagem selecionada
     const [formData, setFormData] = useState({
@@ -42,6 +51,58 @@ const PerfilEmpresa = () => {
             { data: '2023-10-10', acao: 'Venda realizada: R$ 1.000,00' },
         ],
     });
+    useEffect(() => {
+        const fetchEmpresa = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                const data = await response.json();
+                setEmpresa(data);
+            } catch (error) {
+                console.error('Erro ao buscar empresa:', error);
+            }
+        };
+
+        const fetchProdutos = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/produtos/empresa/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                const data = await response.json();
+                console.log(data);
+
+                setProdutos(data.produtos);
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        };
+
+        const fetchData = async () => {
+            await fetchEmpresa();
+            await fetchProdutos();
+            setLoading(false); // Agora só desativa o loading após buscar os dados
+        };
+
+        fetchData();
+    }, [id]);
+
+    if (loading) {
+        return <div>Carregando...</div>;
+    }
+
+    if (!empresa) {
+        return <div>Empresa não encontrada.</div>;
+    }
+
 
     const handleSalvarEdicao = () => {
         setEditing(false);
@@ -63,8 +124,7 @@ const PerfilEmpresa = () => {
         setSelectedImage(null);
     };
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedNft, setSelectedNft] = useState(null);
+
     const handleImageClick = (nft) => {
         setSelectedNft(nft);
         setIsModalOpen(true);
@@ -100,16 +160,16 @@ const PerfilEmpresa = () => {
                         style={{ backgroundImage: `url(${banner})` }}
                     >
                         <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-navy-700">
-                            <img className="h-full w-full rounded-full" src={avatar} alt="" />
+                            <img className="h-full w-full rounded-full" src={empresa.imagens[0]?.imagem || ''} alt="Logo" />
                         </div>
                     </div>
 
                     {/* Name and position */}
                     <div className="mt-16 flex flex-col items-center">
                         <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-                            Bernardo Valdir
+                            {empresa.nome}
                         </h4>
-                        <p className="text-base font-normal text-gray-600">tesedanilo@gmail.com</p>
+                        <p className="text-base font-normal text-gray-600">{empresa.nome}</p>
                     </div>
 
                     {/* Post followers */}
@@ -139,20 +199,17 @@ const PerfilEmpresa = () => {
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-4">
-                        {[banner, banner, banner, banner, banner, banner].map((image, index) => (
-                            <div
-                                key={index}
-                            // className="cursor-pointer"
-                            // onClick={() => openImageModal(image)}
-                            >
-                                <img
-                                    className="h-[150px] w-[150px] rounded-xl object-cover"
-                                    src={image}
-                                    alt={`Imagem ${index + 1}`}
-                                />
-                            </div>
-                        ))}
+                        {empresa.imagens && empresa.imagens.length > 0 ? (
+                            empresa.imagens.map((img, index) => (
+                                <div key={index} className="cursor-pointer" onClick={() => openImageModal(img.imagem)}>
+                                    <img className="h-[150px] w-[150px] rounded-xl object-cover" src={img.imagem} alt={`Imagem ${index + 1}`} />
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-600">Nenhuma imagem disponível</p>
+                        )}
                     </div>
+
                 </Card>
             </div>
 
@@ -163,39 +220,23 @@ const PerfilEmpresa = () => {
                 </div>
 
                 <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
-                    {nfts.map((nft, index) => (
+                    {produtos.map((produto) => (
                         <NftCard
-                            key={index}
+                            key={produto.id}
                             bidders={[avatar1, avatar2, avatar3]}
-                            title={nft.title}
-                            author={nft.author}
-                            price={nft.price}
-                            image={nft.image}
-                            onImageClick={() => handleImageClick(nft)}
+                            title={produto.nome}
+                            author={empresa.nome}
+                            price={produto.preco}
+                            image={`${API_BASE_URL}${produto.imagens[0].imagem}` || ''}
+                            image_user={
+                                produto.usuario
+                                  ? `${API_BASE_URL}${produto.usuario.foto}`
+                                  : `${API_BASE_URL}${produto.empresa?.imagens?.[0]?.imagem}`
+                              }
+                            onImageClick={() => handleImageClick(produto)}
                         />
                     ))}
-                    {nfts.map((nft, index) => (
-                        <NftCard
-                            key={index}
-                            bidders={[avatar1, avatar2, avatar3]}
-                            title={nft.title}
-                            author={nft.author}
-                            price={nft.price}
-                            image={nft.image}
-                            onImageClick={() => handleImageClick(nft)}
-                        />
-                    ))}
-                    {nfts.map((nft, index) => (
-                        <NftCard
-                            key={index}
-                            bidders={[avatar1, avatar2, avatar3]}
-                            title={nft.title}
-                            author={nft.author}
-                            price={nft.price}
-                            image={nft.image}
-                            onImageClick={() => handleImageClick(nft)}
-                        />
-                    ))}
+
                 </div>
             </div>
 
@@ -260,15 +301,15 @@ const PerfilEmpresa = () => {
                 </Card>
             </div>
             {/* Modal com imagens adicionais */}
-      {
-        isModalOpen && selectedNft && (
-          <ImageModal
-            imageUrl={selectedNft.image}
-            additionalImages={selectedNft.additionalImages}
-            onClose={closeModal}
-          />
-        )
-      }
+            {
+                isModalOpen && selectedNft && (
+                    <ImageModal
+                        imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
+                        additionalImages={selectedNft.imagens.map(img => img.imagem) || []}
+                        onClose={closeModal}
+                    />
+                )
+            }
         </div>
     );
 };

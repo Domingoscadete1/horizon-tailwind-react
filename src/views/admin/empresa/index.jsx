@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom"; // Importação necessária
+
 import Card from 'components/card';
 import {
     createColumnHelper,
@@ -8,9 +10,13 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 
-const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const GerenciamentoEmpresas = () => {
+    const navigate = useNavigate(); // Hook de navegação
+    const handleEmpresaClick = (empresaId) => {
+        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
+    };
     const [empresas, setEmpresas] = useState([]);
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
@@ -44,7 +50,8 @@ const GerenciamentoEmpresas = () => {
     const columns = [
         columnHelper.accessor('id', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
-            cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{info.getValue()}</p>,
+            cell: (info) => <p className="text-sm text-navy-700 dark:text-white"             onClick={() => handleEmpresaClick(info.row.original.id)} // Redireciona ao clicar
+>{info.getValue()}</p>,
         }),
         columnHelper.accessor('nome', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
 import Card from "components/card";
 import {
   createColumnHelper,
@@ -8,11 +8,17 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app/api/usuarios/";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app/api/usuarios/";
 
 const GerenciamentoUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Estado para controlar qual usuário está sendo editado
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
+
+  // Estado para armazenar os dados temporários durante a edição
+  const [dadosEditados, setDadosEditados] = useState({});
 
   // Fetch dos usuários
   const fetchUsuarios = async () => {
@@ -43,15 +49,40 @@ const GerenciamentoUsuarios = () => {
 
   // Funções para gerenciar usuários
   const excluirUsuario = (id) => {
-    setUsuarios(usuarios.filter((user) => user.id !== id));
+    setUsuarios(usuarios.filter((user) => user.user_id !== id));
   };
 
   const visualizarUsuario = (id) => {
     alert(`Visualizar detalhes do usuário com ID: ${id}`);
   };
 
-  const editarUsuario = (id) => {
-    alert(`Editar usuário com ID: ${id}`);
+  // Função para iniciar a edição de um usuário
+  const iniciarEdicao = (id) => {
+    const usuario = usuarios.find((user) => user.user_id === id);
+    if (usuario) {
+      setUsuarioEditando(id);
+      setDadosEditados({ ...usuario }); // Copia os dados do usuário para edição
+    }
+  };
+
+  // Função para salvar as alterações de um usuário
+  const salvarEdicao = (id) => {
+    const novosUsuarios = usuarios.map((user) =>
+      user.user_id === id ? { ...user, ...dadosEditados } : user
+    );
+    setUsuarios(novosUsuarios); // Atualiza a lista de usuários
+    setUsuarioEditando(null); // Sai do modo de edição
+  };
+
+  // Função para cancelar a edição
+  const cancelarEdicao = () => {
+    setUsuarioEditando(null); // Sai do modo de edição
+  };
+
+  // Função para lidar com a mudança nos campos de edição
+  const handleEdicaoChange = (e, campo) => {
+    const { value } = e.target;
+    setDadosEditados({ ...dadosEditados, [campo]: value });
   };
 
   // Configuração da tabela
@@ -73,59 +104,125 @@ const GerenciamentoUsuarios = () => {
     }),
     columnHelper.accessor("nome", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
-      cell: (info) => <p className="text-sm font-bold text-blue-500 cursor-pointer hover:underline">{info.getValue()}</p>,
+      cell: (info) =>
+        usuarioEditando === info.row.original.user_id ? (
+          <input
+            type="text"
+            value={dadosEditados.nome}
+            onChange={(e) => handleEdicaoChange(e, "nome")}
+            className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+        ) : (
+          <p className="text-sm font-bold text-blue-500 cursor-pointer hover:underline">
+            {info.getValue()}
+          </p>
+        ),
     }),
     columnHelper.accessor("numero_telefone", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TELEFONE</p>,
-      cell: (info) => <p className="text-sm text-gray-500">{info.getValue() || "N/A"}</p>,
+      cell: (info) =>
+        usuarioEditando === info.row.original.user_id ? (
+          <input
+            type="text"
+            value={dadosEditados.numero_telefone}
+            onChange={(e) => handleEdicaoChange(e, "numero_telefone")}
+            className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+        ) : (
+          <p className="text-sm text-gray-500">{info.getValue() || "N/A"}</p>
+        ),
     }),
     columnHelper.accessor("endereco", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ENDEREÇO</p>,
-      cell: (info) => <p className="text-sm text-gray-500">{info.getValue() || "N/A"}</p>,
+      cell: (info) =>
+        usuarioEditando === info.row.original.user_id ? (
+          <input
+            type="text"
+            value={dadosEditados.endereco}
+            onChange={(e) => handleEdicaoChange(e, "endereco")}
+            className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+        ) : (
+          <p className="text-sm text-gray-500">{info.getValue() || "N/A"}</p>
+        ),
     }),
     columnHelper.accessor("saldo", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">SALDO</p>,
-      cell: (info) => <p className="text-sm text-gray-500">KZ {info.getValue()?.toFixed(2)}</p>,
+      cell: (info) =>
+        usuarioEditando === info.row.original.user_id ? (
+          <input
+            type="number"
+            value={dadosEditados.saldo}
+            onChange={(e) => handleEdicaoChange(e, "saldo")}
+            className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+        ) : (
+          <p className="text-sm text-gray-500">KZ {info.getValue()?.toFixed(2)}</p>
+        ),
     }),
     columnHelper.accessor("status", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">STATUS</p>,
-      cell: (info) => (
-        <span
-          className={`px-2 py-1 text-xs font-semibold rounded-full ${
-            info.getValue() === "Ativo" ? "bg-green-100 text-green-800" :
-            info.getValue() === "Inativo" ? "bg-red-100 text-red-800" :
-            "bg-yellow-100 text-yellow-800"
-          }`}
-        >
-          {info.getValue()}
-        </span>
-      ),
+      cell: (info) =>
+        usuarioEditando === info.row.original.user_id ? (
+          <select
+            value={dadosEditados.status}
+            onChange={(e) => handleEdicaoChange(e, "status")}
+            className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          >
+            <option value="Ativo">Ativo</option>
+            <option value="Inativo">Inativo</option>
+          </select>
+        ) : (
+          <span
+            className={`px-2 py-1 text-xs font-semibold rounded-full ${
+              info.getValue() === "Ativo" ? "bg-green-100 text-green-800" :
+              info.getValue() === "Inativo" ? "bg-red-100 text-red-800" :
+              "bg-yellow-100 text-yellow-800"
+            }`}
+          >
+            {info.getValue()}
+          </span>
+        ),
     }),
     columnHelper.accessor("acao", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
       cell: (info) => (
         <div className="flex space-x-4">
-          {/* <button
-            onClick={() => visualizarUsuario(info.row.original.id)}
-            className="text-blue-500 hover:text-blue-700"
-            title="Visualizar"
-          >
-            <FaEye />
-          </button> */}
-          <button
-            onClick={() => editarUsuario(info.row.original.id)}
-            className="text-green-500 hover:text-green-700"
-            title="Editar"
-          >
-            <FaEdit />
-          </button>
-          <button
-            onClick={() => excluirUsuario(info.row.original.id)}
-            className="text-red-500 hover:text-red-700"
-            title="Excluir"
-          >
-            <FaTrash />
-          </button>
+          {usuarioEditando === info.row.original.user_id ? (
+            <>
+              <button
+                onClick={() => salvarEdicao(info.row.original.user_id)}
+                className="text-green-500 hover:text-green-700"
+                title="Salvar"
+              >
+                <FaSave />
+              </button>
+              <button
+                onClick={cancelarEdicao}
+                className="text-red-500 hover:text-red-700"
+                title="Cancelar"
+              >
+                <FaTimes />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => iniciarEdicao(info.row.original.user_id)}
+                className="text-green-500 hover:text-green-700"
+                title="Editar"
+              >
+                <FaEdit />
+              </button>
+              <button
+                onClick={() => excluirUsuario(info.row.original.user_id)}
+                className="text-red-500 hover:text-red-700"
+                title="Excluir"
+              >
+                <FaTrash />
+              </button>
+            </>
+          )}
         </div>
       ),
     }),
@@ -141,14 +238,15 @@ const GerenciamentoUsuarios = () => {
     <div>
       {/* Exibir indicador de carregamento */}
       {loading ? (
-        <p className=" mt-10 text-center text-gray-500">Carregando usuários...</p>
+        <p className="mt-10 text-center text-gray-500">Carregando usuários...</p>
       ) : (
         <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
           <header className="relative flex items-center justify-between pt-4">
             <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Usuários</div>
           </header>
 
-          <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">
+          {/* Adicionando scroll horizontal à tabela */}
+          <div className="mt-5 overflow-x-auto">
             <table className="w-full">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
