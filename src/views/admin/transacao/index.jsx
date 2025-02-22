@@ -4,7 +4,7 @@ import { FaArrowLeft, FaArrowRight, FaMoneyBillWave, FaCalendarAlt, FaCheckCircl
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import Card from "components/card";
 
-const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const Transacao = () => {
     const [transacoes, setTransacoes] = useState([]);
