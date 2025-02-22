@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
-import Project from "../perfil/components/Project";
+import Project from "./Project";
 import banner from "assets/img/profile/banner.png";
 const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
@@ -66,7 +66,7 @@ const PerfilUsuario = () => {
     }
 
     if (!usuario) {
-        return <div className="mt-10 text-center text-gray-500">Empresa não encontrada.</div>;
+        return <div className="mt-10 text-center text-gray-500">Usuário não encontrado</div>;
     }
 
     

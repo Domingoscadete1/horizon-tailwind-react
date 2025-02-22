@@ -103,7 +103,7 @@ const GerenciamentoUsuarios = () => {
         <img
           src={info.getValue() || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
           alt="Foto do usuário"
-          className="w-10 h-10 rounded-full object-cover"
+          className="w-10 h-10 rounded-full object-cover cursor-pointer"
           onClick={() => handleUsuarioClick(info.row.original.id)}
 
         />
