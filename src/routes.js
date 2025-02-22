@@ -17,6 +17,8 @@ import GerenciamentoUsuarios from "views/admin/usuario";
 import GerenciamentoEmpresas from "views/admin/empresa";
 import PerfilEmpresa from "views/admin/empresa/perfil.jsx";
 import SignIn from "views/auth/SignIn";
+import GerenciamentoPostos from "views/admin/posto";
+import PerfilFuncionario from "views/admin/empresa/perfil-funcionario";
 
 // Icon Imports
 import {
@@ -26,7 +28,7 @@ import {
   MdArchive,
   MdLock,
 } from "react-icons/md";
-import { FaHeadset, FaShieldAlt,  FaCog, FaUsers, FaBullhorn, FaExclamationTriangle, FaAccusoft } from 'react-icons/fa';
+import { FaHeadset, FaShieldAlt,  FaCog, FaUsers, FaBullhorn, FaExclamationTriangle, FaAccusoft, FaTachometerAlt, FaLocationArrow, FaLaugh, FaLongArrowAltUp, FaMapMarkerAlt } from 'react-icons/fa';
 
 const routes = [
   {
@@ -57,6 +59,13 @@ const routes = [
     path: "gerenciaremp",
     icon: <FaAccusoft className="h-6 w-6" />,
     component: <GerenciamentoEmpresas />,
+  },
+  {
+    name: "Gerenciar Postos",
+    layout: "/admin",
+    path: "postos",
+    icon: <FaMapMarkerAlt  className="h-6 w-6" />,
+    component: <GerenciamentoPostos />,
   },
   // {
   //   name: "Tabelas",
@@ -127,6 +136,13 @@ const routes = [
     path: "perfiluser",
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilUsuario />,
+  },
+  {
+    name: "Perfil Funcionário",
+    layout: "/admin",
+    path: "funcionario",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <PerfilFuncionario />,
   },
   {
     name: "Perfil Empresa",
