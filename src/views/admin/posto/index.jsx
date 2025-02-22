@@ -239,7 +239,7 @@ const GerenciamentoPostos = () => {
     // Configuração das colunas para atividades
     const atividadesColumns = [
         columnHelper.accessor('transacao.lance.produto.imagens[0].imagem', {
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM DO PRODUTO</p>,
             cell: (info) => (
                 <img
                     src={`${API_BASE_URL}${info.getValue()}`}
@@ -249,7 +249,7 @@ const GerenciamentoPostos = () => {
             ),
         }),
         columnHelper.accessor('transacao.lance.produto.nome', {
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">PRODUTO</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME DO PRODUTO</p>,
             cell: (info) => info.getValue() || "Sem produto",
         }),
         columnHelper.accessor('transacao.lance.preco', {
