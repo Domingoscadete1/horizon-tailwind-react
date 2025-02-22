@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
@@ -71,14 +71,14 @@ const PerfilUsuario = () => {
         return <div className="mt-10 text-center text-gray-500">Usuário não encontrado</div>;
     }
 
-    
+
 
     const handleStatusConta = (novoStatus) => {
         setFormData((prev) => ({ ...prev, status: novoStatus }));
         alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
     };
 
-    
+
     // Função para salvar as alterações do perfil
     const salvarPerfil = () => {
         alert('Perfil atualizado com sucesso!');
@@ -104,7 +104,7 @@ const PerfilUsuario = () => {
                             <img
                                 src={usuario.foto}
                                 alt="Foto de Perfil"
-                                className= "w-full h-full rounded-full object-cover"
+                                className="w-full h-full rounded-full object-cover"
                             />
                             {editando && (
                                 <label className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer">
@@ -187,7 +187,7 @@ const PerfilUsuario = () => {
                                 </div>
                             )}
                         </header>
-                        
+
                         {/* Cards */}
                         <div className="grid grid-cols-2 gap-4 px-2">
                             {/* Nome */}
@@ -285,7 +285,7 @@ const PerfilUsuario = () => {
                                     />
                                 ) : (
                                     <p className="text-base font-medium text-navy-700 dark:text-whitee">
-                                        {usuario.data_nascimento }
+                                        {usuario.data_nascimento}
                                     </p>
                                 )}
 
@@ -296,110 +296,57 @@ const PerfilUsuario = () => {
             </div>
 
             <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-1">
-            <Card extra={"w-full p-4 h-full"}>
-      <div className="mb-2 w-full ml-3">
-        <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-          Produtos Divulgados
-        </h4>
-        
-      </div>
-      {/* Project 1 */}
-      <div className="flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <div className="flex items-center">
-          <div className="">
-            <img className="h-[83px] w-[83px] rounded-lg" src={image1} alt="" />
-          </div>
-          <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
-              Technology behind the Blockchain
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              weitrcyvgulbhçkj rsxdgj fhb 
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              254,447kzs
-            </p>
-          </div>
-        </div>
-      </div>
-      {/* Project 1 */}
-      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <div className="flex items-center">
-          <div className="">
-            <img className="h-[83px] w-[83px] rounded-lg" src={image3} alt="" />
-          </div>
-          <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
-              Technology behind the Blockchain
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              weitrcyvgulbhçkj rsxdgj fhb 
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              254,447kzs
-            </p>
-          </div>
-        </div>
-      </div>
-      {/* Project 1 */}
-      <div className="mt-3 mb-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <div className="flex items-center">
-          <div className="">
-            <img className="h-[83px] w-[83px] rounded-lg" src={image2} alt="" />
-          </div>
-          <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
-              Technology behind the Blockchain
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              weitrcyvgulbhçkj rsxdgj fhb 
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              254,447kzs
-            </p>
-          </div>
-        </div>
-      </div>
+                <Card extra={"w-full p-4 h-full"}>
+                    <div className="mb-2 w-full ml-3">
+                        <h4 className="text-xl font-bold text-navy-700 dark:text-white">
+                            Produtos Divulgados
+                        </h4>
 
-      <div className="flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <div className="flex items-center">
-          <div className="">
-            <img className="h-[83px] w-[83px] rounded-lg" src={image1} alt="" />
-          </div>
-          <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
-              Technology behind the Blockchain
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              weitrcyvgulbhçkj rsxdgj fhb 
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              254,447kzs
-            </p>
-          </div>
-        </div>
-      </div>
+                    </div>
+                    {/* Project 1 */}
+                    <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-1">
+  <Card extra={"w-full p-4 h-full"}>
+    <div className="mb-2 w-full ml-3">
+      <h4 className="text-xl font-bold text-navy-700 dark:text-white">
+        Produtos Divulgados
+      </h4>
+    </div>
 
-      {/* Project 1 */}
-      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <div className="flex items-center">
-          <div className="">
-            <img className="h-[83px] w-[83px] rounded-lg" src={image3} alt="" />
-          </div>
-          <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
-              Technology behind the Blockchain
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              weitrcyvgulbhçkj rsxdgj fhb 
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              254,447kzs
-            </p>
+    {produtos.length > 0 ? (
+      produtos.map((produto) => (
+        <div
+          key={produto.id}
+          className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+        >
+          <div className="flex items-center">
+            <div>
+              <img
+                className="h-[83px] w-[83px] rounded-lg"
+                src={`${API_BASE_URL}${produto.imagens[0].imagem}` || image1} // Usa a imagem do produto ou uma padrão
+                alt={produto.nome}
+              />
+            </div>
+            <div className="ml-4">
+              <p className="text-base font-medium text-navy-700 dark:text-white">
+                {produto.nome}
+              </p>
+              <p className="mt-2 text-sm text-gray-600">
+                {produto.descricao}
+              </p>
+              <p className="mt-2 text-sm text-gray-600">
+                {produto.preco} kzs
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </Card>
+      ))
+    ) : (
+      <p className="text-gray-600 mt-3">Nenhum produto divulgado.</p>
+    )}
+  </Card>
+</div>
+
+                </Card>
 
                 <Card extra="w-full p-4 h-full">
                     <header className="relative flex items-center justify-between pt-4">
