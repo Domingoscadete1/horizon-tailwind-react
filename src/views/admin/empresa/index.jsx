@@ -78,7 +78,7 @@ const GerenciamentoEmpresas = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">SALDO</p>,
             cell: (info) => (
                 <p className="text-sm font-bold text-green-500">
-                    KZ {parseFloat(info.getValue()).toFixed(2)}
+                    {parseFloat(info.getValue()).toFixed(2)}Kzs
                 </p>
             ),
         }),
