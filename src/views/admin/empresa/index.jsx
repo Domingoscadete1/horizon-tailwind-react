@@ -7,12 +7,14 @@ import {
     getCoreRowModel,
     useReactTable,
 } from '@tanstack/react-table';
+
 const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app";
 
 const GerenciamentoEmpresas = () => {
     const [empresas, setEmpresas] = useState([]);
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
+    const [nomeEmpresaSelecionada, setNomeEmpresaSelecionada] = useState('');
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/api/empresas`, {
@@ -24,7 +26,7 @@ const GerenciamentoEmpresas = () => {
             .then((data) => setEmpresas(data.results));
     }, []);
 
-    const fetchFuncionarios = (empresaId) => {
+    const fetchFuncionarios = (empresaId, empresaNome) => {
         fetch(`${API_BASE_URL}/api/empresa/funcionarios/${empresaId}/`, {
             headers: {
                 "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
@@ -34,6 +36,7 @@ const GerenciamentoEmpresas = () => {
             .then((data) => {
                 setFuncionarios(data.funcionarios);
                 setEmpresaSelecionada(empresaId);
+                setNomeEmpresaSelecionada(empresaNome); // Armazena o nome da empresa selecionada
             });
     };
 
@@ -48,7 +51,7 @@ const GerenciamentoEmpresas = () => {
             cell: (info) => (
                 <p
                     className="text-sm font-bold text-blue-500 cursor-pointer hover:underline"
-                    onClick={() => fetchFuncionarios(info.row.original.id)}
+                    onClick={() => fetchFuncionarios(info.row.original.id, info.row.original.nome)}
                 >
                     {info.getValue()}
                 </p>
@@ -70,10 +73,6 @@ const GerenciamentoEmpresas = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TELEFONE 1</p>,
             cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{info.getValue()}</p>,
         }),
-        // columnHelper.accessor('telefone2', {
-        //     header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TELEFONE 2</p>,
-        //     cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{info.getValue()}</p>,
-        // }),
         columnHelper.accessor('saldo', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">SALDO</p>,
             cell: (info) => (
@@ -120,7 +119,6 @@ const GerenciamentoEmpresas = () => {
             ),
         }),
     ];
-
 
     const table = useReactTable({
         data: empresas,
@@ -172,7 +170,7 @@ const GerenciamentoEmpresas = () => {
                 <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                     <header className="relative flex items-center justify-between pt-4">
                         <div className="text-xl font-bold text-navy-700 dark:text-white">
-                            Funcionários da Empresa 
+                            Funcionários da Empresa: {nomeEmpresaSelecionada} {/* Exibe o nome da empresa selecionada */}
                         </div>
                     </header>
                     <div className="mt-5 overflow-x-auto">

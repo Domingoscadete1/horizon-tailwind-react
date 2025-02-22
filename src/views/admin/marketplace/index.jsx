@@ -10,7 +10,7 @@ import NFt3 from "assets/img/nfts/Nft3.png";
 import NFt4 from "assets/img/nfts/Nft4.png";
 import NFt5 from "assets/img/nfts/Nft5.png";
 import NFt6 from "assets/img/nfts/Nft6.png";
-import { FaEye, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const API_BASE_URL = "https://408e-154-71-159-172.ngrok-free.app/api/produtos/";
 

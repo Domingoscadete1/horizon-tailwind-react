@@ -61,9 +61,19 @@ const GerenciamentoUsuarios = () => {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
       cell: (info) => <p className="text-sm text-gray-500">{info.getValue()}</p>,
     }),
+    columnHelper.accessor("foto", {
+      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
+      cell: (info) => (
+        <img
+          src={info.getValue() || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
+          alt="Foto do usuário"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+      ),
+    }),
     columnHelper.accessor("nome", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
-      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
+      cell: (info) => <p className="text-sm font-bold text-blue-500 cursor-pointer hover:underline">{info.getValue()}</p>,
     }),
     columnHelper.accessor("numero_telefone", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TELEFONE</p>,
@@ -95,13 +105,13 @@ const GerenciamentoUsuarios = () => {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
       cell: (info) => (
         <div className="flex space-x-4">
-          <button
+          {/* <button
             onClick={() => visualizarUsuario(info.row.original.id)}
             className="text-blue-500 hover:text-blue-700"
             title="Visualizar"
           >
             <FaEye />
-          </button>
+          </button> */}
           <button
             onClick={() => editarUsuario(info.row.original.id)}
             className="text-green-500 hover:text-green-700"

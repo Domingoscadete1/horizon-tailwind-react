@@ -26,7 +26,7 @@ const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade,
             <div className="flex gap-2 items-center">
               <img
                 src={image_user}
-                className="w-10 h-10 rounded-full "
+                className="w-10 h-10 rounded-full cursor-pointer"
                 alt=""
               />
               <p className="text-lg font-bold text-navy-700 dark:text-white">
