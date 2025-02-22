@@ -8,6 +8,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const GerenciamentoPostos = () => {
@@ -27,6 +28,7 @@ const GerenciamentoPostos = () => {
     const [atividades, setAtividades] = useState([]);
     const [postoSelecionado, setPostoSelecionado] = useState(null);
     const [paginaAtual, setPaginaAtual] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [proximaPagina, setProximaPagina] = useState(null);
     const [paginaAnterior, setPaginaAnterior] = useState(null);
 
@@ -67,6 +69,7 @@ const GerenciamentoPostos = () => {
             setPaginaAtual(page);
             setProximaPagina(data.next);
             setPaginaAnterior(data.previous);
+            setTotalPages(Math.ceil(data.count / data.results.length));
         } catch (error) {
             console.error("Erro ao buscar atividades:", error);
         }
@@ -396,6 +399,30 @@ const GerenciamentoPostos = () => {
                                     ))}
                                 </tbody>
                             </table>
+                            <div className="flex justify-center mt-10 mb-4">
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual - 1)}
+                                        disabled={!paginaAnterior}
+                                        className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${paginaAnterior === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    >
+                                        <FaArrowLeft className="w-20" />
+                                    </button>
+
+                                    <span className="text-sm text-gray-600 dark:text-white">
+                                        Página {paginaAtual} 
+                                    </span>
+
+                                    <button
+                                        onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual + 1)}
+                                        disabled={!proximaPagina}
+                                        className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${proximaPagina ? "bg-blue-500 text-white" : ""}`}
+                                    >
+                                        <FaArrowRight className="w-20" />
+                                    </button>
+                                </div>
+
+                            </div>
                         </div>
                     </Card>
                 </div>
