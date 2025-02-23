@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaEye, FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import {
     createColumnHelper,
@@ -8,17 +8,12 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const GerenciamentoPostos = () => {
     const [postos, setPostos] = useState([]); // Começa vazio
     const [loading, setLoading] = useState(true); // Para indicar carregamento
-
-    // Estado para controlar a exibição do modal de cadastro
     const [mostrarModal, setMostrarModal] = useState(false);
-
-    // Estado para os campos do formulário de cadastro
     const [novoPosto, setNovoPosto] = useState({
         nome: '',
         criadoPor: '',
@@ -31,6 +26,8 @@ const GerenciamentoPostos = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [proximaPagina, setProximaPagina] = useState(null);
     const [paginaAnterior, setPaginaAnterior] = useState(null);
+
+    const [modalInfo, setModalInfo] = useState(false);
 
     const fetchFuncionarios = async (postoId) => {
         try {
@@ -112,9 +109,20 @@ const GerenciamentoPostos = () => {
     useEffect(() => {
         fetchPostos();
     }, []);
+
     // Função para abrir o modal de cadastro
     const abrirModal = () => {
         setMostrarModal(true);
+    };
+
+    // Função para abrir o modal de cadastro
+    const abrirModalInfo = () => {
+        setModalInfo(true);
+    };
+
+    // Função para fechar o modal de cadastro
+    const fecharModalInfo = () => {
+        setModalInfo(false);
     };
 
     // Função para fechar o modal de cadastro
@@ -147,6 +155,14 @@ const GerenciamentoPostos = () => {
         const posto = postos.find((p) => p.id === id);
         if (posto) {
             alert(`Editar posto: ${posto.nome}`);
+            // Aqui você pode abrir um modal ou formulário para edição
+        }
+    };
+
+    const visualizarPosto = (id) => {
+        const posto = postos.find((p) => p.id === id);
+        if (posto) {
+            alert(`Visualizar: ${posto.nome}`);
             // Aqui você pode abrir um modal ou formulário para edição
         }
     };
@@ -194,6 +210,13 @@ const GerenciamentoPostos = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
             cell: (info) => (
                 <div className="flex space-x-4">
+                    <button
+                        onClick={abrirModalInfo}
+                        className="text-blue-500 hover:text-blue-700"
+                        title="Visualizar"
+                    >
+                        <FaEye />
+                    </button>
                     <button
                         onClick={() => editarPosto(info.row.original.id)}
                         className="text-green-500 hover:text-green-700"
@@ -250,15 +273,14 @@ const GerenciamentoPostos = () => {
                     <img
                         src={`${API_BASE_URL}${imageUrl}`}
                         alt="Produto"
-                        className="w-16 h-16 object-cover"
+                        className="w-16 h-16 rounded-full object-cover"
                     />
                 ) : (
                     <p className="text-xs text-gray-500">Sem imagem</p>
                 );
             },
         }),
-        
-        
+
         columnHelper.accessor('transacao.lance.produto.nome', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME DO PRODUTO</p>,
             cell: (info) => info.getValue() || "Sem produto",
@@ -372,13 +394,11 @@ const GerenciamentoPostos = () => {
                                 </tbody>
                             </table>
                         </div>
-
-
                     </Card>
 
                     <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                         <div className="mt-5 overflow-x-auto">
-                            <header className="relative flex items-center justify-between pt-4">
+                            <header className="relative mb-6 flex items-center justify-between pt-4">
                                 <div className="text-xl font-bold text-navy-700 dark:text-white">
                                     Últimas Actividades
                                 </div>
@@ -418,7 +438,7 @@ const GerenciamentoPostos = () => {
                                     </button>
 
                                     <span className="text-sm text-gray-600 dark:text-white">
-                                        Página {paginaAtual} 
+                                        Página {paginaAtual}
                                     </span>
 
                                     <button
@@ -434,9 +454,7 @@ const GerenciamentoPostos = () => {
                         </div>
                     </Card>
                 </div>
-
             )}
-
 
             {/* Botão para abrir o modal de cadastro */}
             <div className="flex justify-end">
@@ -449,12 +467,34 @@ const GerenciamentoPostos = () => {
                 </button>
             </div>
 
+            {/* Modal de Informação de Posto */}
+            {modalInfo && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                        <header className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold text-navy-700">Informações do Posto</h2>
+
+                            <button
+                                onClick={fecharModalInfo}
+                                className="text-navy-700 hover:text-blue-700"
+                                title="Visualizar"
+                            >
+                                <FaTimes />
+                            </button>
+                        </header>
+
+                        
+                    </div>
+                </div>
+            )}
+
             {/* Modal de Cadastro de Posto */}
             {mostrarModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <header className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-navy-700">Cadastrar Novo Posto</h2>
+                            <FaArrowRight className="w-20" onClick={fecharModalInfo} />
                         </header>
 
                         <div className="mt-4">
