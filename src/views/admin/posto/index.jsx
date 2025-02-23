@@ -483,7 +483,7 @@ const GerenciamentoPostos = () => {
                             </button>
                         </header>
 
-                        
+
                     </div>
                 </div>
             )}
@@ -494,7 +494,6 @@ const GerenciamentoPostos = () => {
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <header className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-navy-700">Cadastrar Novo Posto</h2>
-                            <FaArrowRight className="w-20" onClick={fecharModalInfo} />
                         </header>
 
                         <div className="mt-4">
