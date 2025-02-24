@@ -140,7 +140,7 @@ const routes = [
   {
     name: "Perfil Funcionário",
     layout: "/admin",
-    path: "funcionario",
+    path: "funcionario/:id",
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilFuncionario />,
   },

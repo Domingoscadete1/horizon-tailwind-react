@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaArrowLeft, FaArrowRight, FaMoneyBillWave, FaCalendarAlt, FaCheckCircle, FaTimesCircle, FaDownload, FaTrash } from "react-icons/fa";
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import Card from "components/card";
+import { data } from 'autoprefixer';
 
 const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
@@ -25,6 +26,7 @@ const Transacao = () => {
                     "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
                 },
             });
+            console.log(response.data.results);
             setTransacoes(response.data.results);
             setPagination((prev) => ({
                 ...prev,
@@ -45,6 +47,15 @@ const Transacao = () => {
     };
 
     const transacaoColumns = [
+        {
+            accessorKey: "lance",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
+            cell: ({ row }) => (
+                <span className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-navy-700 dark:text-white">{row.lance?.produto?.nome}</p>
+                </span>
+            ),
+        },
         {
             accessorKey: "tipo_transacao",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,

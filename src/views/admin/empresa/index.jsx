@@ -17,6 +17,9 @@ const GerenciamentoEmpresas = () => {
     const handleEmpresaClick = (empresaId) => {
         navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
     };
+    const handleFuncionarioClick = (funcionarioId) => {
+        navigate(`/admin/funcionario/${funcionarioId}`); // Redireciona para o perfil da empresa
+    };
     const [empresas, setEmpresas] = useState([]);
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
@@ -55,11 +58,12 @@ const GerenciamentoEmpresas = () => {
                 {info.getValue()}
             </p>,
         }),
-        columnHelper.accessor("imagens[0].imagem", {
+        columnHelper.accessor(row => row.imagens?.[0]?.imagem, {
+            id: "imagem_produto",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
               <img
-                src={`${API_BASE_URL}${info.getValue()}` || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
+                src={`${info.getValue()}` || "https://via.placeholder.com/150"} 
                 alt="Foto da Empresa"
                 className="w-10 h-10 rounded-full object-cover cursor-pointer"
                 onClick={() => handleEmpresaClick(info.row.original.id)}
@@ -111,7 +115,7 @@ const GerenciamentoEmpresas = () => {
         columnHelper.accessor('foto', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
-                <img src={`${API_BASE_URL}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full" />
+                <img src={`${API_BASE_URL}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full" onClick={() => handleFuncionarioClick(info.row.original.id)}/>
             ),
         }),
         columnHelper.accessor('usuario_username', {

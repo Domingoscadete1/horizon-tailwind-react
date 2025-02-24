@@ -1,25 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaBriefcase, FaCalendar, FaEdit, FaSave } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
+
+const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
 
 const PerfilFuncionario = () => {
     // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [dadosFuncionario, setDadosFuncionario] = useState(null);
+    const [novaFoto, setNovaFoto] = useState(null);
 
     // Estado para armazenar os dados do funcionário
-    const [dadosFuncionario, setDadosFuncionario] = useState({
-        nome: 'João Silva',
-        email: 'joao.silva@empresa.com',
-        telefone: '(11) 98765-4321',
-        endereco: 'Rua Exemplo, 123, São Paulo - SP',
-        cargo: 'Desenvolvedor Front-end da empresa: Kipungo Corp',
-        departamento: 'Tecnologia',
-        dataAdmissao: '2020-05-15',
-        foto: 'https://i1.sndcdn.com/artworks-MICz28u7gUgjVqeV-PwRvkw-t500x500.jpg', // URL da foto de perfil
-    });
+    // const [dadosFuncionario, setDadosFuncionario] = useState({
+    //     nome: 'João Silva',
+    //     email: 'joao.silva@empresa.com',
+    //     telefone: '(11) 98765-4321',
+    //     endereco: 'Rua Exemplo, 123, São Paulo - SP',
+    //     cargo: 'Desenvolvedor Front-end da empresa: Kipungo Corp',
+    //     departamento: 'Tecnologia',
+    //     dataAdmissao: '2020-05-15',
+    //     foto: 'https://i1.sndcdn.com/artworks-MICz28u7gUgjVqeV-PwRvkw-t500x500.jpg', // URL da foto de perfil
+    // });
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/empresa-usuario/${id}/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                const data = await response.json();
+                setDadosFuncionario(data);
+            } catch (error) {
+                console.error('Erro ao buscar empresa:', error);
+            }
+        };
+
+       
+
+        const fetchData = async () => {
+            await fetchUsuario();
+            setLoading(false); // Agora só desativa o loading após buscar os dados
+        };
+
+        fetchData();
+    }, [id]);
+
+    if (loading) {
+        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+    }
+
+    if (!dadosFuncionario) {
+        return <div className="mt-10 text-center text-gray-500">Usuário não encontrado</div>;
+    }
 
     // Estado para armazenar a nova foto de perfil
-    const [novaFoto, setNovaFoto] = useState(null);
 
     // Função para alternar o modo de edição
     const toggleEdicao = () => {
@@ -76,7 +117,7 @@ const PerfilFuncionario = () => {
 
                     {/* Nome do Funcionário */}
                     <h2 className="text-xl font-bold text-navy-700 dark:text-white mt-4">
-                        {dadosFuncionario.nome}
+                        {dadosFuncionario.usuario_username}
                     </h2>
 
                     {/* Informações Pessoais e Profissionais */}
@@ -141,7 +182,7 @@ const PerfilFuncionario = () => {
                                         <input
                                             type="text"
                                             name="cargo"
-                                            value={dadosFuncionario.cargo}
+                                            value={dadosFuncionario.role}
                                             onChange={handleInputChange}
                                             disabled={!editando}
                                             className={`w-full p-2 border rounded-lg focus:outline-none ${
@@ -154,9 +195,9 @@ const PerfilFuncionario = () => {
                                         <input
                                             type="text"
                                             name="departamento"
-                                            value={dadosFuncionario.departamento}
+                                            value={dadosFuncionario.empresa_nome}
                                             onChange={handleInputChange}
-                                            disabled={!editando}
+                                            disabled
                                             className={`w-full p-2 border rounded-lg focus:outline-none ${
                                                 editando ? 'bg-white' : 'bg-gray-100'
                                             }`}
@@ -167,9 +208,9 @@ const PerfilFuncionario = () => {
                                         <input
                                             type="date"
                                             name="dataAdmissao"
-                                            value={dadosFuncionario.dataAdmissao}
+                                            value={dadosFuncionario.data_associacao}
                                             onChange={handleInputChange}
-                                            disabled={!editando}
+                                            disabled
                                             className={`w-full p-2 border rounded-lg focus:outline-none ${
                                                 editando ? 'bg-white' : 'bg-gray-100'
                                             }`}
