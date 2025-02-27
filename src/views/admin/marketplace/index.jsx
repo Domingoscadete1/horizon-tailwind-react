@@ -18,8 +18,10 @@ const Marketplace = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNft, setSelectedNft] = useState(null);
   const [produtos, setProdutos] = useState([]);
+  const [filteredProdutos, setFilteredProdutos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const nfts = [
     { title: "Computador", author: "Esthera Jackson", price: "0.91", image: NFt3, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
@@ -33,7 +35,7 @@ const Marketplace = () => {
       const url = `${API_BASE_URL}?page=${page}`;
       const response = await fetch(url, {
         headers: {
-          "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+          "ngrok-skip-browser-warning": "true",
         },
       });
 
@@ -44,8 +46,10 @@ const Marketplace = () => {
       const data = await response.json();
       console.log("Produtos carregados:", data);
 
-      setProdutos(Array.isArray(data.results) ? data.results : []);
-      setTotalPages(Math.ceil(data.count / data.results.length)); // Calcula total de páginas
+      const produtosList = Array.isArray(data.results) ? data.results : [];
+      setProdutos(produtosList);
+      setFilteredProdutos(produtosList);
+      setTotalPages(Math.ceil(data.count / data.results.length));
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
     }
@@ -53,7 +57,14 @@ const Marketplace = () => {
 
   useEffect(() => {
     fetchProdutos(currentPage);
-  }, [currentPage]); // Atualiza ao mudar de página
+  }, [currentPage]);
+
+  useEffect(() => {
+    const filtered = produtos.filter((produto) =>
+      produto.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredProdutos(filtered);
+  }, [searchTerm, produtos]);
 
   const handlePageChange = (direction) => {
     setCurrentPage((prev) => {
@@ -84,35 +95,23 @@ const Marketplace = () => {
           </h4>
           <ul className="mt-4 flex items-center justify-between md:mt-0 md:justify-center md:!gap-5 2xl:!gap-12">
             <li>
-              <a
-                className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white"
-                href=" "
-              >
+              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
                 Computador
               </a>
             </li>
             <li>
-              <a
-                className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white"
-                href=" "
-              >
+              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
                 Telefone
               </a>
             </li>
             <li>
-              <a
-                className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white"
-                href=" "
-              >
+              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
                 Carro
               </a>
             </li>
             <li>
-              <a
-                className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white"
-                href=" "
-              >
-                <a href=" ">Teclado</a>
+              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
+                Teclado
               </a>
             </li>
           </ul>
@@ -133,13 +132,22 @@ const Marketplace = () => {
           ))}
         </div>
 
-        <div className="text-xl mt-5 mb-5 ml-2 font-bold text-navy-700 dark:text-white">
-          Para Você
+        <div className="relative flex items-center justify-between pt-4">
+          <div className="text-xl mt-5 mb-5 ml-2 font-bold text-navy-700 dark:text-white">
+            Para Você
+          </div>
+          <input
+            type="text"
+            placeholder="Filtrar por nome..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-2 border rounded-lg"
+          />
         </div>
 
-        {/* Grid de produtos */}
+        {/* Grid de produtos filtrados */}
         <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
-          {produtos.map((produto) => {
+          {filteredProdutos.map((produto) => {
             const imageUrl =
               produto.imagens && produto.imagens.length > 0
                 ? produto.imagens[0].imagem
@@ -166,38 +174,38 @@ const Marketplace = () => {
           })}
         </div>
 
+        {/* Modal com imagens adicionais */}
+        {isModalOpen && selectedNft && (
+          <ImageModal
+            imageUrl={selectedNft.imagens?.[0]?.imagem || "https://via.placeholder.com/150"}
+            additionalImages={selectedNft.imagens?.map((img) => img.imagem) || []}
+            onClose={closeModal}
+          />
+        )}
+
         {/* Paginação */}
         <div className="flex justify-center mt-10 mb-4">
           <div className="flex items-center space-x-2">
             <button
-              className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={currentPage === 1}
               onClick={() => handlePageChange("prev")}
             >
-              <FaArrowLeft className="w-20" /> 
+              <FaArrowLeft />
             </button>
             <span className="text-sm text-gray-600 dark:text-white">
               Página {currentPage} de {totalPages}
             </span>
             <button
-              className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${currentPage >= totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center ${currentPage >= totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={currentPage >= totalPages}
               onClick={() => handlePageChange("next")}
             >
-               <FaArrowRight className="w-20" />
+              <FaArrowRight />
             </button>
           </div>
         </div>
       </div>
-
-      {/* Modal com imagens adicionais */}
-      {isModalOpen && selectedNft && (
-        <ImageModal
-          imageUrl={selectedNft.imagens?.[0]?.imagem || "https://via.placeholder.com/150"}
-          additionalImages={selectedNft.imagens?.map((img) => img.imagem) || []}
-          onClose={closeModal}
-        />
-      )}
     </div>
   );
 };
