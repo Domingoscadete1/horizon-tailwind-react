@@ -6,6 +6,8 @@ import image1 from "assets/img/profile/image1.png";
 import image2 from "assets/img/profile/image2.png";
 import image3 from "assets/img/profile/image3.png";
 import banner from "assets/img/profile/banner.png";
+import NftCard from "components/card/NftCard";
+import ImageModal from "../marketplace/components/modal";
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
@@ -14,6 +16,8 @@ const PerfilUsuario = () => {
     const [loading, setLoading] = useState(true);
     const [usuario, setUsuario] = useState(null);
     const [produtos, setProdutos] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedNft, setSelectedNft] = useState(null);
     // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);
     const [formData1, setFormData] = useState({
@@ -74,19 +78,19 @@ const PerfilUsuario = () => {
         try {
             // Cria um objeto FormData
             const formData = new FormData();
-    
+
             // Adiciona os campos do usuário ao FormData
             formData.append('nome', usuario.nome);
             formData.append('email', usuario.email);
             formData.append('numero_telefone', usuario.numero_telefone);
             formData.append('endereco', usuario.endereco);
             formData.append('data_nascimento', usuario.data_nascimento);
-    
+
             // Se houver uma nova foto de perfil, adiciona ao FormData
             if (usuario.foto instanceof File) {
                 formData.append('foto', usuario.foto);
             }
-    
+
             // Faz a requisição PUT com o FormData
             const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/atualizar/`, {
                 method: "PUT",
@@ -97,7 +101,7 @@ const PerfilUsuario = () => {
                 body: formData, // Envia o FormData
             });
             console.log(formData);
-    
+
             if (response.ok) {
                 alert('Perfil atualizado com sucesso!');
                 setEditando(false);
@@ -160,7 +164,15 @@ const PerfilUsuario = () => {
         atualizarUsuario();
     };
 
+    const handleImageClick = (nft) => {
+        setSelectedNft(nft);
+        setIsModalOpen(true);
+    };
 
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedNft(null);
+    };
 
     const handleStatusConta = (novoStatus) => {
         suspenderUsuario(novoStatus);
@@ -168,7 +180,7 @@ const PerfilUsuario = () => {
 
 
     // Função para salvar as alterações do perfil
-    
+
 
     // Função para cancelar a edição
     const cancelarEdicao = () => {
@@ -380,58 +392,47 @@ const PerfilUsuario = () => {
                 </Card>
             </div>
 
+            <div className="mb-5">
+                <div className="text-xl mb-5 mt-2 ml-2 font-bold text-navy-700 dark:text-white">
+                    Produtos Divulgados
+                </div>
+
+                <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
+                    {produtos.length > 0 ? (
+                        produtos.map((produto) => (
+
+                            <NftCard
+                                key={produto.id}
+                                title={produto.nome}
+                                // author={produto.descricao}
+                                price={produto.preco}
+                                image={`${API_BASE_URL}${produto.imagens[0].imagem}` || ''}
+                                image_user={
+                                    produto.usuario
+                                        ? `${API_BASE_URL}${produto.usuario.foto}`
+                                        : `${API_BASE_URL}${produto.empresa?.imagens?.[0]?.imagem}`
+                                }
+                                onImageClick={() => handleImageClick(produto)}
+                            />
+                        ))
+                    ) : (
+                        <p className="text-gray-600 mt-3">Nenhum produto divulgado.</p>
+                    )}
+                </div>
+            </div>
+
+            {/* Modal com imagens adicionais */}
+            {
+                isModalOpen && selectedNft && (
+                    <ImageModal
+                        imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
+                        additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
+                        onClose={closeModal}
+                    />
+                )
+            }
+
             <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-1">
-                <Card extra={"w-full p-4 h-full"}>
-                    <div className="mb-2 w-full ml-3">
-                        <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-                            Produtos Divulgados
-                        </h4>
-
-                    </div>
-                    {/* Project 1 */}
-                    <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-1">
-  <Card extra={"w-full p-4 h-full"}>
-    <div className="mb-2 w-full ml-3">
-      <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-        Produtos Divulgados
-      </h4>
-    </div>
-
-    {produtos.length > 0 ? (
-      produtos.map((produto) => (
-        <div
-          key={produto.id}
-          className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
-        >
-          <div className="flex items-center">
-            <div>
-              <img
-                className="h-[83px] w-[83px] rounded-lg"
-                src={`${API_BASE_URL}${produto.imagens[0].imagem}` || image1} // Usa a imagem do produto ou uma padrão
-                alt={produto.nome}
-              />
-            </div>
-            <div className="ml-4">
-              <p className="text-base font-medium text-navy-700 dark:text-white">
-                {produto.nome}
-              </p>
-              <p className="mt-2 text-sm text-gray-600">
-                {produto.descricao}
-              </p>
-              <p className="mt-2 text-sm text-gray-600">
-                {produto.preco} kzs
-              </p>
-            </div>
-          </div>
-        </div>
-      ))
-    ) : (
-      <p className="text-gray-600 mt-3">Nenhum produto divulgado.</p>
-    )}
-  </Card>
-</div>
-
-                </Card>
 
                 <Card extra="w-full p-4 h-full">
                     <header className="relative flex items-center justify-between pt-4">
