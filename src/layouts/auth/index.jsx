@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from "react-router-dom";
+import FixedPlugin from "components/fixedPlugin/FixedPlugin";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function SignIn() {
     e.preventDefault();
     setIsPending(true);
     setError(null);
-  
+
     console.log("Enviando os seguintes dados para API:", formData);
 
     try {
@@ -65,7 +66,8 @@ export default function SignIn() {
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
         localStorage.setItem('custom-auth-token', data.access);
-        navigate('/admin/default');      } else {
+        navigate('/admin/default');
+      } else {
         setError('Usuário não autorizado.');
       }
     } catch (error) {
@@ -79,7 +81,7 @@ export default function SignIn() {
   const fetchUserData = async (token) => {
     try {
       const response = await axios.get(`${baseUrl}api/user/`, {
-        headers: { 'Authorization': `Bearer ${token}` ,"ngrok-skip-browser-warning": "true"},
+        headers: { 'Authorization': `Bearer ${token}`, "ngrok-skip-browser-warning": "true" },
       });
       if (response.status === 200 && response.data) {
         setUserData(response.data);
@@ -91,9 +93,10 @@ export default function SignIn() {
   };
 
   return (
-    <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
-<div className="mt-[4vh] w-full max-w-md flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-<h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+    <div>
+      <div className="relative float-right h-full min-h-screen w-full !bg-white dark:!bg-navy-900">
+        <FixedPlugin />
+        <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
           Sign In
         </h4>
         <p className="mb-9 ml-1 text-base text-gray-600">

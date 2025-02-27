@@ -8,6 +8,7 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
+    getFilteredRowModel,
 } from '@tanstack/react-table';
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
@@ -24,6 +25,7 @@ const GerenciamentoEmpresas = () => {
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
     const [nomeEmpresaSelecionada, setNomeEmpresaSelecionada] = useState('');
+    const [globalFilter, setGlobalFilter] = useState(''); // Estado para o filtro global
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/api/empresas`, {
@@ -148,6 +150,11 @@ const GerenciamentoEmpresas = () => {
         data: empresas,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        state: {
+            globalFilter, // Estado do filtro global
+        },
+        onGlobalFilterChange: setGlobalFilter, // Função para atualizar o filtro global
     });
 
     const funcionariosTable = useReactTable({
@@ -161,6 +168,14 @@ const GerenciamentoEmpresas = () => {
             <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Empresas</div>
+                    {/* Campo de filtro */}
+                    <input
+                        type="text"
+                        placeholder="Filtrar por nome..."
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        className="p-2 border rounded-lg"
+                    />
                 </header>
                 <div className="mt-5 overflow-x-auto">
                     <table className="w-full">

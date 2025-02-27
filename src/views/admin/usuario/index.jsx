@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom"; // Importação necessária
 
@@ -13,7 +14,7 @@ const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app/api/usuarios/";
 
 const GerenciamentoUsuarios = () => {
   const navigate = useNavigate(); // Hook de navegação
-
+  const [globalFilter, setGlobalFilter] = useState('');
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +25,7 @@ const GerenciamentoUsuarios = () => {
   const [dadosEditados, setDadosEditados] = useState({});
   const handleUsuarioClick = (usuarioId) => {
     navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
-};
+  };
   // Fetch dos usuários
   const fetchUsuarios = async () => {
     try {
@@ -181,11 +182,10 @@ const GerenciamentoUsuarios = () => {
           </select>
         ) : (
           <span
-            className={`px-2 py-1 text-xs font-semibold rounded-full ${
-              info.getValue() === "Ativo" ? "bg-green-100 text-green-800" :
+            className={`px-2 py-1 text-xs font-semibold rounded-full ${info.getValue() === "Ativo" ? "bg-green-100 text-green-800" :
               info.getValue() === "Inativo" ? "bg-red-100 text-red-800" :
-              "bg-yellow-100 text-yellow-800"
-            }`}
+                "bg-yellow-100 text-yellow-800"
+              }`}
           >
             {info.getValue()}
           </span>
@@ -239,6 +239,11 @@ const GerenciamentoUsuarios = () => {
     data: usuarios,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+    state: {
+      globalFilter, // Estado do filtro global
+    },
+    onGlobalFilterChange: setGlobalFilter,
   });
 
   return (
@@ -250,6 +255,13 @@ const GerenciamentoUsuarios = () => {
         <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
           <header className="relative flex items-center justify-between pt-4">
             <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Usuários</div>
+            <input
+              type="text"
+              placeholder="Filtrar por nome..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="p-2 border rounded-lg"
+            />
           </header>
 
           {/* Adicionando scroll horizontal à tabela */}
