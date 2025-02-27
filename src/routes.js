@@ -19,6 +19,7 @@ import PerfilEmpresa from "views/admin/empresa/perfil.jsx";
 import SignIn from "views/auth/SignIn";
 import GerenciamentoPostos from "views/admin/posto";
 import PerfilFuncionario from "views/admin/empresa/perfil-funcionario";
+import PerfilFuncionario2 from "views/admin/posto/perfil-funcionario";
 
 // Icon Imports
 import {
@@ -143,6 +144,13 @@ const routes = [
     path: "funcionario/:id",
     icon: <MdPerson className="h-6 w-6" />,
     component: <PerfilFuncionario />,
+  },
+  {
+    name: "Perfil Funcionário do Posto",
+    layout: "/admin",
+    path: "ddd",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <PerfilFuncionario2 />,
   },
   {
     name: "Perfil Empresa",
