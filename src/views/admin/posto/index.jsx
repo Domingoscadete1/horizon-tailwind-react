@@ -6,6 +6,7 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
+    getFilteredRowModel,
 } from '@tanstack/react-table';
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
@@ -19,6 +20,7 @@ const GerenciamentoPostos = () => {
         criadoPor: '',
         dataCriacao: '',
     });
+    const [globalFilter, setGlobalFilter] = useState('');
     const [funcionarios, setFuncionarios] = useState([]);
     const [atividades, setAtividades] = useState([]);
     const [postoSelecionado, setPostoSelecionado] = useState(null);
@@ -308,18 +310,33 @@ const GerenciamentoPostos = () => {
         data: postos,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        state: {
+            globalFilter, // Estado do filtro global
+        },
+        onGlobalFilterChange: setGlobalFilter,
     });
 
     const funcionariosTable = useReactTable({
         data: funcionarios,
         columns: funcionariosColumns,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        state: {
+            globalFilter, // Estado do filtro global
+        },
+        onGlobalFilterChange: setGlobalFilter,
     });
 
     const atividadesTable = useReactTable({
         data: atividades,
         columns: atividadesColumns,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        state: {
+            globalFilter, // Estado do filtro global
+        },
+        onGlobalFilterChange: setGlobalFilter,
     });
 
     return (
@@ -330,6 +347,13 @@ const GerenciamentoPostos = () => {
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
                         Lista de Postos Registrados
                     </div>
+                    <input
+                        type="text"
+                        placeholder="Filtrar por nome..."
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        className="p-2 border rounded-lg"
+                    />
                 </header>
 
                 <div className="mt-5 overflow-x-auto">
@@ -367,6 +391,13 @@ const GerenciamentoPostos = () => {
                             <div className="text-xl font-bold text-navy-700 dark:text-white">
                                 Funcionários do Posto
                             </div>
+                            <input
+                                type="text"
+                                placeholder="Filtrar por nome..."
+                                value={globalFilter}
+                                onChange={(e) => setGlobalFilter(e.target.value)}
+                                className="p-2 border rounded-lg"
+                            />
                         </header>
                         <div className="mt-5 overflow-x-auto">
                             <table className="w-full">
@@ -402,6 +433,13 @@ const GerenciamentoPostos = () => {
                                 <div className="text-xl font-bold text-navy-700 dark:text-white">
                                     Últimas Actividades
                                 </div>
+                                <input
+                                    type="text"
+                                    placeholder="Filtrar por nome..."
+                                    value={globalFilter}
+                                    onChange={(e) => setGlobalFilter(e.target.value)}
+                                    className="p-2 border rounded-lg"
+                                />
                             </header>
                             <table className="w-full">
                                 <thead>
