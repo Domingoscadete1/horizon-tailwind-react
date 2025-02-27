@@ -22,7 +22,7 @@ const nfts = [
     { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
     { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
 ];
-const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilEmpresa = () => {
     const { id } = useParams();
@@ -109,8 +109,7 @@ const PerfilEmpresa = () => {
     };
 
     const handleStatusConta = (novoStatus) => {
-        setFormData((prev) => ({ ...prev, status: novoStatus }));
-        alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
+        suspenderUsuario(novoStatus);
     };
 
     // Função para abrir a imagem em um modal
@@ -132,6 +131,28 @@ const PerfilEmpresa = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedNft(null);
+    };
+    const suspenderUsuario = async (novoStatus) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/suspend/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+                //body: JSON.stringify({ status: novoStatus }),
+            });
+
+            if (response.ok) {
+                alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
+                setFormData((prev) => ({ ...prev, status: novoStatus }));
+            } else {
+                alert('Erro ao alterar o status da conta.');
+            }
+        } catch (error) {
+            console.error('Erro ao suspender usuário:', error);
+            alert('Erro ao alterar o status da conta.');
+        }
     };
 
     return (
@@ -281,9 +302,9 @@ const PerfilEmpresa = () => {
                         <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
                     </header>
                     <div className="mt-5">
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {formData.status}</p>
+                        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {empresa.status}</p>
                         <div className="flex space-x-2 mt-4">
-                            {formData.status === 'Ativa' ? (
+                            {empresa.status === 'ativo' ? (
                                 <button onClick={() => handleStatusConta('Suspensa')} className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center">
                                     <FaTimes className="mr-2" /> Suspender Conta
                                 </button>
@@ -292,9 +313,9 @@ const PerfilEmpresa = () => {
                                     <FaCheck className="mr-2" /> Ativar Conta
                                 </button>
                             )}
-                            <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
+                            {/* <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
                                 <FaTrash className="mr-2" /> Excluir Conta
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </Card>
@@ -304,7 +325,7 @@ const PerfilEmpresa = () => {
                 isModalOpen && selectedNft && (
                     <ImageModal
                         imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
-                        additionalImages={selectedNft.imagens.map(img => img.imagem) || []}
+                        additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
                         onClose={closeModal}
                     />
                 )

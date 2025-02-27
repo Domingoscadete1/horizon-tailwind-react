@@ -6,7 +6,7 @@ import image1 from "assets/img/profile/image1.png";
 import image2 from "assets/img/profile/image2.png";
 import image3 from "assets/img/profile/image3.png";
 import banner from "assets/img/profile/banner.png";
-const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
     // Estado para gerenciar informações do usuário
@@ -16,7 +16,7 @@ const PerfilUsuario = () => {
     const [produtos, setProdutos] = useState([]);
     // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);
-    const [formData, setFormData] = useState({
+    const [formData1, setFormData] = useState({
         status: 'Ativa',
     });
     useEffect(() => {
@@ -70,20 +70,105 @@ const PerfilUsuario = () => {
     if (!usuario) {
         return <div className="mt-10 text-center text-gray-500">Usuário não encontrado</div>;
     }
+    const atualizarUsuario = async () => {
+        try {
+            // Cria um objeto FormData
+            const formData = new FormData();
+    
+            // Adiciona os campos do usuário ao FormData
+            formData.append('nome', usuario.nome);
+            formData.append('email', usuario.email);
+            formData.append('numero_telefone', usuario.numero_telefone);
+            formData.append('endereco', usuario.endereco);
+            formData.append('data_nascimento', usuario.data_nascimento);
+    
+            // Se houver uma nova foto de perfil, adiciona ao FormData
+            if (usuario.foto instanceof File) {
+                formData.append('foto', usuario.foto);
+            }
+    
+            // Faz a requisição PUT com o FormData
+            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/atualizar/`, {
+                method: "PUT",
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                    // Não defina 'Content-Type' manualmente, o navegador fará isso automaticamente
+                },
+                body: formData, // Envia o FormData
+            });
+            console.log(formData);
+    
+            if (response.ok) {
+                alert('Perfil atualizado com sucesso!');
+                setEditando(false);
+            } else {
+                const errorData = await response.json(); // Captura os detalhes do erro
+                alert(`Erro ao atualizar o perfil: ${errorData.detail || 'Dados inválidos'}`);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            alert('Erro ao atualizar o perfil.');
+        }
+    };
+
+    const suspenderUsuario = async (novoStatus) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/user/${id}/suspend/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+                //body: JSON.stringify({ status: novoStatus }),
+            });
+
+            if (response.ok) {
+                alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
+                setFormData((prev) => ({ ...prev, status: novoStatus }));
+            } else {
+                alert('Erro ao alterar o status da conta.');
+            }
+        } catch (error) {
+            console.error('Erro ao suspender usuário:', error);
+            alert('Erro ao alterar o status da conta.');
+        }
+    };
+
+    const apagarUsuario = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/deletar/`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+
+            if (response.ok) {
+                alert('Conta excluída com sucesso.');
+                window.location.href = '/';
+            } else {
+                alert('Erro ao excluir a conta.');
+            }
+        } catch (error) {
+            console.error('Erro ao excluir usuário:', error);
+            alert('Erro ao excluir a conta.');
+        }
+    };
+
+    const salvarPerfil = () => {
+        atualizarUsuario();
+    };
 
 
 
     const handleStatusConta = (novoStatus) => {
-        setFormData((prev) => ({ ...prev, status: novoStatus }));
-        alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
+        suspenderUsuario(novoStatus);
     };
 
 
     // Função para salvar as alterações do perfil
-    const salvarPerfil = () => {
-        alert('Perfil atualizado com sucesso!');
-        setEditando(false);
-    };
+    
 
     // Função para cancelar a edição
     const cancelarEdicao = () => {
@@ -114,7 +199,7 @@ const PerfilUsuario = () => {
                                         onChange={(e) => {
                                             const file = e.target.files[0];
                                             if (file) {
-                                                setUsuario({ ...usuario, foto: URL.createObjectURL(file) });
+                                                setUsuario({ ...usuario, foto: file });
                                             }
                                         }}
                                         className="hidden"
@@ -244,7 +329,7 @@ const PerfilUsuario = () => {
                                     <input
                                         type="text"
                                         value={usuario.numero_telefone}
-                                        onChange={(e) => setUsuario({ ...usuario, telefone: e.target.value })}
+                                        onChange={(e) => setUsuario({ ...usuario, numero_telefone: e.target.value })}
                                         className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                     />
                                 ) : (
@@ -262,7 +347,7 @@ const PerfilUsuario = () => {
                                     <input
                                         type="morada"
                                         value={usuario.endereco}
-                                        onChange={(e) => setUsuario({ ...usuario, morada: e.target.value })}
+                                        onChange={(e) => setUsuario({ ...usuario, endereco: e.target.value })}
                                         className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                     />
                                 ) : (
@@ -280,7 +365,7 @@ const PerfilUsuario = () => {
                                     <input
                                         type="aniversario"
                                         value={usuario.data_nascimento}
-                                        onChange={(e) => setUsuario({ ...usuario, aniversario: e.target.value })}
+                                        onChange={(e) => setUsuario({ ...usuario, data_nascimento: e.target.value })}
                                         className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                     />
                                 ) : (

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const baseUrl = "https://83dc-154-71-159-172.ngrok-free.app/";
+  const baseUrl = "https://fad7-154-71-159-172.ngrok-free.app/";
 
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -79,7 +79,7 @@ export default function SignIn() {
   const fetchUserData = async (token) => {
     try {
       const response = await axios.get(`${baseUrl}api/user/`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { 'Authorization': `Bearer ${token}` ,"ngrok-skip-browser-warning": "true"        },
       });
       if (response.status === 200 && response.data) {
         setUserData(response.data);
@@ -92,8 +92,8 @@ export default function SignIn() {
 
   return (
     <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
-      <div className="mt-[4vh] w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-        <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+<div className="mt-[4vh] w-full max-w-md flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
+<h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
           Sign In
         </h4>
         <p className="mb-9 ml-1 text-base text-gray-600">

@@ -1,35 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import { FaTimes, FaComments, FaStar, FaThumbsUp, FaPaperPlane, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
+import axios from 'axios';
+
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const SuporteCliente = () => {
     // Estado para gerenciar solicitações de suporte
-    const [solicitacoes, setSolicitacoes] = useState([
-        {
-            id: 1,
-            usuario: 'João Silva',
-            tipo: 'Dúvida',
-            mensagem: 'Como faço para rastrear meu pedido?',
-            status: 'Pendente',
-            chat: [],
-        },
-        {
-            id: 2,
-            usuario: 'Maria Souza',
-            tipo: 'Problema',
-            mensagem: 'Meu produto chegou danificado.',
-            status: 'Pendente',
-            chat: [],
-        },
-        {
-            id: 3,
-            usuario: 'Pedro Costa',
-            tipo: 'Disputa',
-            mensagem: 'O vendedor não enviou o produto.',
-            status: 'Resolvido',
-            chat: [],
-        },
-    ]);
+    const [solicitacoes, setSolicitacoes] = useState([]);
+    const [novaMensagem, setNovaMensagem] = useState('');
+    const socketRef = useRef(null);
+    const [funcionarioId, setfuncionarioId] = useState('');
+
 
     // Estado para gerenciar feedbacks
     const [feedbacks, setFeedbacks] = useState([
@@ -40,39 +22,107 @@ const SuporteCliente = () => {
 
     // Estado para gerenciar o chat ativo
     const [chatAtivo, setChatAtivo] = useState(null);
-    const [novaMensagem, setNovaMensagem] = useState('');
 
     // Função para abrir o chat de uma solicitação
-    const abrirChat = (id) => {
-        const solicitacao = solicitacoes.find((s) => s.id === id);
-        setChatAtivo(solicitacao);
-    };
-
+   
+    useEffect(() => {
+        const token = localStorage.getItem('userData');
+        if (token) {
+          const userData = JSON.parse(token);
+          const postoId = userData.id;
+          console.log(userData);
+          if (postoId) {
+            setfuncionarioId(postoId);
+          }
+        }
+      }, []);
     // Função para enviar uma mensagem no chat
-    const enviarMensagem = () => {
-        if (!novaMensagem.trim()) {
-            alert('Escreva uma mensagem para enviar.');
-            return;
+    useEffect(() => {
+        // Carregar lista de solicitações de suporte
+        axios.get(`${API_BASE_URL}/api/chats-suporte/`, {
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            }
+        })
+        .then(response => {
+            const data = response.data.results || []; // Armazena a resposta na variável
+            console.log("Resposta da API:", data); // Log para debug
+            setSolicitacoes(data); // Atualiza o estado
+        })
+        .catch(error => console.error('Erro ao buscar chats:', error));
+    }, []);
+    
+
+    const abrirChat = (chat) => {
+        axios.get(`${API_BASE_URL}/api/chat-suporte/mensagens/${chat.id}/`, {
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            }
+        })
+        .then(response => {
+            console.log("Mensagens carregadas:", response.data);
+            setChatAtivo({
+                ...chat,
+                mensagens: response.data.mensagens || [] // Garante que seja uma lista
+            });
+            conectarWebSocket(chat.id);
+        })
+        .catch(error => {
+            console.error("Erro ao buscar mensagens do chat:", error);
+            setChatAtivo({
+                ...chat,
+                mensagens: []
+            });
+        });
+    };
+    
+
+    const conectarWebSocket = (chatId) => {
+        if (socketRef.current) {
+            socketRef.current.close();
         }
 
-        // Adiciona a nova mensagem ao chat da solicitação ativa
-        const novaResposta = {
-            remetente: 'Atendente',
-            mensagem: novaMensagem,
-            timestamp: new Date().toLocaleTimeString(),
+        const socketUrl = `wss://fad7-154-71-159-172.ngrok-free.app/ws/suporte/empresa/${chatId}/`;
+        socketRef.current = new WebSocket(socketUrl);
+
+        socketRef.current.onmessage = (event) => {
+            const novaMensagem = JSON.parse(event.data);
+            console.log("Nova mensagem recebida:", novaMensagem);
+        
+            setChatAtivo((prevChat) => {
+                if (!prevChat || !prevChat.mensagens) {
+                    console.error("Chat não encontrado!");
+                    return prevChat;
+                }
+        
+                return {
+                    ...prevChat,
+                    mensagens: [
+                        ...prevChat.mensagens,
+                        {
+                            //id: novaMensagem.id, // Especifique as chaves necessárias
+                            conteudo: novaMensagem.message, // Aqui pegamos a chave correta da nova mensagem
+                            remetente: novaMensagem.remetente, // Supondo que exista um usuário associado
+                            //timestamp: novaMensagem.timestamp, // Se houver um timestamp
+                        },
+                    ],
+                };
+            });
         };
-
-        setSolicitacoes((prev) =>
-            prev.map((solicitacao) =>
-                solicitacao.id === chatAtivo.id
-                    ? { ...solicitacao, chat: [...solicitacao.chat, novaResposta] }
-                    : solicitacao
-            )
-        );
-
-        setNovaMensagem(''); // Limpa o campo de texto
+        
+        
+        
+        
+        
     };
 
+    const enviarMensagem = () => {
+        if (novaMensagem.trim() && socketRef.current) {
+            const mensagemData = { mensagem: novaMensagem, funcionario_id: funcionarioId,chat_id:chatAtivo.id };
+            socketRef.current.send(JSON.stringify(mensagemData));
+            setNovaMensagem('');
+        }
+    };
     // Função para marcar uma solicitação como resolvida
     const marcarComoResolvida = (id) => {
         setSolicitacoes((prev) =>
@@ -116,11 +166,10 @@ const SuporteCliente = () => {
                         <tbody>
                             {solicitacoes.map((solicitacao) => (
                                 <tr key={solicitacao.id} className="border-b border-gray-200">
-                                    <td className="py-2 px-4">{solicitacao.usuario}</td>
-                                    <td className="py-2 px-4">{solicitacao.tipo}</td>
-                                    <td className="py-2 px-4">{solicitacao.mensagem}</td>
+                                    <td className="py-2 px-4">{solicitacao.empresa_nome || solicitacao.empresa.nome}</td>
+                                    <td className="py-2 px-4">{solicitacao.created_at}</td>
                                     <td className="py-2 px-4">
-                                        <span
+                                        {/* <span
                                             className={`px-2 py-1 rounded-full text-sm ${
                                                 solicitacao.status === 'Pendente'
                                                     ? 'bg-yellow-100 text-yellow-700'
@@ -128,23 +177,23 @@ const SuporteCliente = () => {
                                             }`}
                                         >
                                             {solicitacao.status}
-                                        </span>
+                                        </span> */}
                                     </td>
                                     <td className="py-2 px-4 flex space-x-4">
                                         <button
-                                            onClick={() => abrirChat(solicitacao.id)}
+                                            onClick={() => abrirChat(solicitacao)}
                                             className="text-blue-500 hover:text-blue-700"
                                             title="Abrir Chat"
                                         >
                                             <FaComments />
                                         </button>
-                                        <button
+                                        {/* <button
                                             onClick={() => removerSolicitacao(solicitacao.id)}
                                             className="text-red-500 hover:text-red-700"
                                             title="Remover Solicitação"
                                         >
                                             <FaTrash />
-                                        </button>
+                                        </button> */}
                                     </td>
                                 </tr>
                             ))}
@@ -155,56 +204,30 @@ const SuporteCliente = () => {
 
             {/* Seção de Chat Personalizado */}
             {chatAtivo && (
-                <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
+                <Card extra="w-full h-full sm:overflow-auto px-6 mt-2 mb-6">
                     <header className="relative flex items-center justify-between pt-4">
                         <div className="text-xl font-bold text-navy-700 dark:text-white">
-                            <FaComments className="inline-block mr-2" />
-                            Chat de Suporte: {chatAtivo.usuario}
+                            Chat com {chatAtivo.usuario}
                         </div>
-                        <button
-                            onClick={() => marcarComoResolvida(chatAtivo.id)}
-                            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
-                        >
-                            <FaCheck className="mr-2" />
-                            Marcar como Resolvido
-                        </button>
                     </header>
-
-                    <div className="mt-5">
-                        <div className="border rounded-lg p-4 h-64 overflow-y-auto">
-                            {/* Exibir a mensagem original */}
-                            <div className="mb-4">
-                                <p className="font-bold">{chatAtivo.usuario}:</p>
-                                <p>{chatAtivo.mensagem}</p>
+                    <div className="mt-5 h-64 overflow-y-auto border rounded-lg p-4">
+                        {chatAtivo.mensagens.map((msg, index) => (
+                            <div key={index} className="mb-4">
+                                <p className="font-bold">{msg.remetente }:</p>
+                                <p>{msg.conteudo }</p>
                             </div>
-
-                            {/* Exibir respostas */}
-                            {chatAtivo.chat.map((resposta, index) => (
-                                <div key={index} className="mb-4">
-                                    <p className="font-bold">{resposta.remetente}:</p>
-                                    <p>{resposta.mensagem}</p>
-                                    <p className="text-xs text-gray-500">{resposta.timestamp}</p>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Campo para enviar nova mensagem */}
-                        <div className="mt-4 mb-5 flex space-x-2">
-                            <input
-                                type="text"
-                                value={novaMensagem}
-                                onChange={(e) => setNovaMensagem(e.target.value)}
-                                placeholder="Digite sua resposta..."
-                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                            <button
-                                onClick={enviarMensagem}
-                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
-                            >
-                                <FaPaperPlane className="mr-2" />
-                                Enviar
-                            </button>
-                        </div>
+                        ))}
+                    </div>
+                    <div className="mt-4 flex space-x-2">
+                        <input
+                            type="text"
+                            value={novaMensagem}
+                            onChange={(e) => setNovaMensagem(e.target.value)}
+                            placeholder="Digite sua resposta..."
+                        />
+                        <button onClick={enviarMensagem}>
+                            <FaPaperPlane /> Enviar
+                        </button>
                     </div>
                 </Card>
             )}

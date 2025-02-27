@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaBriefcase, FaCalendar, FaEdit, FaSave } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 
-const API_BASE_URL = "https://83dc-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilFuncionario = () => {
     // Estado para controlar o modo de edição
