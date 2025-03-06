@@ -78,19 +78,29 @@ const PerfilUsuario = () => {
         try {
             // Cria um objeto FormData
             const formData = new FormData();
-
+    
             // Adiciona os campos do usuário ao FormData
             formData.append('nome', usuario.nome);
             formData.append('email', usuario.email);
             formData.append('numero_telefone', usuario.numero_telefone);
             formData.append('endereco', usuario.endereco);
             formData.append('data_nascimento', usuario.data_nascimento);
-
+            formData.append('status', usuario.status);
+    
             // Se houver uma nova foto de perfil, adiciona ao FormData
             if (usuario.foto instanceof File) {
                 formData.append('foto', usuario.foto);
+            } else if (typeof usuario.foto === 'string') {
+                // Se a foto for uma URL (string), não a envie no FormData
+                console.log("A foto não foi alterada, mantendo a existente.");
             }
-
+    
+            // Debug: Verifique o conteúdo do FormData
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+            console.log(formData);
+    
             // Faz a requisição PUT com o FormData
             const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/atualizar/`, {
                 method: "PUT",
@@ -100,9 +110,10 @@ const PerfilUsuario = () => {
                 },
                 body: formData, // Envia o FormData
             });
-            console.log(formData);
-
+    
             if (response.ok) {
+                const updatedUser = await response.json();
+                setUsuario(updatedUser); // Atualiza o estado com os dados retornados pela API
                 alert('Perfil atualizado com sucesso!');
                 setEditando(false);
             } else {
@@ -114,7 +125,6 @@ const PerfilUsuario = () => {
             alert('Erro ao atualizar o perfil.');
         }
     };
-
     const suspenderUsuario = async (novoStatus) => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/user/${id}/suspend/`, {
@@ -406,6 +416,8 @@ const PerfilUsuario = () => {
                                 title={produto.nome}
                                 // author={produto.descricao}
                                 price={produto.preco}
+                                quantidade={produto.quantidade}
+                                status={produto.status}
                                 image={`${API_BASE_URL}${produto.imagens[0].imagem}` || ''}
                                 image_user={
                                     produto.usuario

@@ -33,24 +33,9 @@ const PerfilEmpresa = () => {
     const [produtos, setProdutos] = useState([]);
     const [editing, setEditing] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar a imagem selecionada
-    const [formData, setFormData] = useState({
-        nome: 'Empresa A',
-        cnpj: '12.345.678/0001-99',
-        endereco: 'Rua Exemplo, 123',
-        telefone: '(11) 9999-9999',
-        email: 'empresaA@exemplo.com',
-        status: 'Ativa',
-        metricas: {
-            vendas: 15000,
-            clientes: 120,
-            avaliacao: 4.5,
-        },
-        historico: [
-            { data: '2023-10-01', acao: 'Cadastro aprovado' },
-            { data: '2023-10-05', acao: 'Promoção cadastrada' },
-            { data: '2023-10-10', acao: 'Venda realizada: R$ 1.000,00' },
-        ],
-    });
+    const [formData, setFormData] = useState();
+    const [editando, setEditando] = useState(false);
+
     useEffect(() => {
         const fetchEmpresa = async () => {
             try {
@@ -63,6 +48,7 @@ const PerfilEmpresa = () => {
                 });
                 const data = await response.json();
                 setEmpresa(data);
+                setFormData(data);
             } catch (error) {
                 console.error('Erro ao buscar empresa:', error);
             }
@@ -152,6 +138,53 @@ const PerfilEmpresa = () => {
         } catch (error) {
             console.error('Erro ao suspender usuário:', error);
             alert('Erro ao alterar o status da conta.');
+        }
+    };
+    const atualizarEmpresa = async () => {
+        try {
+            // Cria um objeto FormData
+            const formData = new FormData();
+    
+            // Adiciona os campos do usuário ao FormData
+            formData.append('nome', empresa.nome);
+            formData.append('descricao', empresa.descricao);
+            formData.append('email', empresa.email);
+            formData.append('telefone1', empresa.telefone1);
+            formData.append('telefone2', empresa.telefone2);
+            formData.append('endereco', empresa.endereco);
+            formData.append('categoria', empresa.categoria);
+            formData.append('status', empresa.status);
+    
+            
+    
+            // Debug: Verifique o conteúdo do FormData
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+            console.log(formData);
+    
+            // Faz a requisição PUT com o FormData
+            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
+                method: "PUT",
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                    // Não defina 'Content-Type' manualmente, o navegador fará isso automaticamente
+                },
+                body: formData, // Envia o FormData
+            });
+    
+            if (response.ok) {
+                const updatedUser = await response.json();
+                setEmpresa(updatedUser); // Atualiza o estado com os dados retornados pela API
+                alert('Perfil atualizado com sucesso!');
+                setEditando(false);
+            } else {
+                const errorData = await response.json(); // Captura os detalhes do erro
+                alert(`Erro ao atualizar o perfil: ${errorData.detail || 'Dados inválidos'}`);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            alert('Erro ao atualizar o perfil.');
         }
     };
 
@@ -272,7 +305,7 @@ const PerfilEmpresa = () => {
                         </button>
                     </header>
                     <div className="mt-5">
-                        {['nome', 'cnpj', 'endereco', 'telefone', 'email'].map((campo) => (
+                        {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2','email','categoria'].map((campo) => (
                             <div key={campo} className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-white">
                                     {campo.charAt(0).toUpperCase() + campo.slice(1)}

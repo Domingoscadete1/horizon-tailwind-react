@@ -386,6 +386,7 @@ const GerenciamentoPostos = () => {
 
             {postoSelecionado && postoSelecionado.id && (
                 <div>
+                    {funcionarios.length > 0 && (
                     <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                         <header className="relative flex items-center justify-between pt-4">
                             <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -426,7 +427,9 @@ const GerenciamentoPostos = () => {
                             </table>
                         </div>
                     </Card>
+                            )}
 
+{atividades.length > 0 && (
                     <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                         <div className="mt-5 overflow-x-auto">
                             <header className="relative mb-6 flex items-center justify-between pt-4">
@@ -491,6 +494,8 @@ const GerenciamentoPostos = () => {
                             </div>
                         </div>
                     </Card>
+                            )}
+
                 </div>
             )}
 
