@@ -36,6 +36,7 @@ const routes = [
     name: "Dashboard",
     layout: "/admin",
     path: "default",
+    admin:true,
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
   },
@@ -43,6 +44,7 @@ const routes = [
     name: "Produtos Divulgados",
     layout: "/admin",
     path: "nft-marketplace",
+    admin:true,
     icon: <MdOutlineShoppingCart className="h-6 w-6" />,
     component: <NFTMarketplace />,
     secondary: true,
@@ -50,6 +52,7 @@ const routes = [
   {
     name: "Gerenciar Usuários",
     layout: "/admin",
+    admin:true,
     path: "usuario",
     icon: <FaUsers className="h-6 w-6" />,
     component: <GerenciamentoUsuarios />,
@@ -57,6 +60,7 @@ const routes = [
   {
     name: "Gerenciar Empresas",
     layout: "/admin",
+    admin:true,
     path: "gerenciaremp",
     icon: <FaAccusoft className="h-6 w-6" />,
     component: <GerenciamentoEmpresas />,
@@ -64,6 +68,7 @@ const routes = [
   {
     name: "Gerenciar Postos",
     layout: "/admin",
+    admin:true,
     path: "postos",
     icon: <FaMapMarkerAlt  className="h-6 w-6" />,
     component: <GerenciamentoPostos />,
@@ -85,6 +90,7 @@ const routes = [
   {
     name: "Promoções e Marketing",
     layout: "/admin",
+    admin:true,
     path: "marketing",
     icon: <FaBullhorn className="inline-block h-6 w-6" />,
     component: <Marketing />,
@@ -92,6 +98,7 @@ const routes = [
   {
     name: "Transação e Pagamentos",
     layout: "/admin",
+    admin:true,
     path: "transacao",
     icon: <MdArchive className="h-6 w-6" />,
     component: <Transacao />,
@@ -99,6 +106,7 @@ const routes = [
   {
     name: "Moderação de Conteúdo",
     layout: "/admin",
+    admin:true,
     path: "moderacao",
     icon: <FaExclamationTriangle className="inline-block h-6 w-6" />,
     component: <ModeracaoConteudo />,
@@ -107,12 +115,14 @@ const routes = [
     name: "Suporte ao Cliente",
     layout: "/admin",
     path: "suporte",
+    admin:true,
     icon: <FaHeadset className="inline-block h-6 w-6" />,
     component: <SuporteCliente />,
   },
   {
     name: "Configurações Gerais",
     layout: "/admin",
+    admin:true,
     path: "configuracoes",
     icon: <FaCog className="h-6 w-6" />,
     component: <ConfiguracaoPlataforma />,
@@ -120,6 +130,7 @@ const routes = [
   {
     name: "Segurança",
     layout: "/admin",
+    admin:true,
     path: "seguranca",
     icon: <FaShieldAlt className="h-6 w-6" />,
     component: <Seguranca />,
@@ -129,6 +140,7 @@ const routes = [
     layout: "/admin",
     path: "profile",
     icon: <MdPerson className="h-6 w-6" />,
+    admin:true,
     component: <Profile />,
   },
   {
@@ -136,6 +148,7 @@ const routes = [
     layout: "/admin",
     path: "perfiluser/:id",
     icon: <MdPerson className="h-6 w-6" />,
+    admin:false,
     component: <PerfilUsuario />,
   },
   {
@@ -143,6 +156,7 @@ const routes = [
     layout: "/admin",
     path: "funcionario/:id",
     icon: <MdPerson className="h-6 w-6" />,
+    admin:false,
     component: <PerfilFuncionario />,
   },
   {
@@ -150,6 +164,7 @@ const routes = [
     layout: "/admin",
     path: "ddd",
     icon: <MdPerson className="h-6 w-6" />,
+    admin:false,
     component: <PerfilFuncionario2 />,
   },
   {
@@ -157,6 +172,7 @@ const routes = [
     layout: "/admin",
     path: "perfilempresa/:id", // Adiciona o ID como parâmetro dinâmico
     icon: <MdPerson className="h-6 w-6" />,
+    admin:false,
     component: <PerfilEmpresa />,
   },
   // {
@@ -169,4 +185,5 @@ const routes = [
   
   
 ];
+
 export default routes;
