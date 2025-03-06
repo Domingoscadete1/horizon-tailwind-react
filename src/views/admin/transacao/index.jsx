@@ -4,6 +4,9 @@ import { FaArrowLeft, FaArrowRight, FaMoneyBillWave, FaCalendarAlt, FaCheckCircl
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import Card from "components/card";
 import { data } from 'autoprefixer';
+import { createColumnHelper } from "@tanstack/react-table";
+
+const columnHelper = createColumnHelper(); // Definindo columnHelper
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
@@ -47,15 +50,22 @@ const Transacao = () => {
     };
 
     const transacaoColumns = [
-        {
-            accessorKey: "lance",
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
-            cell: ({ row }) => (
-                <span className="flex items-center gap-2">
-                    <p className="text-sm font-bold text-navy-700 dark:text-white">{row.lance?.produto?.nome}</p>
-                </span>
-            ),
-        },
+        columnHelper.accessor(row => row.lance?.produto?.imagens?.[0]?.imagem, {
+            id: "imagem_produto", // Adicione um ID único
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM DO PRODUTO</p>,
+            cell: (info) => {
+                const imageUrl = info.getValue();
+                return imageUrl ? (
+                    <img
+                        src={`${imageUrl}`}
+                        alt="Produto"
+                        className="w-16 h-16 rounded-full object-cover"
+                    />
+                ) : (
+                    <p className="text-xs text-gray-500">Sem imagem</p>
+                );
+            },
+        }),
         {
             accessorKey: "tipo_transacao",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
