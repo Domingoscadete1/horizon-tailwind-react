@@ -89,9 +89,30 @@ const PerfilEmpresa = () => {
         return <div className="mt-10 text-center text-gray-500">Empresa não encontrada.</div>;
     }
 
-    const handleSalvarEdicao = () => {
-        setEditing(false);
-        alert('Dados da empresa atualizados com sucesso.');
+    const handleSalvarEdicao = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                const updatedEmpresa = await response.json();
+                setEmpresa(updatedEmpresa);
+                setEditing(false);
+                alert('Dados da empresa atualizados com sucesso.');
+                window.location.reload();
+            } else {
+                alert('Erro ao atualizar os dados da empresa.');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar empresa:', error);
+            alert('Erro ao atualizar os dados da empresa.');
+        }
     };
 
     const handleStatusConta = (novoStatus) => {
