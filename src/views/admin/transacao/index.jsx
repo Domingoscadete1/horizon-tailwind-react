@@ -4,6 +4,9 @@ import { FaArrowLeft, FaArrowRight, FaMoneyBillWave, FaCalendarAlt, FaCheckCircl
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import Card from "components/card";
 import { data } from 'autoprefixer';
+import { createColumnHelper } from "@tanstack/react-table";
+
+const columnHelper = createColumnHelper(); // Definindo columnHelper
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
@@ -38,6 +41,13 @@ const Transacao = () => {
     };
     const handleDownload = (id) => {
         console.log(`Baixando transação ID: ${id}`);
+        try {
+            const apiUrl = `https://fad7-154-71-159-172.ngrok-free.app/api/fatura/${id}/`;
+            window.open(apiUrl, '_blank'); // Abre a fatura em uma nova aba
+          } catch (error) {
+            console.error('Erro ao baixar fatura:', error);
+            alert('Não foi possível baixar a fatura.');
+          }
         // Implementar lógica de download
     };
 
@@ -45,6 +55,8 @@ const Transacao = () => {
         console.log(`Deletando transação ID: ${id}`);
         // Implementar lógica de exclusão
     };
+    
+    
 
     const transacaoColumns = [
         {
@@ -103,13 +115,13 @@ const Transacao = () => {
                     >
                         <FaDownload />
                     </button>
-                    <button
+                    {/* <button
                         onClick={() => handleDelete(row.original.id)}
                         className="text-red-500 hover:text-red-700"
                         title="Excluir"
                     >
                         <FaTrash />
-                    </button>
+                    </button> */}
                 </div>
             ),
         },
