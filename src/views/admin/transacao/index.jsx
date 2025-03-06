@@ -52,7 +52,7 @@ const Transacao = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
             cell: ({ row }) => (
                 <span className="flex items-center gap-2">
-                    <p className="text-sm font-bold text-navy-700 dark:text-white">{row.lance?.produto?.nome}</p>
+                    <p className="text-sm font-bold text-navy-700 dark:text-white">{row.produto?.nome}</p>
                 </span>
             ),
         },
@@ -95,7 +95,7 @@ const Transacao = () => {
             accessorKey: "acoes",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,// Sem accessorKey, pois não vem da API
             cell: ({ row }) => (
-                <div className="flex gap-2">
+                <div className="flex gap-2 space-x-4">
                     <button
                         onClick={() => handleDownload(row.original.id)}
                         className="text-blue-500 hover:text-blue-700"

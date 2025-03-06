@@ -462,9 +462,9 @@ const PerfilUsuario = () => {
                                     <FaCheck className="mr-2" /> Ativar Conta
                                 </button>
                             )}
-                            <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
+                            {/* <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
                                 <FaTrash className="mr-2" /> Excluir Conta
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </Card>
