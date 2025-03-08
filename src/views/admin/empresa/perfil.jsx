@@ -165,7 +165,7 @@ const PerfilEmpresa = () => {
         try {
             // Cria um objeto FormData
             const formData = new FormData();
-    
+
             // Adiciona os campos do usuário ao FormData
             formData.append('nome', empresa.nome);
             formData.append('descricao', empresa.descricao);
@@ -175,15 +175,15 @@ const PerfilEmpresa = () => {
             formData.append('endereco', empresa.endereco);
             formData.append('categoria', empresa.categoria);
             formData.append('status', empresa.status);
-    
-            
-    
+
+
+
             // Debug: Verifique o conteúdo do FormData
             for (let [key, value] of formData.entries()) {
                 console.log(key, value);
             }
             console.log(formData);
-    
+
             // Faz a requisição PUT com o FormData
             const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
                 method: "PUT",
@@ -193,7 +193,7 @@ const PerfilEmpresa = () => {
                 },
                 body: formData, // Envia o FormData
             });
-    
+
             if (response.ok) {
                 const updatedUser = await response.json();
                 setEmpresa(updatedUser); // Atualiza o estado com os dados retornados pela API
@@ -243,7 +243,7 @@ const PerfilEmpresa = () => {
                         <h4 className="text-xl font-bold text-navy-700 dark:text-white">
                             {empresa.nome}
                         </h4>
-                        <p className="text-base font-normal text-gray-600">{empresa.nome}</p>
+                        <p className="text-base font-normal text-gray-600">{empresa.email}</p>
                     </div>
 
                     {/* Post followers */}
@@ -304,9 +304,9 @@ const PerfilEmpresa = () => {
                             image={`${API_BASE_URL}${produto.imagens[0].imagem}` || ''}
                             image_user={
                                 produto.usuario
-                                  ? `${API_BASE_URL}${produto.usuario.foto}`
-                                  : `${API_BASE_URL}${produto.empresa?.imagens?.[0]?.imagem}`
-                              }
+                                    ? `${API_BASE_URL}${produto.usuario.foto}`
+                                    : `${API_BASE_URL}${produto.empresa?.imagens?.[0]?.imagem}`
+                            }
                             onImageClick={() => handleImageClick(produto)}
                         />
                     ))}
@@ -326,7 +326,7 @@ const PerfilEmpresa = () => {
                         </button>
                     </header>
                     <div className="mt-5">
-                        {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2','email','categoria'].map((campo) => (
+                        {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2', 'email', 'categoria'].map((campo) => (
                             <div key={campo} className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-white">
                                     {campo.charAt(0).toUpperCase() + campo.slice(1)}

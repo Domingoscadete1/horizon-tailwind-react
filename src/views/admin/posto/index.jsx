@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
-import { MapContainer, TileLayer, Marker, Popup, useMap,useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from 'leaflet';
 import { Icon } from "leaflet";
 
@@ -36,13 +36,13 @@ const GerenciamentoPostos = () => {
     const [mostrarModal, setMostrarModal] = useState(false);
     const [novoPosto, setNovoPosto] = useState({
         nome: '',
-        localizacao:'',
-        imagem:'',
-        horario:'',
-        responsavel:'',
-        telefone:'',
-        email:'',
-        capacidade:'',
+        localizacao: '',
+        imagem: '',
+        horario: '',
+        responsavel: '',
+        telefone: '',
+        email: '',
+        capacidade: '',
 
     });
     const [globalFilter, setGlobalFilter] = useState('');
@@ -57,13 +57,13 @@ const GerenciamentoPostos = () => {
     const [openMapModal, setOpenMapModal] = useState(false);
     const MapWithInvalidate = ({ location }) => {
         const map = useMap();
-    
+
         useEffect(() => {
             setTimeout(() => {
                 map.invalidateSize();
             }, 200);
         }, [map]);
-    
+
         return null;
     };
 
@@ -94,51 +94,51 @@ const GerenciamentoPostos = () => {
     };
     function LocationMarker() {
         const map = useMapEvents({
-          click(e) {
-            setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
-          },
+            click(e) {
+                setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
+            },
         });
-      
+
         return location ? (
-          <Marker position={[location.lat, location.lng]} icon={L.icon({
-            iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-          })} />
+            <Marker position={[location.lat, location.lng]} icon={L.icon({
+                iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+            })} />
         ) : null;
-      }
-      useEffect(() => {
+    }
+    useEffect(() => {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              setLocation({ lat: latitude, lng: longitude });
-            },
-            (error) => {
-              console.error('Erro ao obter localização:', error);
-            }
-          );
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setLocation({ lat: latitude, lng: longitude });
+                },
+                (error) => {
+                    console.error('Erro ao obter localização:', error);
+                }
+            );
         }
-      }, []);
-      
-      
-      const handleGetCurrentLocation = () => {
+    }, []);
+
+
+    const handleGetCurrentLocation = () => {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              setLocation({ lat: latitude, lng: longitude });
-              setNovoPosto((prev) => ({ ...prev, localizacao: `${latitude}, ${longitude}` }));
-            },
-            (error) => {
-              console.error('Erro ao obter localização:', error);
-            }
-          );
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setLocation({ lat: latitude, lng: longitude });
+                    setNovoPosto((prev) => ({ ...prev, localizacao: `${latitude}, ${longitude}` }));
+                },
+                (error) => {
+                    console.error('Erro ao obter localização:', error);
+                }
+            );
         } else {
-          alert('Geolocalização não é suportada pelo seu navegador.');
+            alert('Geolocalização não é suportada pelo seu navegador.');
         }
-      };
-      
+    };
+
 
 
     // Buscar atividades do posto selecionado
@@ -215,20 +215,20 @@ const GerenciamentoPostos = () => {
 
     const handleOpenMapModal = () => {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
-              setOpenMapModal(true);
-            },
-            (error) => {
-              console.error('Erro ao obter localização:', error);
-              setOpenMapModal(true);
-            }
-          );
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+                    setOpenMapModal(true);
+                },
+                (error) => {
+                    console.error('Erro ao obter localização:', error);
+                    setOpenMapModal(true);
+                }
+            );
         } else {
-          setOpenMapModal(true);
+            setOpenMapModal(true);
         }
-      };
+    };
     // Função para fechar o modal de cadastro
     const fecharModalInfo = () => {
         setModalInfo(false);
@@ -247,7 +247,7 @@ const GerenciamentoPostos = () => {
     };
 
     // Função para cadastrar um novo posto
-    const cadastrarPosto = async() => {
+    const cadastrarPosto = async () => {
         if (!novoPosto.nome || !novoPosto.telefone || !novoPosto.email) {
             alert('Preencha todos os campos para cadastrar o posto.');
             return;
@@ -465,6 +465,7 @@ const GerenciamentoPostos = () => {
         },
         onGlobalFilterChange: setGlobalFilter,
     });
+    
     const handleConfirmLocation = () => {
         setNovoPosto((prev) => ({
             ...prev,
@@ -521,54 +522,10 @@ const GerenciamentoPostos = () => {
             {postoSelecionado && postoSelecionado.id && (
                 <div>
                     {funcionarios.length > 0 && (
-                    <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                        <header className="relative flex items-center justify-between pt-4">
-                            <div className="text-xl font-bold text-navy-700 dark:text-white">
-                                Funcionários do Posto
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Filtrar por nome..."
-                                value={globalFilter}
-                                onChange={(e) => setGlobalFilter(e.target.value)}
-                                className="p-2 border rounded-lg"
-                            />
-                        </header>
-                        <div className="mt-5 overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    {funcionariosTable.getHeaderGroups().map((headerGroup) => (
-                                        <tr key={headerGroup.id}>
-                                            {headerGroup.headers.map((header) => (
-                                                <th key={header.id} className="border-b py-2 text-start">
-                                                    {flexRender(header.column.columnDef.header, header.getContext())}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </thead>
-                                <tbody>
-                                    {funcionariosTable.getRowModel().rows.map((row) => (
-                                        <tr key={row.id}>
-                                            {row.getVisibleCells().map((cell) => (
-                                                <td key={cell.id} className="py-2">
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </Card>
-                            )}
-
-{atividades.length > 0 && (
-                    <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                        <div className="mt-5 overflow-x-auto">
-                            <header className="relative mb-6 flex items-center justify-between pt-4">
+                        <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
+                            <header className="relative flex items-center justify-between pt-4">
                                 <div className="text-xl font-bold text-navy-700 dark:text-white">
-                                    Últimas Actividades
+                                    Funcionários do Posto
                                 </div>
                                 <input
                                     type="text"
@@ -578,58 +535,101 @@ const GerenciamentoPostos = () => {
                                     className="p-2 border rounded-lg"
                                 />
                             </header>
-                            <table className="w-full">
-                                <thead>
-                                    {atividadesTable.getHeaderGroups().map((headerGroup) => (
-                                        <tr key={headerGroup.id}>
-                                            {headerGroup.headers.map((header) => (
-                                                <th key={header.id} className="border-b py-2 text-start">
-                                                    {flexRender(header.column.columnDef.header, header.getContext())}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </thead>
-                                <tbody>
-                                    {atividadesTable.getRowModel().rows.map((row) => (
-                                        <tr key={row.id}>
-                                            {row.getVisibleCells().map((cell) => (
-                                                <td key={cell.id} className="py-2">
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <div className="flex justify-center mt-10 mb-4">
-                                <div className="flex items-center space-x-2">
-                                    <button
-                                        onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual - 1)}
-                                        disabled={!paginaAnterior}
-                                        className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${paginaAnterior === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    >
-                                        <FaArrowLeft className="w-20" />
-                                    </button>
-
-                                    <span className="text-sm text-gray-600 dark:text-white">
-                                        Página {paginaAtual}
-                                    </span>
-
-                                    <button
-                                        onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual + 1)}
-                                        disabled={!proximaPagina}
-                                        className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${proximaPagina ? "bg-blue-500 text-white" : ""}`}
-                                    >
-                                        <FaArrowRight className="w-20" />
-                                    </button>
-                                </div>
-
+                            <div className="mt-5 overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        {funcionariosTable.getHeaderGroups().map((headerGroup) => (
+                                            <tr key={headerGroup.id}>
+                                                {headerGroup.headers.map((header) => (
+                                                    <th key={header.id} className="border-b py-2 text-start">
+                                                        {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </thead>
+                                    <tbody>
+                                        {funcionariosTable.getRowModel().rows.map((row) => (
+                                            <tr key={row.id}>
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <td key={cell.id} className="py-2">
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    </Card>
-                            )}
+                        </Card>
+                    )}
 
+                    {atividades.length > 0 && (
+                        <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
+                            <div className="mt-5 overflow-x-auto">
+                                <header className="relative mb-6 flex items-center justify-between pt-4">
+                                    <div className="text-xl font-bold text-navy-700 dark:text-white">
+                                        Últimas Actividades
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Filtrar por nome..."
+                                        value={globalFilter}
+                                        onChange={(e) => setGlobalFilter(e.target.value)}
+                                        className="p-2 border rounded-lg"
+                                    />
+                                </header>
+                                <table className="w-full">
+                                    <thead>
+                                        {atividadesTable.getHeaderGroups().map((headerGroup) => (
+                                            <tr key={headerGroup.id}>
+                                                {headerGroup.headers.map((header) => (
+                                                    <th key={header.id} className="border-b py-2 text-start">
+                                                        {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </thead>
+                                    <tbody>
+                                        {atividadesTable.getRowModel().rows.map((row) => (
+                                            <tr key={row.id}>
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <td key={cell.id} className="py-2">
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <div className="flex justify-center mt-10 mb-4">
+                                    <div className="flex items-center space-x-2">
+                                        <button
+                                            onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual - 1)}
+                                            disabled={!paginaAnterior}
+                                            className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${paginaAnterior === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        >
+                                            <FaArrowLeft className="w-20" />
+                                        </button>
+
+                                        <span className="text-sm text-gray-600 dark:text-white">
+                                            Página {paginaAtual}
+                                        </span>
+
+                                        <button
+                                            onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual + 1)}
+                                            disabled={!proximaPagina}
+                                            className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${proximaPagina ? "bg-blue-500 text-white" : ""}`}
+                                        >
+                                            <FaArrowRight className="w-20" />
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </Card>
+                    )}
                 </div>
             )}
 
@@ -659,12 +659,9 @@ const GerenciamentoPostos = () => {
                                 <FaTimes />
                             </button>
                         </header>
-
-
                     </div>
                 </div>
             )}
-            
 
             {/* Modal de Cadastro de Posto */}
             {mostrarModal && (
@@ -688,7 +685,6 @@ const GerenciamentoPostos = () => {
                                     className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                 />
                             </div>
-
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">
                                     Localização
@@ -706,7 +702,6 @@ const GerenciamentoPostos = () => {
                                     Escolher no mapa
                                 </button>
                             </div>
-
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">
                                     imagem
@@ -720,8 +715,6 @@ const GerenciamentoPostos = () => {
                                     className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                 />
                             </div>
-                            
-
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">
                                     Horário
@@ -805,50 +798,47 @@ const GerenciamentoPostos = () => {
                     </div>
                 </div>
             )}
-     {/* Modal de Escolha de Localização */}
-     {openMapModal && (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50">
-        <div
-            className="bg-white shadow-lg p-4 rounded-md w-[600px] h-[500px] flex flex-col relative"
-        >
-            <header className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold text-navy-700">Escolha a Localização</h2>
-                <button
-                    onClick={() => setOpenMapModal(false)}
-                    className="text-navy-700 hover:text-blue-700"
-                    title="Fechar"
-                >
-                    <FaTimes />
-                </button>
-            </header>
 
-            {/* Contêiner fixo para o mapa */}
-            <div className="flex-grow relative overflow-hidden rounded-md">
-                <MapContainer 
-                    center={location} 
-                    zoom={13} 
-                    className="w-full h-full"
-                    style={{ height: "100%", width: "100%" }}
-                >
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <LocationMarker position={location} />
-                    <MapWithInvalidate />
-                </MapContainer>
-            </div>
+            {/* Modal de Escolha de Localização */}
+            {openMapModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50">
+                    <div
+                        className="bg-white shadow-lg p-4 rounded-md w-[600px] h-[500px] flex flex-col relative"
+                    >
+                        <header className="flex justify-between items-center mb-2">
+                            <h2 className="text-lg font-semibold text-navy-700">Escolha a Localização</h2>
+                            <button
+                                onClick={() => setOpenMapModal(false)}
+                                className="text-navy-700 hover:text-blue-700"
+                                title="Fechar"
+                            >
+                                <FaTimes />
+                            </button>
+                        </header>
 
-            <button
-                onClick={handleConfirmLocation}
-                className="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full"
-            >
-                Confirmar Localização
-            </button>
-        </div>
-    </div>
-)}
+                        {/* Contêiner fixo para o mapa */}
+                        <div className="flex-grow relative overflow-hidden rounded-md">
+                            <MapContainer
+                                center={location}
+                                zoom={13}
+                                className="w-full h-full"
+                                style={{ height: "100%", width: "100%" }}
+                            >
+                                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                <LocationMarker position={location} />
+                                <MapWithInvalidate />
+                            </MapContainer>
+                        </div>
 
-
-
-
+                        <button
+                            onClick={handleConfirmLocation}
+                            className="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full"
+                        >
+                            Confirmar Localização
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

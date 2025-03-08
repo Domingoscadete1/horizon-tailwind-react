@@ -168,17 +168,6 @@ const SuporteCliente = () => {
                                 <tr key={solicitacao.id} className="border-b border-gray-200">
                                     <td className="py-2 px-4">{solicitacao.empresa_nome || solicitacao.empresa.nome}</td>
                                     <td className="py-2 px-4">{solicitacao.created_at}</td>
-                                    <td className="py-2 px-4">
-                                        {/* <span
-                                            className={`px-2 py-1 rounded-full text-sm ${
-                                                solicitacao.status === 'Pendente'
-                                                    ? 'bg-yellow-100 text-yellow-700'
-                                                    : 'bg-green-100 text-green-700'
-                                            }`}
-                                        >
-                                            {solicitacao.status}
-                                        </span> */}
-                                    </td>
                                     <td className="py-2 px-4 flex space-x-4">
                                         <button
                                             onClick={() => abrirChat(solicitacao)}
@@ -195,6 +184,18 @@ const SuporteCliente = () => {
                                             <FaTrash />
                                         </button> */}
                                     </td>
+                                    <td className="py-2 px-4">
+                                        {/* <span
+                                            className={`px-2 py-1 rounded-full text-sm ${
+                                                solicitacao.status === 'Pendente'
+                                                    ? 'bg-yellow-100 text-yellow-700'
+                                                    : 'bg-green-100 text-green-700'
+                                            }`}
+                                        >
+                                            {solicitacao.status}
+                                        </span> */}
+                                    </td>
+                                    
                                 </tr>
                             ))}
                         </tbody>
@@ -218,15 +219,16 @@ const SuporteCliente = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="mt-4 flex space-x-2">
+                    <div className="mt-4 mb-5 flex space-x-4">
                         <input
                             type="text"
                             value={novaMensagem}
                             onChange={(e) => setNovaMensagem(e.target.value)}
+                            className='p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500'
                             placeholder="Digite sua resposta..."
                         />
-                        <button onClick={enviarMensagem}>
-                            <FaPaperPlane /> Enviar
+                        <button onClick={enviarMensagem} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
+                            <FaPaperPlane className="mr-2"  /> Enviar
                         </button>
                     </div>
                 </Card>
