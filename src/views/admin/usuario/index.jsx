@@ -17,6 +17,8 @@ const GerenciamentoUsuarios = () => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filtroStatus, setFiltroStatus] = useState("Todos"); // Filtro de status
+
 
   // Estado para controlar qual usuário está sendo editado
   const [usuarioEditando, setUsuarioEditando] = useState(null);
@@ -52,7 +54,9 @@ const GerenciamentoUsuarios = () => {
   useEffect(() => {
     fetchUsuarios();
   }, []);
-
+  const usuariosFiltrados = usuarios.filter(user => 
+    filtroStatus === "Todos" || user.status === "suspenso"
+  );
   // Funções para gerenciar usuários
   const excluirUsuario = (id) => {
     setUsuarios(usuarios.filter((user) => user.user_id !== id));
@@ -96,7 +100,7 @@ const GerenciamentoUsuarios = () => {
   const columns = [
     columnHelper.accessor("user_id", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
-      cell: (info) => <p className="text-sm text-gray-500">{info.getValue()}</p>,
+      cell: (info) => <p className="text-sm text-gray-51">{info.getValue()}</p>,
     }),
     columnHelper.accessor("foto", {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
@@ -121,7 +125,7 @@ const GerenciamentoUsuarios = () => {
             className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         ) : (
-          <p className="text-sm font-bold text-blue-500 cursor-pointer hover:underline">
+          <p className="text-sm font-bold text-gray-20 cursor-pointer hover:underline">
             {info.getValue()}
           </p>
         ),
@@ -137,7 +141,7 @@ const GerenciamentoUsuarios = () => {
             className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         ) : (
-          <p className="text-sm text-gray-500">{info.getValue() || "N/A"}</p>
+          <p className="text-sm text-gray-51">{info.getValue() || "N/A"}</p>
         ),
     }),
     columnHelper.accessor("endereco", {
@@ -151,7 +155,7 @@ const GerenciamentoUsuarios = () => {
             className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         ) : (
-          <p className="text-sm text-gray-500">{info.getValue() || "N/A"}</p>
+          <p className="text-sm text-gray-51">{info.getValue() || "N/A"}</p>
         ),
     }),
     columnHelper.accessor("saldo", {
@@ -165,7 +169,7 @@ const GerenciamentoUsuarios = () => {
             className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         ) : (
-          <p className="text-sm text-gray-500">KZ {info.getValue()?.toFixed(2)}</p>
+          <p className="text-sm text-gray-51">{info.getValue()?.toFixed(2) || '0.0'} AOA</p>
         ),
     }),
     columnHelper.accessor("status", {
@@ -182,8 +186,8 @@ const GerenciamentoUsuarios = () => {
           </select>
         ) : (
           <span
-            className={`px-2 py-1 text-xs font-semibold rounded-full ${info.getValue() === "Ativo" ? "bg-green-100 text-green-800" :
-              info.getValue() === "Inativo" ? "bg-red-100 text-red-800" :
+            className={`px-2 py-1 text-xs font-semibold rounded-full ${info.getValue() === "ativo" ? "bg-green-100 text-green-800" :
+              info.getValue() === "suspenso" ? "bg-red-100 text-red-800" :
                 "bg-yellow-100 text-yellow-800"
               }`}
           >
@@ -191,48 +195,48 @@ const GerenciamentoUsuarios = () => {
           </span>
         ),
     }),
-    columnHelper.accessor("acao", {
-      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
-      cell: (info) => (
-        <div className="flex space-x-4">
-          {usuarioEditando === info.row.original.user_id ? (
-            <>
-              <button
-                onClick={() => salvarEdicao(info.row.original.user_id)}
-                className="text-green-500 hover:text-green-700"
-                title="Salvar"
-              >
-                <FaSave />
-              </button>
-              <button
-                onClick={cancelarEdicao}
-                className="text-red-500 hover:text-red-700"
-                title="Cancelar"
-              >
-                <FaTimes />
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => iniciarEdicao(info.row.original.user_id)}
-                className="text-green-500 hover:text-green-700"
-                title="Editar"
-              >
-                <FaEdit />
-              </button>
-              <button
-                onClick={() => excluirUsuario(info.row.original.user_id)}
-                className="text-red-500 hover:text-red-700"
-                title="Excluir"
-              >
-                <FaTrash />
-              </button>
-            </>
-          )}
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("acao", {
+    //   header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
+    //   cell: (info) => (
+    //     <div className="flex space-x-4">
+    //       {usuarioEditando === info.row.original.user_id ? (
+    //         <>
+    //           <button
+    //             onClick={() => salvarEdicao(info.row.original.user_id)}
+    //             className="text-green-500 hover:text-green-700"
+    //             title="Salvar"
+    //           >
+    //             <FaSave />
+    //           </button>
+    //           <button
+    //             onClick={cancelarEdicao}
+    //             className="text-red-500 hover:text-red-700"
+    //             title="Cancelar"
+    //           >
+    //             <FaTimes />
+    //           </button>
+    //         </>
+    //       ) : (
+    //         <>
+    //           <button
+    //             onClick={() => iniciarEdicao(info.row.original.user_id)}
+    //             className="text-green-500 hover:text-green-700"
+    //             title="Editar"
+    //           >
+    //             <FaEdit />
+    //           </button>
+    //           <button
+    //             onClick={() => excluirUsuario(info.row.original.user_id)}
+    //             className="text-red-500 hover:text-red-700"
+    //             title="Excluir"
+    //           >
+    //             <FaTrash />
+    //           </button>
+    //         </>
+    //       )}
+    //     </div>
+    //   ),
+    // }),
   ];
 
   const table = useReactTable({
