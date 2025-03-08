@@ -402,36 +402,41 @@ const PerfilUsuario = () => {
                 </Card>
             </div>
 
-            <div className="mb-5">
-                <div className="text-xl mb-5 mt-2 ml-2 font-bold text-navy-700 dark:text-white">
-                    Produtos Divulgados
+            <Card extra={"w-full p-4 h-full mb-5"}>
+                <div className="mt-3 w-full ml-3">
+                    <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
+                        Produtos Divulgados
+                    </h4>
                 </div>
 
-                <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
-                    {produtos.length > 0 ? (
-                        produtos.map((produto) => (
-
-                            <NftCard
-                                key={produto.id}
-                                title={produto.nome}
-                                // author={produto.descricao}
-                                price={produto.preco}
-                                quantidade={produto.quantidade}
-                                status={produto.status}
-                                image={`${API_BASE_URL}${produto.imagens[0].imagem}` || ''}
-                                image_user={
-                                    produto.usuario
-                                        ? `${API_BASE_URL}${produto.usuario.foto}`
-                                        : `${API_BASE_URL}${produto.empresa?.imagens?.[0]?.imagem}`
-                                }
-                                onImageClick={() => handleImageClick(produto)}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-gray-600 mt-3">Nenhum produto divulgado.</p>
-                    )}
-                </div>
-            </div>
+                {produtos.map((produto) => (
+                    <div
+                        key={produto.id}
+                        className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                    >
+                        <div className="flex items-center">
+                            <div className="">
+                                <img
+                                    className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                    src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                    alt={produto.nome}
+                                />
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-base font-medium text-navy-700 dark:text-white">
+                                    {produto.nome}
+                                </p>
+                                <p className="mt-2 text-sm text-gray-600">
+                                    {produto.descricao}
+                                </p>
+                                <p className="mt-2 text-sm text-gray-600">
+                                    {produto.preco}Kzs
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </Card>
 
             {/* Modal com imagens adicionais */}
             {

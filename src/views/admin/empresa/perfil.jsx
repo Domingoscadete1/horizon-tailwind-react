@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
 import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes } from 'react-icons/fa';
 import Card from 'components/card';
 import avatar from "assets/img/avatars/avatar11.png";
@@ -32,7 +31,7 @@ const PerfilEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
     const [produtos, setProdutos] = useState([]);
     const [editing, setEditing] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar a imagem selecionada
+    const [selectedImage, setSelectedImage] = useState(null);
     const [formData, setFormData] = useState();
     const [editando, setEditando] = useState(false);
 
@@ -64,8 +63,6 @@ const PerfilEmpresa = () => {
                     },
                 });
                 const data = await response.json();
-                console.log(data);
-
                 setProdutos(data.produtos);
             } catch (error) {
                 console.error('Erro ao buscar produtos:', error);
@@ -75,7 +72,7 @@ const PerfilEmpresa = () => {
         const fetchData = async () => {
             await fetchEmpresa();
             await fetchProdutos();
-            setLoading(false); // Agora só desativa o loading após buscar os dados
+            setLoading(false);
         };
 
         fetchData();
@@ -119,16 +116,13 @@ const PerfilEmpresa = () => {
         suspenderUsuario(novoStatus);
     };
 
-    // Função para abrir a imagem em um modal
     const openImageModal = (image) => {
         setSelectedImage(image);
     };
 
-    // Função para fechar o modal
     const closeImageModal = () => {
         setSelectedImage(null);
     };
-
 
     const handleImageClick = (nft) => {
         setSelectedNft(nft);
@@ -139,6 +133,7 @@ const PerfilEmpresa = () => {
         setIsModalOpen(false);
         setSelectedNft(null);
     };
+
     const suspenderUsuario = async (novoStatus) => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/suspend/`, {
@@ -147,7 +142,6 @@ const PerfilEmpresa = () => {
                     "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "true",
                 },
-                //body: JSON.stringify({ status: novoStatus }),
             });
 
             if (response.ok) {
@@ -161,12 +155,10 @@ const PerfilEmpresa = () => {
             alert('Erro ao alterar o status da conta.');
         }
     };
+
     const atualizarEmpresa = async () => {
         try {
-            // Cria um objeto FormData
             const formData = new FormData();
-
-            // Adiciona os campos do usuário ao FormData
             formData.append('nome', empresa.nome);
             formData.append('descricao', empresa.descricao);
             formData.append('email', empresa.email);
@@ -176,31 +168,21 @@ const PerfilEmpresa = () => {
             formData.append('categoria', empresa.categoria);
             formData.append('status', empresa.status);
 
-
-
-            // Debug: Verifique o conteúdo do FormData
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-            console.log(formData);
-
-            // Faz a requisição PUT com o FormData
             const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
                 method: "PUT",
                 headers: {
                     "ngrok-skip-browser-warning": "true",
-                    // Não defina 'Content-Type' manualmente, o navegador fará isso automaticamente
                 },
-                body: formData, // Envia o FormData
+                body: formData,
             });
 
             if (response.ok) {
                 const updatedUser = await response.json();
-                setEmpresa(updatedUser); // Atualiza o estado com os dados retornados pela API
+                setEmpresa(updatedUser);
                 alert('Perfil atualizado com sucesso!');
                 setEditando(false);
             } else {
-                const errorData = await response.json(); // Captura os detalhes do erro
+                const errorData = await response.json();
                 alert(`Erro ao atualizar o perfil: ${errorData.detail || 'Dados inválidos'}`);
             }
         } catch (error) {
@@ -283,41 +265,50 @@ const PerfilEmpresa = () => {
                             <p className="text-gray-600">Nenhuma imagem disponível</p>
                         )}
                     </div>
-
                 </Card>
             </div>
 
-            <div className="">
-
-                <div className="text-xl mb-5 mt-2 ml-2 font-bold text-navy-700 dark:text-white">
-                    Produtos Divulgados
+            {/* Produtos Divulgados */}
+            <Card extra={"w-full p-4 h-full"}>
+                <div className="mt-3 w-full ml-3">
+                    <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
+                        Produtos Divulgados
+                    </h4>
                 </div>
 
-                <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
-                    {produtos.map((produto) => (
-                        <NftCard
-                            key={produto.id}
-                            bidders={[avatar1, avatar2, avatar3]}
-                            title={produto.nome}
-                            author={empresa.nome}
-                            price={produto.preco}
-                            image={`${API_BASE_URL}${produto.imagens[0].imagem}` || ''}
-                            image_user={
-                                produto.usuario
-                                    ? `${API_BASE_URL}${produto.usuario.foto}`
-                                    : `${API_BASE_URL}${produto.empresa?.imagens?.[0]?.imagem}`
-                            }
-                            onImageClick={() => handleImageClick(produto)}
-                        />
-                    ))}
-
-                </div>
-            </div>
+                {produtos.map((produto) => (
+                    <div
+                        key={produto.id}
+                        className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                    >
+                        <div className="flex items-center">
+                            <div className="">
+                                <img
+                                    className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                    src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                    alt={produto.nome}
+                                />
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-base font-medium text-navy-700 dark:text-white">
+                                    {produto.nome}
+                                </p>
+                                <p className="mt-2 text-sm text-gray-600">
+                                    {produto.descricao}
+                                </p>
+                                <p className="mt-2 text-sm text-gray-600">
+                                    {produto.preco}Kzs
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </Card>
 
             <div className="grid h-full grid-cols-1 gap-5 md:grid-cols-1">
                 <Card extra="w-full h-full sm:overflow-auto px-6 mt-6">
-                    <header className="relative flex items-center justify-between pt-4">
-                        <div className="text-xl font-bold text-navy-700 dark:text-white">
+                    <header className="relative mt-5 flex items-center justify-between pt-2">
+                        <div className="text-2xl font-bold text-navy-700 dark:text-white">
                             Informações Cadastrais
                         </div>
                         <button onClick={() => setEditing(!editing)} className="text-blue-500 mb-5 hover:text-blue-700 flex items-center">
@@ -325,7 +316,7 @@ const PerfilEmpresa = () => {
                             {editing ? 'Cancelar Edição' : 'Editar Dados'}
                         </button>
                     </header>
-                    <div className="mt-5">
+                    <div className="mt-2">
                         {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2', 'email', 'categoria'].map((campo) => (
                             <div key={campo} className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-white">
@@ -367,23 +358,19 @@ const PerfilEmpresa = () => {
                                     <FaCheck className="mr-2" /> Ativar Conta
                                 </button>
                             )}
-                            {/* <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
-                                <FaTrash className="mr-2" /> Excluir Conta
-                            </button> */}
                         </div>
                     </div>
                 </Card>
             </div>
+
             {/* Modal com imagens adicionais */}
-            {
-                isModalOpen && selectedNft && (
-                    <ImageModal
-                        imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
-                        additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
-                        onClose={closeModal}
-                    />
-                )
-            }
+            {isModalOpen && selectedNft && (
+                <ImageModal
+                    imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
+                    additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
+                    onClose={closeModal}
+                />
+            )}
         </div>
     );
 };
