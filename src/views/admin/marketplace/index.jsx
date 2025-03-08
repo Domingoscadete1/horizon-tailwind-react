@@ -178,7 +178,7 @@ const Marketplace = () => {
         {isModalOpen && selectedNft && (
           <ImageModal
             imageUrl={selectedNft.imagens?.[0]?.imagem || "https://via.placeholder.com/150"}
-            additionalImages={selectedNft.imagens?.map((img) => img.imagem) || []}
+            additionalImages={selectedNft.imagens.map((img) => img.imagem) || []}
             onClose={closeModal}
           />
         )}

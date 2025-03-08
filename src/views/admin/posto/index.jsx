@@ -152,7 +152,7 @@ const GerenciamentoPostos = () => {
             });
             const data = await response.json();
             console.log(data);
-            setAtividades(Array.isArray(data.results) ? data.results : []);
+            setAtividades(Array.isArray(data.results.latest) ? data.results.latest : []);
             setPaginaAtual(page);
             setProximaPagina(data.next);
             setPaginaAnterior(data.previous);
