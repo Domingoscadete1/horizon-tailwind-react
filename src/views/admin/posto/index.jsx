@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
+import { MapContainer, TileLayer, Marker, Popup, useMap,useMapEvents } from "react-leaflet";
+import L from 'leaflet';
+import { Icon } from "leaflet";
+
+import "leaflet/dist/leaflet.css"; // Importa os estilos do Leaflet corretamente
+
 import {
     createColumnHelper,
     flexRender,
@@ -11,14 +17,33 @@ import {
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
+const customIcon = new Icon({
+    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+});
+
+const LocationMarker = ({ position }) => {
+    return position ? (
+        <Marker position={position} icon={customIcon}>
+            <Popup>Localização Selecionada</Popup>
+        </Marker>
+    ) : null;
+};
 const GerenciamentoPostos = () => {
     const [postos, setPostos] = useState([]); // Começa vazio
     const [loading, setLoading] = useState(true); // Para indicar carregamento
     const [mostrarModal, setMostrarModal] = useState(false);
     const [novoPosto, setNovoPosto] = useState({
         nome: '',
-        criadoPor: '',
-        dataCriacao: '',
+        localizacao:'',
+        imagem:'',
+        horario:'',
+        responsavel:'',
+        telefone:'',
+        email:'',
+        capacidade:'',
+
     });
     const [globalFilter, setGlobalFilter] = useState('');
     const [funcionarios, setFuncionarios] = useState([]);
@@ -28,6 +53,21 @@ const GerenciamentoPostos = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [proximaPagina, setProximaPagina] = useState(null);
     const [paginaAnterior, setPaginaAnterior] = useState(null);
+    const [location, setLocation] = useState({ lat: 0, lng: 0 });
+    const [openMapModal, setOpenMapModal] = useState(false);
+    const MapWithInvalidate = ({ location }) => {
+        const map = useMap();
+    
+        useEffect(() => {
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 200);
+        }, [map]);
+    
+        return null;
+    };
+
+
 
     const [modalInfo, setModalInfo] = useState(false);
 
@@ -46,11 +86,59 @@ const GerenciamentoPostos = () => {
             }
 
             const data = await response.json();
-            setFuncionarios(data.funcionarios || []);
+            setFuncionarios(Array.isArray(data.funcionarios) ? data.funcionarios : []);
         } catch (error) {
             console.error("Erro ao buscar funcionários:", error);
+            setFuncionarios([]);
         }
     };
+    function LocationMarker() {
+        const map = useMapEvents({
+          click(e) {
+            setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
+          },
+        });
+      
+        return location ? (
+          <Marker position={[location.lat, location.lng]} icon={L.icon({
+            iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+          })} />
+        ) : null;
+      }
+      useEffect(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              setLocation({ lat: latitude, lng: longitude });
+            },
+            (error) => {
+              console.error('Erro ao obter localização:', error);
+            }
+          );
+        }
+      }, []);
+      
+      
+      const handleGetCurrentLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              setLocation({ lat: latitude, lng: longitude });
+              setNovoPosto((prev) => ({ ...prev, localizacao: `${latitude}, ${longitude}` }));
+            },
+            (error) => {
+              console.error('Erro ao obter localização:', error);
+            }
+          );
+        } else {
+          alert('Geolocalização não é suportada pelo seu navegador.');
+        }
+      };
+      
 
 
     // Buscar atividades do posto selecionado
@@ -64,13 +152,15 @@ const GerenciamentoPostos = () => {
             });
             const data = await response.json();
             console.log(data);
-            setAtividades(data.results.latest || []);
+            setAtividades(Array.isArray(data.results) ? data.results : []);
             setPaginaAtual(page);
             setProximaPagina(data.next);
             setPaginaAnterior(data.previous);
             setTotalPages(Math.ceil(data.count / data.results.length));
         } catch (error) {
             console.error("Erro ao buscar atividades:", error);
+            setAtividades([]);
+
         }
     };
 
@@ -100,9 +190,10 @@ const GerenciamentoPostos = () => {
                 throw new Error("Erro ao buscar postos");
             }
             const data = await response.json();
-            setPostos(data); // Atualiza o estado com os postos da API
+            setPostos(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Erro ao buscar postos:", error);
+            setPostos([]);
         } finally {
             setLoading(false); // Finaliza o carregamento
         }
@@ -122,6 +213,22 @@ const GerenciamentoPostos = () => {
         setModalInfo(true);
     };
 
+    const handleOpenMapModal = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+              setOpenMapModal(true);
+            },
+            (error) => {
+              console.error('Erro ao obter localização:', error);
+              setOpenMapModal(true);
+            }
+          );
+        } else {
+          setOpenMapModal(true);
+        }
+      };
     // Função para fechar o modal de cadastro
     const fecharModalInfo = () => {
         setModalInfo(false);
@@ -140,16 +247,36 @@ const GerenciamentoPostos = () => {
     };
 
     // Função para cadastrar um novo posto
-    const cadastrarPosto = () => {
-        if (!novoPosto.nome || !novoPosto.criadoPor || !novoPosto.dataCriacao) {
+    const cadastrarPosto = async() => {
+        if (!novoPosto.nome || !novoPosto.telefone || !novoPosto.email) {
             alert('Preencha todos os campos para cadastrar o posto.');
             return;
         }
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/posto/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+                body: JSON.stringify(novoPosto),
+            });
 
-        const novoId = postos.length + 1; // Gera um novo ID
-        const posto = { id: novoId, ...novoPosto };
-        setPostos([...postos, posto]); // Adiciona o novo posto à lista
-        fecharModal(); // Fecha o modal após o cadastro
+            if (response.ok) {
+                const updatedEmpresa = await response.json();
+                fecharModal();
+                window.location.reload();
+            } else {
+                alert('Erro ao atualizar os dados da empresa.');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar empresa:', error);
+            alert('Erro ao atualizar os dados da empresa.');
+        }
+        // const novoId = postos.length + 1; // Gera um novo ID
+        // const posto = { id: novoId, ...novoPosto };
+        // setPostos([...postos, posto]); // Adiciona o novo posto à lista
+        //  // Fecha o modal após o cadastro
     };
 
     // Função para editar um posto
@@ -338,6 +465,13 @@ const GerenciamentoPostos = () => {
         },
         onGlobalFilterChange: setGlobalFilter,
     });
+    const handleConfirmLocation = () => {
+        setNovoPosto((prev) => ({
+            ...prev,
+            localizacao: `${location.lat}, ${location.lng}`,
+        }));
+        setOpenMapModal(false);
+    };
 
     return (
         <div className="p-2">
@@ -530,6 +664,7 @@ const GerenciamentoPostos = () => {
                     </div>
                 </div>
             )}
+            
 
             {/* Modal de Cadastro de Posto */}
             {mostrarModal && (
@@ -556,27 +691,98 @@ const GerenciamentoPostos = () => {
 
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">
-                                    Criado Por
+                                    Localização
                                 </label>
-                                <input
-                                    type="text"
-                                    name="criadoPor"
-                                    value={novoPosto.criadoPor}
-                                    onChange={handleInputChange}
-                                    placeholder="Ex: Admin"
-                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                                />
+                                <button
+                                    onClick={handleGetCurrentLocation}
+                                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                                >
+                                    Localização atual
+                                </button>
+                                <button
+                                    onClick={handleOpenMapModal}
+                                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                                >
+                                    Escolher no mapa
+                                </button>
                             </div>
 
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">
-                                    Data de Criação
+                                    imagem
                                 </label>
                                 <input
-                                    type="date"
-                                    name="dataCriacao"
-                                    value={novoPosto.dataCriacao}
+                                    type="file"
+                                    name="imagem"
+                                    value={novoPosto.imagem}
                                     onChange={handleInputChange}
+                                    placeholder="Ex: Imagem"
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
+                            
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Horário
+                                </label>
+                                <input
+                                    type="text"
+                                    name="horario"
+                                    value={novoPosto.horario}
+                                    onChange={handleInputChange}
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Responsavel
+                                </label>
+                                <input
+                                    type="text"
+                                    name="responsavel"
+                                    value={novoPosto.responsavel}
+                                    onChange={handleInputChange}
+                                    placeholder="Ex: José"
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Telefone
+                                </label>
+                                <input
+                                    type="number"
+                                    name="telefone"
+                                    value={novoPosto.telefone}
+                                    onChange={handleInputChange}
+                                    placeholder="Ex: 922333444"
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={novoPosto.email}
+                                    onChange={handleInputChange}
+                                    placeholder="Ex: Email"
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Capacidade
+                                </label>
+                                <input
+                                    type="number"
+                                    name="capacidade"
+                                    value={novoPosto.capacidade}
+                                    onChange={handleInputChange}
+                                    placeholder="Ex: Admin"
                                     className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                                 />
                             </div>
@@ -599,6 +805,50 @@ const GerenciamentoPostos = () => {
                     </div>
                 </div>
             )}
+     {/* Modal de Escolha de Localização */}
+     {openMapModal && (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50">
+        <div
+            className="bg-white shadow-lg p-4 rounded-md w-[600px] h-[500px] flex flex-col relative"
+        >
+            <header className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-semibold text-navy-700">Escolha a Localização</h2>
+                <button
+                    onClick={() => setOpenMapModal(false)}
+                    className="text-navy-700 hover:text-blue-700"
+                    title="Fechar"
+                >
+                    <FaTimes />
+                </button>
+            </header>
+
+            {/* Contêiner fixo para o mapa */}
+            <div className="flex-grow relative overflow-hidden rounded-md">
+                <MapContainer 
+                    center={location} 
+                    zoom={13} 
+                    className="w-full h-full"
+                    style={{ height: "100%", width: "100%" }}
+                >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    <LocationMarker position={location} />
+                    <MapWithInvalidate />
+                </MapContainer>
+            </div>
+
+            <button
+                onClick={handleConfirmLocation}
+                className="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full"
+            >
+                Confirmar Localização
+            </button>
+        </div>
+    </div>
+)}
+
+
+
+
         </div>
     );
 };
