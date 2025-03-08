@@ -59,22 +59,15 @@ const Transacao = () => {
     
 
     const transacaoColumns = [
-        columnHelper.accessor(row => row.lance?.produto?.imagens?.[0]?.imagem, {
-            id: "imagem_produto", // Adicione um ID único
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM DO PRODUTO</p>,
-            cell: (info) => {
-                const imageUrl = info.getValue();
-                return imageUrl ? (
-                    <img
-                        src={`${imageUrl}`}
-                        alt="Produto"
-                        className="w-16 h-16 rounded-full object-cover"
-                    />
-                ) : (
-                    <p className="text-xs text-gray-500">Sem imagem</p>
-                );
-            },
-        }),
+        {
+            accessorKey: "lance",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
+            cell: ({ row }) => (
+                <span className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-navy-700 dark:text-white">{row.produto?.nome}</p>
+                </span>
+            ),
+        },
         {
             accessorKey: "tipo_transacao",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
@@ -114,7 +107,7 @@ const Transacao = () => {
             accessorKey: "acoes",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,// Sem accessorKey, pois não vem da API
             cell: ({ row }) => (
-                <div className="flex gap-2">
+                <div className="flex gap-2 space-x-4">
                     <button
                         onClick={() => handleDownload(row.original.id)}
                         className="text-blue-500 hover:text-blue-700"

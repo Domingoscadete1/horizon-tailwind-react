@@ -76,7 +76,7 @@ const ModeracaoConteudo = () => {
                                             className="text-red-500 hover:text-red-700"
                                             title="Remover Reporte"
                                         >
-                                            <FaBan className="text-gray-700 text-lg"/>
+                                            <FaBan className="text-red text-lg"/>
                                         </button>
                                     </td>
                                 </tr>
