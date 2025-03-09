@@ -117,7 +117,7 @@ const GerenciamentoEmpresas = () => {
         columnHelper.accessor('foto', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
-                <img src={`${API_BASE_URL}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full" onClick={() => handleFuncionarioClick(info.row.original.id)}/>
+                <img src={`${API_BASE_URL}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full cursor-pointer" onClick={() => handleFuncionarioClick(info.row.original.id)}/>
             ),
         }),
         columnHelper.accessor('usuario_username', {
