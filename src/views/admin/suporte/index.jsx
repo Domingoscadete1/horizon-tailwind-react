@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaTimes, FaComments, FaStar, FaThumbsUp, FaPaperPlane, FaCheck, FaTrash } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import axios from 'axios';
@@ -12,7 +12,6 @@ const SuporteCliente = () => {
     const socketRef = useRef(null);
     const [funcionarioId, setfuncionarioId] = useState('');
 
-
     // Estado para gerenciar feedbacks
     const [feedbacks, setFeedbacks] = useState([
         { id: 1, produto: 'Smartphone XYZ', vendedor: 'TechStore', avaliacao: 4, comentario: 'Ótimo produto, entrega rápida.' },
@@ -24,18 +23,18 @@ const SuporteCliente = () => {
     const [chatAtivo, setChatAtivo] = useState(null);
 
     // Função para abrir o chat de uma solicitação
-   
     useEffect(() => {
         const token = localStorage.getItem('userData');
         if (token) {
-          const userData = JSON.parse(token);
-          const postoId = userData.id;
-          console.log(userData);
-          if (postoId) {
-            setfuncionarioId(postoId);
-          }
+            const userData = JSON.parse(token);
+            const postoId = userData.id;
+            console.log(userData);
+            if (postoId) {
+                setfuncionarioId(postoId);
+            }
         }
-      }, []);
+    }, []);
+
     // Função para enviar uma mensagem no chat
     useEffect(() => {
         // Carregar lista de solicitações de suporte
@@ -44,14 +43,13 @@ const SuporteCliente = () => {
                 "ngrok-skip-browser-warning": "true"
             }
         })
-        .then(response => {
-            const data = response.data.results || []; // Armazena a resposta na variável
-            console.log("Resposta da API:", data); // Log para debug
-            setSolicitacoes(data); // Atualiza o estado
-        })
-        .catch(error => console.error('Erro ao buscar chats:', error));
+            .then(response => {
+                const data = response.data.results || []; // Armazena a resposta na variável
+                console.log("Resposta da API:", data); // Log para debug
+                setSolicitacoes(data); // Atualiza o estado
+            })
+            .catch(error => console.error('Erro ao buscar chats:', error));
     }, []);
-    
 
     const abrirChat = (chat) => {
         axios.get(`${API_BASE_URL}/api/chat-suporte/mensagens/${chat.id}/`, {
@@ -59,23 +57,23 @@ const SuporteCliente = () => {
                 "ngrok-skip-browser-warning": "true"
             }
         })
-        .then(response => {
-            console.log("Mensagens carregadas:", response.data);
-            setChatAtivo({
-                ...chat,
-                mensagens: response.data.mensagens || [] // Garante que seja uma lista
+            .then(response => {
+                console.log("Mensagens carregadas:", response.data);
+                setChatAtivo({
+                    ...chat,
+                    mensagens: response.data.mensagens || [] // Garante que seja uma lista
+                });
+                conectarWebSocket(chat.id);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar mensagens do chat:", error);
+                setChatAtivo({
+                    ...chat,
+                    mensagens: []
+                });
             });
-            conectarWebSocket(chat.id);
-        })
-        .catch(error => {
-            console.error("Erro ao buscar mensagens do chat:", error);
-            setChatAtivo({
-                ...chat,
-                mensagens: []
-            });
-        });
     };
-    
+
 
     const conectarWebSocket = (chatId) => {
         if (socketRef.current) {
@@ -88,13 +86,13 @@ const SuporteCliente = () => {
         socketRef.current.onmessage = (event) => {
             const novaMensagem = JSON.parse(event.data);
             console.log("Nova mensagem recebida:", novaMensagem);
-        
+
             setChatAtivo((prevChat) => {
                 if (!prevChat || !prevChat.mensagens) {
                     console.error("Chat não encontrado!");
                     return prevChat;
                 }
-        
+
                 return {
                     ...prevChat,
                     mensagens: [
@@ -109,16 +107,16 @@ const SuporteCliente = () => {
                 };
             });
         };
-        
-        
-        
-        
-        
+
+
+
+
+
     };
 
     const enviarMensagem = () => {
         if (novaMensagem.trim() && socketRef.current) {
-            const mensagemData = { mensagem: novaMensagem, funcionario_id: funcionarioId,chat_id:chatAtivo.id };
+            const mensagemData = { mensagem: novaMensagem, funcionario_id: funcionarioId, chat_id: chatAtivo.id };
             socketRef.current.send(JSON.stringify(mensagemData));
             setNovaMensagem('');
         }
@@ -142,7 +140,7 @@ const SuporteCliente = () => {
 
     return (
         <div className="p-6">
-           
+
             {/* Seção de Gerenciamento de Solicitações de Suporte */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
@@ -195,7 +193,7 @@ const SuporteCliente = () => {
                                             {solicitacao.status}
                                         </span> */}
                                     </td>
-                                    
+
                                 </tr>
                             ))}
                         </tbody>
@@ -214,8 +212,8 @@ const SuporteCliente = () => {
                     <div className="mt-5 h-64 overflow-y-auto border rounded-lg p-4">
                         {chatAtivo.mensagens.map((msg, index) => (
                             <div key={index} className="mb-4">
-                                <p className="font-bold">{msg.remetente }:</p>
-                                <p>{msg.conteudo }</p>
+                                <p className="font-bold">{msg.remetente}:</p>
+                                <p>{msg.conteudo}</p>
                             </div>
                         ))}
                     </div>
@@ -228,7 +226,7 @@ const SuporteCliente = () => {
                             placeholder="Digite sua resposta..."
                         />
                         <button onClick={enviarMensagem} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
-                            <FaPaperPlane className="mr-2"  /> Enviar
+                            <FaPaperPlane className="mr-2" /> Enviar
                         </button>
                     </div>
                 </Card>

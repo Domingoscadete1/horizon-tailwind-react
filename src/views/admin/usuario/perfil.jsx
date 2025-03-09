@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash,FaArrowRight,FaArrowLeft } from 'react-icons/fa';
+import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import image1 from "assets/img/profile/image1.png";
 import image2 from "assets/img/profile/image2.png";
@@ -422,64 +422,128 @@ const PerfilUsuario = () => {
                 </Card>
             </div>
 
-            <Card extra={"w-full p-4 h-full mb-5"}>
-                <div className="mt-3 w-full ml-3">
-                    <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
-                        Produtos Divulgados
-                    </h4>
-                </div>
+            {/* Produtos Divulgados e Últimas Transações */}
+            <div className="mt-5 mb-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
+                <Card extra={"w-full p-4 h-full"}>
+                    <div className="mt-3 w-full ml-3">
+                        <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
+                            Produtos Divulgados
+                        </h4>
+                    </div>
 
-                {produtos.map((produto) => (
-                    <div
-                        key={produto.id}
-                        className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
-                    >
-                        <div className="flex items-center">
-                            <div className="">
-                                <img
-                                    className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                    src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
-                                    alt={produto.nome}
-                                    onClick={() => handleProdutoClick(produto.id)}
-                                />
-                            </div>
-                            <div className="ml-3">
-                                <p className="text-base font-medium text-navy-700 dark:text-white">
-                                    {produto.nome}
-                                </p>
-                                <p className="mt-2 text-sm text-gray-600">
-                                    {produto.descricao}
-                                </p>
-                                <p className="mt-2 text-sm text-gray-600">
-                                    {produto.preco}Kzs
-                                </p>
+                    {produtos.map((produto) => (
+                        <div
+                            key={produto.id}
+                            className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                        >
+                            <div className="flex items-center">
+                                <div className="">
+                                    <img
+                                        className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                        src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                        alt={produto.nome}
+                                        onClick={() => handleProdutoClick(produto.id)}
+                                    />
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-base font-medium text-navy-700 dark:text-white" >
+                                        {produto.nome}
+                                    </p>
+                                    <p className="mt-2 text-sm text-gray-600">
+                                        {produto.descricao}
+                                    </p>
+                                    <p className="mt-2 text-sm text-gray-600">
+                                        {produto.preco}Kzs
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                    ))}
+
+                    {/* Paginação */}
+                    <div className="flex items-center justify-between mt-4 mb-4">
+                        <div className="flex items-center space-x-2">
+                            <button
+                                className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                disabled={pagination.pageIndex === 0}
+                            >
+                                <FaArrowLeft className="mr-2" /> Anterior
+                            </button>
+                            <button
+                                className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                            >
+                                Próxima <FaArrowRight className="ml-2" />
+                            </button>
+                        </div>
+                        <span className="text-sm text-gray-600 dark:text-white">
+                            Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                        </span>
                     </div>
-                ))}
-                {/* Paginação */}
-                <div className="flex items-center justify-between mt-4 mb-4">
-                    <div className="flex items-center space-x-2">
-                        <button
-                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                            onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
-                            disabled={pagination.pageIndex === 0}
-                        >
-                            <FaArrowLeft className="mr-2" /> Anterior
-                        </button>
-                        <button
-                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                            onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
-                            disabled={pagination.pageIndex + 1 >= pagination.totalPages}
-                        >
-                            Próxima <FaArrowRight className="ml-2" />
-                        </button>
+                </Card>
+
+                <Card extra={"w-full p-4 h-full"}>
+                    <div className="mt-3 w-full ml-3">
+                        <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
+                            Últimas Transações
+                        </h4>
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-white">
-                        Página {pagination.pageIndex + 1} de {pagination.totalPages}
-                    </span>
-                </div>
-            </Card>
+
+                    {produtos.map((produto) => (
+                        <div
+                            key={produto.id}
+                            className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                        >
+                            <div className="flex items-center">
+                                <div className="">
+                                    <img
+                                        className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                        src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                        alt={produto.nome}
+                                        onClick={() => handleProdutoClick(produto.id)}
+                                    />
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-base font-medium text-navy-700 dark:text-white" >
+                                        {produto.nome}
+                                    </p>
+                                    <p className="mt-2 text-sm text-gray-600">
+                                        {produto.descricao}
+                                    </p>
+                                    <p className="mt-2 text-sm text-gray-600">
+                                        {produto.preco}Kzs
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Paginação */}
+                    <div className="flex items-center justify-between mt-4 mb-4">
+                        <div className="flex items-center space-x-2">
+                            <button
+                                className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                disabled={pagination.pageIndex === 0}
+                            >
+                                <FaArrowLeft className="mr-2" /> Anterior
+                            </button>
+                            <button
+                                className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                            >
+                                Próxima <FaArrowRight className="ml-2" />
+                            </button>
+                        </div>
+                        <span className="text-sm text-gray-600 dark:text-white">
+                            Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                        </span>
+                    </div>
+                </Card>
+            </div>
 
             {/* Modal com imagens adicionais */}
             {
