@@ -114,8 +114,8 @@ const routes = [
   {
     name: "Detalhes Produto",
     layout: "/admin",
-    admin: true,
-    path: "detalhes",
+    admin: false,
+    path: "detalhes/:id",
     icon: <FaBullhorn className="inline-block h-6 w-6" />,
     component: <DetalhesProduto />,
   },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes } from 'react-icons/fa';
+import { useParams, useNavigate } from 'react-router-dom';
+import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Card from 'components/card';
 import avatar from "assets/img/avatars/avatar11.png";
 import banner from "assets/img/profile/banner.png";
@@ -24,6 +24,8 @@ const nfts = [
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilEmpresa = () => {
+    const navigate = useNavigate(); // Hook de navegação
+
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,49 +36,61 @@ const PerfilEmpresa = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [formData, setFormData] = useState();
     const [editando, setEditando] = useState(false);
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 2,
+        totalPages: 1,
+    });
 
+    const fetchEmpresa = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setEmpresa(data);
+            setFormData(data);
+        } catch (error) {
+            console.error('Erro ao buscar empresa:', error);
+        }
+    };
+
+    const fetchProdutos = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/produtos/empresa/${id}?page=${pagination.pageIndex + 1}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setProdutos(data.results);
+            setPagination((prev) => ({
+                ...prev,
+                totalPages: Math.ceil(data.count / prev.pageSize),
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchEmpresa = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "true",
-                    },
-                });
-                const data = await response.json();
-                setEmpresa(data);
-                setFormData(data);
-            } catch (error) {
-                console.error('Erro ao buscar empresa:', error);
-            }
-        };
-
-        const fetchProdutos = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/produtos/empresa/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "true",
-                    },
-                });
-                const data = await response.json();
-                setProdutos(data.produtos);
-            } catch (error) {
-                console.error('Erro ao buscar produtos:', error);
-            }
-        };
-
         const fetchData = async () => {
             await fetchEmpresa();
-            await fetchProdutos();
+            await fetchProdutos(); // Garante que a página 1 seja carregada por padrão
             setLoading(false);
         };
 
         fetchData();
-    }, [id]);
+    }, [id, pagination.pageIndex]);
+
 
     if (loading) {
         return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
@@ -85,7 +99,9 @@ const PerfilEmpresa = () => {
     if (!empresa) {
         return <div className="mt-10 text-center text-gray-500">Empresa não encontrada.</div>;
     }
-
+    const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+    };
     const handleSalvarEdicao = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
@@ -287,10 +303,11 @@ const PerfilEmpresa = () => {
                                     className="h-[83px] w-[83px] rounded-lg cursor-pointer"
                                     src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
                                     alt={produto.nome}
+                                    onClick={() => handleProdutoClick(produto.id)}
                                 />
                             </div>
                             <div className="ml-3">
-                                <p className="text-base font-medium text-navy-700 dark:text-white">
+                                <p className="text-base font-medium text-navy-700 dark:text-white" >
                                     {produto.nome}
                                 </p>
                                 <p className="mt-2 text-sm text-gray-600">
@@ -303,6 +320,29 @@ const PerfilEmpresa = () => {
                         </div>
                     </div>
                 ))}
+
+                {/* Paginação */}
+                <div className="flex items-center justify-between mt-4 mb-4">
+                    <div className="flex items-center space-x-2">
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                            onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                            disabled={pagination.pageIndex === 0}
+                        >
+                            <FaArrowLeft className="mr-2" /> Anterior
+                        </button>
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                            onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                            disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                        >
+                            Próxima <FaArrowRight className="ml-2" />
+                        </button>
+                    </div>
+                    <span className="text-sm text-gray-600 dark:text-white">
+                        Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                    </span>
+                </div>
             </Card>
 
             <div className="grid h-full grid-cols-1 gap-5 md:grid-cols-1">

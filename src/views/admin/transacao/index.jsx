@@ -88,7 +88,7 @@ const Transacao = () => {
             accessorKey: "valor",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">VALOR</p>,
             cell: ({ row }) => (
-                <p className="text-sm text-gray-500">R$ {parseFloat(row.getValue("valor")).toFixed(2)}</p>
+                <p className="text-sm text-gray-500">{parseFloat(row.getValue("valor")).toFixed(2)} AOA</p>
             ),
         },
         {

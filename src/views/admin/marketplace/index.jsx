@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importação necessária
+
 import Banner from "./components/Banner";
 import avatar1 from "assets/img/avatars/avatar1.png";
 import avatar2 from "assets/img/avatars/avatar2.png";
@@ -15,6 +17,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app/api/produtos/";
 
 const Marketplace = () => {
+  const navigate = useNavigate(); // Hook de navegação
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNft, setSelectedNft] = useState(null);
   const [produtos, setProdutos] = useState([]);
@@ -29,6 +33,15 @@ const Marketplace = () => {
     { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
     { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
   ];
+  const handleUsuarioClick = (usuarioId) => {
+    navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
+  };
+  const handleEmpresaClick = (empresaId) => {
+    navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
+  };
+  const handleProdutoClick = (produtoId) => {
+    navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+  };
 
   const fetchProdutos = async (page = 1) => {
     try {
@@ -128,6 +141,8 @@ const Marketplace = () => {
               price={nft.price}
               image={nft.image}
               onImageClick={() => handleImageClick(nft)}
+             
+            
             />
           ))}
         </div>
@@ -169,6 +184,12 @@ const Marketplace = () => {
                     : produto.empresa?.imagens?.[0]?.imagem
                 }
                 onImageClick={() => handleImageClick(produto)}
+                onNameClick={ () =>handleProdutoClick(produto.id)}
+                onUserClick={
+                  produto.usuario
+                    ? () => handleUsuarioClick(produto.usuario.id)
+                    : () =>handleEmpresaClick(produto.empresa.id)
+                }
               />
             );
           })}

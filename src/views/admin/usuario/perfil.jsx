@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash } from 'react-icons/fa';
+import { useParams, useNavigate } from 'react-router-dom';
+import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash,FaArrowRight,FaArrowLeft } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import image1 from "assets/img/profile/image1.png";
 import image2 from "assets/img/profile/image2.png";
@@ -12,60 +12,80 @@ const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
     // Estado para gerenciar informações do usuário
+    const navigate = useNavigate(); // Hook de navegação
+
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
     const [usuario, setUsuario] = useState(null);
     const [produtos, setProdutos] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedNft, setSelectedNft] = useState(null);
+    const [nextPageProduct, setNextPageProduct] = useState(null);
+    const [previousPageProduct, setPreviousPageProduct] = useState(null);
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 2,
+        totalPages: 1,
+    });
     // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);
     const [formData1, setFormData] = useState({
         status: 'Ativa',
     });
+    const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+    };
+    const fetchProdutos = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/produtos/usuario/${id}?page=${pagination.pageIndex + 1}}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setProdutos(data.results);
+            setPagination((prev) => ({
+                ...prev,
+                totalPages: Math.ceil(data.count / prev.pageSize),
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchUsuario = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setUsuario(data);
+        } catch (error) {
+            console.error('Erro ao buscar usuario:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchUsuario = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "true",
-                    },
-                });
-                const data = await response.json();
-                setUsuario(data);
-            } catch (error) {
-                console.error('Erro ao buscar empresa:', error);
-            }
-        };
-
-        const fetchProdutos = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/produtos/usuario/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "true",
-                    },
-                });
-                const data = await response.json();
-                console.log(data);
-
-                setProdutos(data.produtos);
-            } catch (error) {
-                console.error('Erro ao buscar produtos:', error);
-            }
-        };
-
         const fetchData = async () => {
             await fetchUsuario();
-            await fetchProdutos();
-            setLoading(false); // Agora só desativa o loading após buscar os dados
+            await fetchProdutos(1); // Garante que a página 1 seja carregada por padrão
+            setLoading(false);
         };
 
         fetchData();
-    }, [id]);
+    }, [id, pagination.pageIndex]);
+
+
+
 
     if (loading) {
         return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
@@ -420,6 +440,7 @@ const PerfilUsuario = () => {
                                     className="h-[83px] w-[83px] rounded-lg cursor-pointer"
                                     src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
                                     alt={produto.nome}
+                                    onClick={() => handleProdutoClick(produto.id)}
                                 />
                             </div>
                             <div className="ml-3">
@@ -436,6 +457,28 @@ const PerfilUsuario = () => {
                         </div>
                     </div>
                 ))}
+                {/* Paginação */}
+                <div className="flex items-center justify-between mt-4 mb-4">
+                    <div className="flex items-center space-x-2">
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                            onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                            disabled={pagination.pageIndex === 0}
+                        >
+                            <FaArrowLeft className="mr-2" /> Anterior
+                        </button>
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                            onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                            disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                        >
+                            Próxima <FaArrowRight className="ml-2" />
+                        </button>
+                    </div>
+                    <span className="text-sm text-gray-600 dark:text-white">
+                        Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                    </span>
+                </div>
             </Card>
 
             {/* Modal com imagens adicionais */}

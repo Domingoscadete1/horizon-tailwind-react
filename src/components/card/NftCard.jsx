@@ -4,7 +4,7 @@ import Card from "components/card";
 
 
 
-const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade, status, image_user }) => {
+const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade, status, image_user,onNameClick,onUserClick }) => {
   return (
     <Card
       extra={`flex flex-col w-full h-full !p-4 3xl:p-![18px] bg-white ${extra}`}
@@ -28,27 +28,29 @@ const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade,
                 src={image_user}
                 className="w-10 h-10 rounded-full cursor-pointer"
                 alt=""
+                onClick={onUserClick}
+
               />
               <p className="text-lg font-bold text-navy-700 dark:text-white">
                 {author}
               </p>
             </div>
-            <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
+            <p className="mt-2 text-sm font-medium text-brand-250 md:mt-2" onClick={onNameClick}>
               Nome: {title}
             </p>
-            <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
+            <p className="mt-2 text-sm font-medium text-gray-51 md:mt-2">
               Descrição: oerbsbierh erhvsdj
             </p>
-            <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
+            <p className="mt-2 text-sm font-medium text-gray-51 md:mt-2">
               Quantidade: {quantidade}
             </p>
-            <p className="mt-2 text-sm font-medium text-gray-600 md:mt-2">
+            <p className="mt-2 text-sm font-medium text-gray-51 md:mt-2">
               Status: {status}
               {/* reservado */}
               {/* esgotado */}
             </p>
             <p className="mt-2 mb-2 text-sm font-bold text-brand-500 dark:text-white">
-              Preço {price} <span>Kzs</span>
+               {price} <span>AOA</span>
             </p>
           </div>
         </div>
