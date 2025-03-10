@@ -31,6 +31,8 @@ import {
   MdPerson,
   MdArchive,
   MdLock,
+  MdBlock, // Ícone para usuários bloqueados
+  MdOutlinePendingActions, // Ícone para empresas a aprovar
 } from "react-icons/md";
 
 import {
@@ -42,10 +44,7 @@ import {
   FaExclamationTriangle,
   FaAccusoft,
   FaMapMarkerAlt,
-  FaWpbeginner,
-  FaBold
 } from 'react-icons/fa';
-
 
 const routes = [
   {
@@ -78,7 +77,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "bloqueados",
-    icon: <FaBold className="h-6 w-6" />,
+    icon: <MdBlock className="h-6 w-6" />, // Ícone alterado
     component: <UsuariosBloqueados />,
   },
   {
@@ -94,7 +93,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "aprovacao",
-    icon: <FaWpbeginner className="h-6 w-6" />,
+    icon: <MdOutlinePendingActions className="h-6 w-6" />, // Ícone alterado
     component: <EmpresasParaAprovar />,
   },
   {
@@ -105,20 +104,6 @@ const routes = [
     icon: <FaMapMarkerAlt className="h-6 w-6" />,
     component: <GerenciamentoPostos />,
   },
-  // {
-  //   name: "Tabelas",
-  //   layout: "/admin",
-  //   icon: <FaTable className="inline-block h-5 w-5" />,
-  //   path: "data-tables",
-  //   component: <DataTables />,
-  // },
-  // {
-  //   name: "Relatórios",
-  //   layout: "/admin",
-  //   path: "relatorio",
-  //   icon: <MdArchive className="h-6 w-6" />,
-  //   component: <Relatorio />,
-  // }, DetalhesProduto
   {
     name: "Promoções e Marketing",
     layout: "/admin",
@@ -210,11 +195,25 @@ const routes = [
   {
     name: "Perfil Empresa",
     layout: "/admin",
-    path: "perfilempresa/:id", // Adiciona o ID como parâmetro dinâmico
+    path: "perfilempresa/:id",
     icon: <MdPerson className="h-6 w-6" />,
     admin: false,
     component: <PerfilEmpresa />,
   },
+  // {
+  //   name: "Tabelas",
+  //   layout: "/admin",
+  //   icon: <FaTable className="inline-block h-5 w-5" />,
+  //   path: "data-tables",
+  //   component: <DataTables />,
+  // },
+  // {
+  //   name: "Relatórios",
+  //   layout: "/admin",
+  //   path: "relatorio",
+  //   icon: <MdArchive className="h-6 w-6" />,
+  //   component: <Relatorio />,
+  // }, 
   // {
   //   name: "Sign In",
   //   layout: "/auth",
@@ -222,8 +221,6 @@ const routes = [
   //   icon: <MdLock className="h-6 w-6" />,
   //   component: <SignIn />,
   // },
-
-
 ];
 
 export default routes;
