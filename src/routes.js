@@ -21,6 +21,8 @@ import GerenciamentoPostos from "views/admin/posto";
 import PerfilFuncionario from "views/admin/empresa/perfil-funcionario";
 import PerfilFuncionario2 from "views/admin/posto/perfil-funcionario";
 import DetalhesProduto from "views/admin/detalhes";
+import EmpresasParaAprovar from "views/admin/empresa/aprovacao";
+import UsuariosBloqueados from "views/admin/usuario/bloqueados";
 
 // Icon Imports
 import {
@@ -39,11 +41,9 @@ import {
   FaBullhorn,
   FaExclamationTriangle,
   FaAccusoft,
-  FaTachometerAlt,
-  FaLocationArrow,
-  FaLaugh,
-  FaLongArrowAltUp,
-  FaMapMarkerAlt
+  FaMapMarkerAlt,
+  FaWpbeginner,
+  FaBold
 } from 'react-icons/fa';
 
 
@@ -74,12 +74,28 @@ const routes = [
     component: <GerenciamentoUsuarios />,
   },
   {
+    name: "Usuários Bloqueados",
+    layout: "/admin",
+    admin: true,
+    path: "bloqueados",
+    icon: <FaBold className="h-6 w-6" />,
+    component: <UsuariosBloqueados />,
+  },
+  {
     name: "Gerenciar Empresas",
     layout: "/admin",
     admin: true,
     path: "gerenciaremp",
     icon: <FaAccusoft className="h-6 w-6" />,
     component: <GerenciamentoEmpresas />,
+  },
+  {
+    name: "Empresas Por Aprovar",
+    layout: "/admin",
+    admin: true,
+    path: "aprovacao",
+    icon: <FaWpbeginner className="h-6 w-6" />,
+    component: <EmpresasParaAprovar />,
   },
   {
     name: "Gerenciar Postos",

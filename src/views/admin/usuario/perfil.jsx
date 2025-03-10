@@ -11,21 +11,17 @@ import ImageModal from "../marketplace/components/modal";
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
-    // Estado para gerenciar informações do usuário
     const navigate = useNavigate(); // Hook de navegação
-
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
     const [usuario, setUsuario] = useState(null);
     const [produtos, setProdutos] = useState([]);
     const [transacoes, setTransacoes] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedNft, setSelectedNft] = useState(null);
-
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 2,
+        pageSize: 4,
         totalPages: 1,
     });
     const [paginationTrasaction, setPaginationTrasaction] = useState({
@@ -33,7 +29,6 @@ const PerfilUsuario = () => {
         pageSize: 2,
         totalPages: 1,
     });
-    // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);
     const [formData1, setFormData] = useState({
         status: 'Ativa',
@@ -113,9 +108,6 @@ const PerfilUsuario = () => {
         fetchData();
     }, [id, pagination.pageIndex, paginationTrasaction.pageIndex]);
 
-
-
-
     if (loading) {
         return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
     }
@@ -125,7 +117,6 @@ const PerfilUsuario = () => {
     }
     const atualizarUsuario = async () => {
         try {
-            // Cria um objeto FormData
             const formData = new FormData();
 
             // Adiciona os campos do usuário ao FormData
@@ -236,10 +227,6 @@ const PerfilUsuario = () => {
     const handleStatusConta = (novoStatus) => {
         suspenderUsuario(novoStatus);
     };
-
-
-    // Função para salvar as alterações do perfil
-
 
     // Função para cancelar a edição
     const cancelarEdicao = () => {

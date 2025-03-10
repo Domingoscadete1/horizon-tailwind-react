@@ -977,3 +977,398 @@ const Marketplace = () => {
 };
 
 export default Marketplace;
+
+//////////////////////////////////////////////
+
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { FaUser, FaEdit, FaLock, FaSave, FaTimes, FaCheck, FaTrash, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
+import Card from 'components/card'; // Componente de card personalizado
+import image1 from "assets/img/profile/image1.png";
+import image2 from "assets/img/profile/image2.png";
+import image3 from "assets/img/profile/image3.png";
+import banner from "assets/img/profile/banner.png";
+import NftCard from "components/card/NftCard";
+import ImageModal from "../marketplace/components/modal";
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+
+const PerfilUsuario = () => {
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [usuario, setUsuario] = useState(null);
+    const [produtos, setProdutos] = useState([]);
+    const [transacoes, setTransacoes] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedNft, setSelectedNft] = useState(null);
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 4, // Alterado para 4 produtos por página
+        totalPages: 1,
+    });
+    const [paginationTrasaction, setPaginationTrasaction] = useState({
+        pageIndex: 0,
+        pageSize: 2,
+        totalPages: 1,
+    });
+    const [editando, setEditando] = useState(false);
+    const [formData1, setFormData] = useState({
+        status: 'Ativa',
+    });
+    const [filtroProdutos, setFiltroProdutos] = useState('');
+    const [filtroTransacoes, setFiltroTransacoes] = useState('');
+
+    const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`);
+    };
+
+    const fetchProdutos = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/produtos/usuario/${id}?page=${pagination.pageIndex + 1}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setProdutos(data.results);
+            setPagination((prev) => ({
+                ...prev,
+                totalPages: Math.ceil(data.count / prev.pageSize),
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchTransacoes = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/usuario/transacoes/${id}?page=${paginationTrasaction.pageIndex + 1}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setTransacoes(data.results);
+            setPaginationTrasaction((prev) => ({
+                ...prev,
+                totalPages: Math.ceil(data.count / prev.pageSize),
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar transações:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchUsuario = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            setUsuario(data);
+        } catch (error) {
+            console.error('Erro ao buscar usuario:', error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchUsuario();
+            await fetchProdutos();
+            await fetchTransacoes();
+            setLoading(false);
+        };
+
+        fetchData();
+    }, [id, pagination.pageIndex, paginationTrasaction.pageIndex]);
+
+    if (loading) {
+        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+    }
+
+    if (!usuario) {
+        return <div className="mt-10 text-center text-gray-500">Usuário não encontrado</div>;
+    }
+
+    const atualizarUsuario = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('nome', usuario.nome);
+            formData.append('email', usuario.email);
+            formData.append('numero_telefone', usuario.numero_telefone);
+            formData.append('endereco', usuario.endereco);
+            formData.append('data_nascimento', usuario.data_nascimento);
+            formData.append('status', usuario.status);
+
+            if (usuario.foto instanceof File) {
+                formData.append('foto', usuario.foto);
+            } else if (typeof usuario.foto === 'string') {
+                console.log("A foto não foi alterada, mantendo a existente.");
+            }
+
+            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/atualizar/`, {
+                method: "PUT",
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                const updatedUser = await response.json();
+                setUsuario(updatedUser);
+                alert('Perfil atualizado com sucesso!');
+                setEditando(false);
+            } else {
+                const errorData = await response.json();
+                alert(`Erro ao atualizar o perfil: ${errorData.detail || 'Dados inválidos'}`);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            alert('Erro ao atualizar o perfil.');
+        }
+    };
+
+    const suspenderUsuario = async (novoStatus) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/user/${id}/suspend/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+
+            if (response.ok) {
+                alert(`Conta da empresa ${novoStatus === 'Ativa' ? 'ativada' : 'suspensa'}.`);
+                setFormData((prev) => ({ ...prev, status: novoStatus }));
+            } else {
+                alert('Erro ao alterar o status da conta.');
+            }
+        } catch (error) {
+            console.error('Erro ao suspender usuário:', error);
+            alert('Erro ao alterar o status da conta.');
+        }
+    };
+
+    const apagarUsuario = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/deletar/`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+
+            if (response.ok) {
+                alert('Conta excluída com sucesso.');
+                window.location.href = '/';
+            } else {
+                alert('Erro ao excluir a conta.');
+            }
+        } catch (error) {
+            console.error('Erro ao excluir usuário:', error);
+            alert('Erro ao excluir a conta.');
+        }
+    };
+
+    const salvarPerfil = () => {
+        atualizarUsuario();
+    };
+
+    const handleImageClick = (nft) => {
+        setSelectedNft(nft);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedNft(null);
+    };
+
+    const handleStatusConta = (novoStatus) => {
+        suspenderUsuario(novoStatus);
+    };
+
+    const cancelarEdicao = () => {
+        setEditando(false);
+    };
+
+    // Função para filtrar produtos
+    const produtosFiltrados = produtos.filter(produto =>
+        produto.nome.toLowerCase().includes(filtroProdutos.toLowerCase())
+    );
+
+    // Função para filtrar transações
+    const transacoesFiltradas = transacoes.filter(transacao =>
+        transacao.produto.nome.toLowerCase().includes(filtroTransacoes.toLowerCase())
+    );
+
+    return (
+        <div>
+            <div className='mb-10 grid h-full grid-cols-1 gap-5 md:grid-cols-2'>
+            </div>
+
+            {/* Produtos Divulgados e Últimas Transações */}
+            <div className="mt-5 mb-6 grid h-full grid-cols-1 gap-5 md:flex">
+                <div className="w-full md:w-[65%]">
+                    <Card extra={"w-full p-4 h-full"}>
+                        <div className="mt-3 w-full ml-3">
+                            <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
+                                Produtos Divulgados
+                            </h4>
+                            {/* Input de filtro para produtos */}
+                            <input
+                                type="text"
+                                placeholder="Filtrar produtos..."
+                                value={filtroProdutos}
+                                onChange={(e) => setFiltroProdutos(e.target.value)}
+                                className="mt-2 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            />
+                        </div>
+
+                        {produtosFiltrados.map((produto) => (
+                            <div
+                                key={produto.id}
+                                className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                            >
+                                <div className="flex items-center">
+                                    <div className="">
+                                        <img
+                                            className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                            src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                            alt={produto.nome}
+                                            onClick={() => handleProdutoClick(produto.id)}
+                                        />
+                                    </div>
+                                    <div className="ml-3">
+                                        <p className="text-base font-medium text-navy-700 dark:text-white">
+                                            {produto.nome}
+                                        </p>
+                                        <p className="mt-2 text-sm text-gray-600">
+                                            {produto.descricao}
+                                        </p>
+                                        <p className="mt-2 text-sm text-gray-600">
+                                            {produto.preco}Kzs
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Paginação */}
+                        <div className="flex items-center justify-between mt-4 mb-4">
+                            <div className="flex items-center space-x-2">
+                                <button
+                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                    disabled={pagination.pageIndex === 0}
+                                >
+                                    <FaArrowLeft className="mr-2" /> Anterior
+                                </button>
+                                <button
+                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                    disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                                >
+                                    Próxima <FaArrowRight className="ml-2" />
+                                </button>
+                            </div>
+                            <span className="text-sm text-gray-600 dark:text-white">
+                                Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                            </span>
+                        </div>
+                    </Card>
+                </div>
+
+                <div className="w-full md:w-[35%]">
+                    <Card extra="w-full h-full sm:overflow-auto px-6">
+                        <header className="relative flex items-center mt-3 justify-between pt-4">
+                            <div className="text-xl font-bold text-navy-700 dark:text-white">Últimas Transações</div>
+                            {/* Input de filtro para transações */}
+                            <input
+                                type="text"
+                                placeholder="Filtrar transações..."
+                                value={filtroTransacoes}
+                                onChange={(e) => setFiltroTransacoes(e.target.value)}
+                                className="mt-2 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            />
+                        </header>
+                        <div className="mt-3">
+                            {transacoesFiltradas.map((transacao) => (
+                                <div
+                                    key={transacao.id}
+                                    className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                                >
+                                    <div className="flex items-center">
+                                        <div className="">
+                                            <img
+                                                className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                                src={`${API_BASE_URL}${transacao?.produto.imagens[0]?.imagem}`}
+                                                alt={transacao?.produto.nome}
+                                            />
+                                        </div>
+                                        <div className="ml-3">
+                                            <p className="text-base font-medium text-navy-700 dark:text-white">
+                                                {transacao?.produto.nome}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                {transacao.produto.descricao}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                {transacao.transacao.lance?.preco} AOA
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                {transacao?.comprador?.id == usuario.id ? 'compra' : 'venda'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Paginação */}
+                            <div className="flex items-center justify-between mt-4 mb-4">
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                        onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                        disabled={paginationTrasaction.pageIndex === 0}
+                                    >
+                                        <FaArrowLeft className="mr-2" /> Anterior
+                                    </button>
+                                    <button
+                                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                        onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                        disabled={paginationTrasaction.pageIndex + 1 >= paginationTrasaction.totalPages}
+                                    >
+                                        Próxima <FaArrowRight className="ml-2" />
+                                    </button>
+                                </div>
+                                <span className="text-sm text-gray-600 dark:text-white">
+                                    Página {paginationTrasaction.pageIndex + 1} de {paginationTrasaction.totalPages}
+                                </span>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            </div>
+
+        </div>
+    );
+};
+
+export default PerfilUsuario;
