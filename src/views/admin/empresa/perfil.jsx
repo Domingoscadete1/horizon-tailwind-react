@@ -121,7 +121,7 @@ const PerfilEmpresa = () => {
         };
 
         fetchData();
-    }, [id, pagination.pageIndex,paginationTrasaction.pageIndex]);
+    }, [id, pagination.pageIndex, paginationTrasaction.pageIndex]);
 
 
     if (loading) {
@@ -319,8 +319,8 @@ const PerfilEmpresa = () => {
 
             {/* Produtos Divulgados e Últimas Transações*/}
 
-            <div className="mt-5 grid h-full grid-cols-1 gap-5 md:flex">
-                <div className="w-full md:w-[70%]">
+            <div className="mt-5 mb-6 grid h-full grid-cols-1 gap-5 md:flex">
+                <div className="w-full md:w-[65%]">
                     <Card extra={"w-full p-4 h-full"}>
                         <div className="mt-3 w-full ml-3">
                             <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
@@ -382,13 +382,13 @@ const PerfilEmpresa = () => {
                     </Card>
                 </div>
 
-                <div className="w-full md:w-[30%]">
+                <div className="w-full md:w-[35%]">
                     <Card extra="w-full h-full sm:overflow-auto px-6">
                         <header className="relative flex items-center mt-3 justify-between pt-4">
                             <div className="text-xl font-bold text-navy-700 dark:text-white">Últimas Transações</div>
                         </header>
-                        <div className="mt-5">
-                        {transacoes.map((transacao) => (
+                        <div className="mt-3">
+                            {transacoes.map((transacao) => (
                                 <div
                                     key={transacao.id}
                                     className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
@@ -405,17 +405,17 @@ const PerfilEmpresa = () => {
                                             <p className="text-base font-medium text-navy-700 dark:text-white" >
                                                 {transacao?.produto.nome}
                                             </p>
-                                            <p className="mt-2 text-sm text-gray-600">
+                                            <p className=" text-sm text-gray-600">
                                                 {transacao.produto.descricao}
                                             </p>
-                                            <p className="mt-2 text-sm text-gray-600">
+                                            <p className=" text-sm text-gray-600">
                                                 {transacao.transacao.lance?.preco} AOA
                                             </p>
-                                            <p className="mt-2 text-sm text-gray-600">
+                                            <p className=" text-sm text-gray-600">
                                                 {
-                                                    transacao?.produto?.empresa?.id == empresa.id
-                                                        ? 'venda'
-                                                        : 'compra'
+                                                    transacao?.comprador?.id == empresa.id
+                                                        ? 'compra'
+                                                        : 'venda'
                                                 }
                                             </p>
                                         </div>
@@ -445,6 +445,7 @@ const PerfilEmpresa = () => {
                                     Página {paginationTrasaction.pageIndex + 1} de {paginationTrasaction.totalPages}
                                 </span>
                             </div>
+
                         </div>
                     </Card>
                 </div>
