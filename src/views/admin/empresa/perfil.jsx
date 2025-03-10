@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes, FaArrowLeft, FaArrowRight,FaFilePdf } from 'react-icons/fa';
 import Card from 'components/card';
 import avatar from "assets/img/avatars/avatar11.png";
 import banner from "assets/img/profile/banner.png";
@@ -59,6 +59,7 @@ const PerfilEmpresa = () => {
                 },
             });
             const data = await response.json();
+            console.log(data);
             setEmpresa(data);
             setFormData(data);
         } catch (error) {
@@ -88,6 +89,55 @@ const PerfilEmpresa = () => {
             setLoading(false);
         }
     };
+    const aceitarEmpresa = async (empresaId) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/aceitar-empresa/${empresaId}/`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true"
+                },
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || "Erro ao aceitar empresa");
+            }
+    
+            alert("Empresa aprovada com sucesso!");
+            window.location.reload(); // Recarregar a página ou atualizar a lista
+    
+        } catch (error) {
+            console.error("Erro:", error);
+            alert(error.message);
+        }
+    };
+    
+    // Função para negar uma empresa
+    const negarEmpresa = async (empresaId) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/negar-empresa/${empresaId}/`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true"
+                },
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || "Erro ao negar empresa");
+            }
+    
+            alert("Empresa negada com sucesso!");
+            window.location.reload(); // Recarregar a página ou atualizar a lista
+    
+        } catch (error) {
+            console.error("Erro:", error);
+            alert(error.message);
+        }
+    };
+    
 
     const fetchProdutos = async () => {
         setLoading(true);
@@ -215,6 +265,8 @@ const PerfilEmpresa = () => {
             formData.append('endereco', empresa.endereco);
             formData.append('categoria', empresa.categoria);
             formData.append('status', empresa.status);
+            formData.append('nif', empresa.nif);
+
 
             const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
                 method: "PUT",
@@ -240,6 +292,7 @@ const PerfilEmpresa = () => {
     };
 
     return (
+        <>
         <div>
             {/* Modal para exibir a imagem em tamanho grande */}
             {selectedImage && (
@@ -264,7 +317,7 @@ const PerfilEmpresa = () => {
                         style={{ backgroundImage: `url(${banner})` }}
                     >
                         <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-navy-700">
-                            <img className="h-full w-full rounded-full" src={empresa.imagens[0]?.imagem || ''} alt="Logo" />
+                            <img className="h-full w-full rounded-full" src={empresa.imagens[0]?.imagem || 'ol'} alt="Logo" />
                         </div>
                     </div>
 
@@ -463,7 +516,7 @@ const PerfilEmpresa = () => {
                         </button>
                     </header>
                     <div className="mt-2">
-                        {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2', 'email', 'categoria'].map((campo) => (
+                        {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2', 'email', 'categoria','nif'].map((campo) => (
                             <div key={campo} className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-white">
                                     {campo.charAt(0).toUpperCase() + campo.slice(1)}
@@ -489,24 +542,80 @@ const PerfilEmpresa = () => {
                 </Card>
 
                 <Card extra="w-full h-full sm:overflow-auto px-6 mt-6">
-                    <header className="relative flex items-center justify-between pt-4">
-                        <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
-                    </header>
-                    <div className="mt-5">
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {empresa.status}</p>
-                        <div className="flex space-x-2 mt-4">
-                            {empresa.status === 'ativo' ? (
-                                <button onClick={() => handleStatusConta('Suspensa')} className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center">
-                                    <FaTimes className="mr-2" /> Suspender Conta
-                                </button>
-                            ) : (
-                                <button onClick={() => handleStatusConta('Ativa')} className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
-                                    <FaCheck className="mr-2" /> Ativar Conta
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </Card>
+    <header className="relative flex items-center justify-between pt-4">
+        <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
+    </header>
+    <div className="mt-5">
+        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {empresa.status}</p>
+        <div className="mt-4 flex space-x-4">
+            {empresa.alvara_comercial && (
+                <a
+                    href={empresa.alvara_comercial}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-blue-500 hover:underline"
+                >
+                    <FaFilePdf className="text-red-500" size={20} />
+                    <span>Alvará Comercial</span>
+                </a>
+            )}
+
+            {empresa.certidao_registro_comercial && (
+                <a
+                    href={empresa.certidao_registro_comercial}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-blue-500 hover:underline"
+                >
+                    <FaFilePdf className="text-red-500" size={20} />
+                    <span>Registro Comercial</span>
+                </a>
+            )}
+        </div>
+        {/* Exibir ativar/desativar conta apenas se a empresa estiver verificada */}
+        {empresa.verificada && (
+            <div className="flex space-x-2 mt-4">
+                {empresa.status === "ativo" ? (
+                    <button
+                        onClick={() => handleStatusConta("Suspensa")}
+                        className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center"
+                    >
+                        <FaTimes className="mr-2" /> Suspender Conta
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => handleStatusConta("Ativa")}
+                        className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
+                    >
+                        <FaCheck className="mr-2" /> Ativar Conta
+                    </button>
+                )}
+            </div>
+        )}
+
+        <div className="flex space-x-2 mt-4">
+            {!empresa.verificada ? (
+                <>
+                    <button
+                        onClick={() => aceitarEmpresa(empresa.id)}
+                        className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
+                    >
+                        <FaCheck className="mr-2" /> Aprovar Empresa
+                    </button>
+                    <button
+                        onClick={() => negarEmpresa(empresa.id)}
+                        className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center"
+                    >
+                        <FaTimes className="mr-2" /> Negar Empresa
+                    </button>
+                </>
+            ) : (
+                <p className="text-sm font-bold text-navy-700 dark:text-white">Empresa Aprovada</p>
+            )}
+        </div>
+    </div>
+</Card>
+
             </div>
 
             {/* Modal com imagens adicionais */}
@@ -518,7 +627,7 @@ const PerfilEmpresa = () => {
                 />
             )}
         </div>
-    );
+    </>);
 };
 
 export default PerfilEmpresa;

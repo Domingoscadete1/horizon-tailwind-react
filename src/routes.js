@@ -76,7 +76,7 @@ const routes = [
   {
     name: "Usuários Bloqueados",
     layout: "/admin",
-    admin: true,
+    admin: false,
     path: "bloqueados",
     icon: <FaBold className="h-6 w-6" />,
     component: <UsuariosBloqueados />,
