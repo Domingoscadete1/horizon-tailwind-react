@@ -35,8 +35,15 @@ const PerfilEmpresa = () => {
     const [editing, setEditing] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [formData, setFormData] = useState();
+    const [transacoes, setTransacoes] = useState([]);
+
     const [editando, setEditando] = useState(false);
     const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 2,
+        totalPages: 1,
+    });
+    const [paginationTrasaction, setPaginationTrasaction] = useState({
         pageIndex: 0,
         pageSize: 2,
         totalPages: 1,
@@ -56,6 +63,29 @@ const PerfilEmpresa = () => {
             setFormData(data);
         } catch (error) {
             console.error('Erro ao buscar empresa:', error);
+        }
+    };
+    const fetchTransacoes = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/empresa/transacoes/${id}?page=${paginationTrasaction.pageIndex + 1}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setTransacoes(data.results.transacoes);
+            setPaginationTrasaction((prev) => ({
+                ...prev,
+                totalPages: Math.ceil(data.count / prev.pageSize),
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -85,11 +115,13 @@ const PerfilEmpresa = () => {
         const fetchData = async () => {
             await fetchEmpresa();
             await fetchProdutos(); // Garante que a página 1 seja carregada por padrão
+            await fetchTransacoes();
+
             setLoading(false);
         };
 
         fetchData();
-    }, [id, pagination.pageIndex]);
+    }, [id, pagination.pageIndex,paginationTrasaction.pageIndex]);
 
 
     if (loading) {
@@ -356,7 +388,63 @@ const PerfilEmpresa = () => {
                             <div className="text-xl font-bold text-navy-700 dark:text-white">Últimas Transações</div>
                         </header>
                         <div className="mt-5">
-                            
+                        {transacoes.map((transacao) => (
+                                <div
+                                    key={transacao.id}
+                                    className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                                >
+                                    <div className="flex items-center">
+                                        <div className="">
+                                            <img
+                                                className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                                src={`${API_BASE_URL}${transacao?.produto.imagens[0]?.imagem}`}
+                                                alt={transacao?.produto.nome}
+                                            />
+                                        </div>
+                                        <div className="ml-3">
+                                            <p className="text-base font-medium text-navy-700 dark:text-white" >
+                                                {transacao?.produto.nome}
+                                            </p>
+                                            <p className="mt-2 text-sm text-gray-600">
+                                                {transacao.produto.descricao}
+                                            </p>
+                                            <p className="mt-2 text-sm text-gray-600">
+                                                {transacao.transacao.lance?.preco} AOA
+                                            </p>
+                                            <p className="mt-2 text-sm text-gray-600">
+                                                {
+                                                    transacao?.produto?.empresa?.id == empresa.id
+                                                        ? 'venda'
+                                                        : 'compra'
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Paginação */}
+                            <div className="flex items-center justify-between mt-4 mb-4">
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                        onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                        disabled={paginationTrasaction.pageIndex === 0}
+                                    >
+                                        <FaArrowLeft className="mr-2" /> Anterior
+                                    </button>
+                                    <button
+                                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                        onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                        disabled={paginationTrasaction.pageIndex + 1 >= paginationTrasaction.totalPages}
+                                    >
+                                        Próxima <FaArrowRight className="ml-2" />
+                                    </button>
+                                </div>
+                                <span className="text-sm text-gray-600 dark:text-white">
+                                    Página {paginationTrasaction.pageIndex + 1} de {paginationTrasaction.totalPages}
+                                </span>
+                            </div>
                         </div>
                     </Card>
                 </div>
