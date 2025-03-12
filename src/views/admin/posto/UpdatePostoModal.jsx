@@ -162,6 +162,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                     >
                         <header className="flex justify-between items-center mb-2">
                             <h2 className="text-lg font-semibold text-navy-700">Escolha a Localização</h2>
+                            
                             <button
                                 onClick={() => setOpenMapModal(false)}
                                 className="text-navy-700 hover:text-blue-700"
@@ -255,6 +256,15 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                         <label className="block text-sm font-medium text-gray-700">
                             Localização
                         </label>
+                        {/* <input
+                            type="text"
+                            name="nome"
+                            value={posto.localizacao}
+                            onChange={handleInputChange}
+                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            disabled
+                        /> */}
+                         
                         <button
                             onClick={handleGetCurrentLocation}
                             className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"

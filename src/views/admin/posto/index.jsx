@@ -306,6 +306,7 @@ const GerenciamentoPostos = () => {
             setPostos(novaLista);
         }
     };
+    
 
     // Configuração das colunas para postos
     const columnHelper = createColumnHelper();
@@ -370,6 +371,7 @@ const GerenciamentoPostos = () => {
             ),
         }),
     ];
+
 
     // Configuração das colunas para funcionários
     const funcionariosColumns = [
