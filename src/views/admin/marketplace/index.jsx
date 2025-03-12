@@ -91,7 +91,7 @@ const Marketplace = () => {
     setSelectedNft(produto);
     setIsModalOpen(true);
   };
-
+  
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedNft(null);

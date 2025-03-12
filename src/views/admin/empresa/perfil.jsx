@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes, FaArrowLeft, FaArrowRight,FaFilePdf } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaChartLine, FaCheck, FaTimes, FaArrowLeft, FaArrowRight, FaFilePdf } from 'react-icons/fa';
 import Card from 'components/card';
 import avatar from "assets/img/avatars/avatar11.png";
 import banner from "assets/img/profile/banner.png";
@@ -98,21 +98,21 @@ const PerfilEmpresa = () => {
                     "ngrok-skip-browser-warning": "true"
                 },
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail || "Erro ao aceitar empresa");
             }
-    
+
             alert("Empresa aprovada com sucesso!");
             window.location.reload(); // Recarregar a página ou atualizar a lista
-    
+
         } catch (error) {
             console.error("Erro:", error);
             alert(error.message);
         }
     };
-    
+
     // Função para negar uma empresa
     const negarEmpresa = async (empresaId) => {
         try {
@@ -123,21 +123,21 @@ const PerfilEmpresa = () => {
                     "ngrok-skip-browser-warning": "true"
                 },
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail || "Erro ao negar empresa");
             }
-    
+
             alert("Empresa negada com sucesso!");
             window.location.reload(); // Recarregar a página ou atualizar a lista
-    
+
         } catch (error) {
             console.error("Erro:", error);
             alert(error.message);
         }
     };
-    
+
 
     const fetchProdutos = async () => {
         setLoading(true);
@@ -293,183 +293,117 @@ const PerfilEmpresa = () => {
 
     return (
         <>
-        <div>
-            {/* Modal para exibir a imagem em tamanho grande */}
-            {selectedImage && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg relative">
-                        <button
-                            onClick={closeImageModal}
-                            className="absolute top-2 right-2 text-gray-700 hover:text-gray-900"
-                        >
-                            &times;
-                        </button>
-                        <img src={selectedImage} alt="Imagem ampliada" className="max-w-full max-h-[80vh]" />
-                    </div>
-                </div>
-            )}
-
-            <div className="mt-5 mb-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
-                <Card extra={"items-center w-full h-full p-[16px] bg-cover"}>
-                    {/* Background and profile */}
-                    <div
-                        className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover"
-                        style={{ backgroundImage: `url(${banner})` }}
-                    >
-                        <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-navy-700">
-                            <img className="h-full w-full rounded-full" src={empresa.imagens[0]?.imagem || 'ol'} alt="Logo" />
-                        </div>
-                    </div>
-
-                    {/* Name and position */}
-                    <div className="mt-16 flex flex-col items-center">
-                        <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-                            {empresa.nome}
-                        </h4>
-                        <p className="text-base font-normal text-gray-600">{empresa.email}</p>
-                    </div>
-
-                    {/* Post followers */}
-                    <div className="mt-6 mb-3 flex gap-4 md:!gap-14">
-                        <div className="flex flex-col items-center justify-center">
-                            <p className="text-2xl font-bold text-navy-700 dark:text-white">17</p>
-                            <p className="text-sm font-normal text-gray-600">Posts</p>
-                        </div>
-                        <div className="flex flex-col items-center justify-center">
-                            <p className="text-2xl font-bold text-navy-700 dark:text-white">
-                                9
-                            </p>
-                            <p className="text-sm font-normal text-gray-600">Produtos Vendidos</p>
-                        </div>
-                        <div className="flex flex-col items-center justify-center">
-                            <p className="text-2xl font-bold text-navy-700 dark:text-white">
-                                8
-                            </p>
-                            <p className="text-sm font-normal text-gray-600">Disponíveis</p>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card extra="w-full h-full sm:overflow-auto p-6">
-                    <div className="text-xl font-bold text-navy-700 dark:text-white">
-                        Imagens da empresa
-                    </div>
-
-                    <div className="mt-6 flex flex-wrap gap-4">
-                        {empresa.imagens && empresa.imagens.length > 0 ? (
-                            empresa.imagens.map((img, index) => (
-                                <div key={index} className="cursor-pointer" onClick={() => openImageModal(img.imagem)}>
-                                    <img className="h-[150px] w-[150px] rounded-xl object-cover" src={img.imagem} alt={`Imagem ${index + 1}`} />
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-gray-600">Nenhuma imagem disponível</p>
-                        )}
-                    </div>
-                </Card>
-
-            </div>
-
-            {/* Produtos Divulgados e Últimas Transações*/}
-
-            <div className="mt-5 mb-6 grid h-full grid-cols-1 gap-5 md:flex">
-                <div className="w-full md:w-[65%]">
-                    <Card extra={"w-full p-4 h-full"}>
-                        <div className="mt-3 w-full ml-3">
-                            <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
-                                Produtos Divulgados
-                            </h4>
-                        </div>
-
-                        {produtos.map((produto) => (
-                            <div
-                                key={produto.id}
-                                className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+            <div>
+                {/* Modal para exibir a imagem em tamanho grande */}
+                {selectedImage && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg relative">
+                            <button
+                                onClick={closeImageModal}
+                                className="absolute top-2 right-2 text-gray-700 hover:text-gray-900"
                             >
-                                <div className="flex items-center">
-                                    <div className="">
-                                        <img
-                                            className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                            src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
-                                            alt={produto.nome}
-                                            onClick={() => handleProdutoClick(produto.id)}
-                                        />
-                                    </div>
-                                    <div className="ml-3">
-                                        <p className="text-base font-medium text-navy-700 dark:text-white" >
-                                            {produto.nome}
-                                        </p>
-                                        <p className="mt-2 text-sm text-gray-600">
-                                            {produto.descricao}
-                                        </p>
-                                        <p className="mt-2 text-sm text-gray-600">
-                                            {produto.preco}Kzs
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                                &times;
+                            </button>
+                            <img src={selectedImage} alt="Imagem ampliada" className="max-w-full max-h-[80vh]" />
+                        </div>
+                    </div>
+                )}
 
-                        {/* Paginação */}
-                        <div className="flex items-center justify-between mt-4 mb-4">
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
-                                    disabled={pagination.pageIndex === 0}
-                                >
-                                    <FaArrowLeft className="mr-2" /> Anterior
-                                </button>
-                                <button
-                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
-                                    disabled={pagination.pageIndex + 1 >= pagination.totalPages}
-                                >
-                                    Próxima <FaArrowRight className="ml-2" />
-                                </button>
+                <div className="mt-5 mb-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
+                    <Card extra={"items-center w-full h-full p-[16px] bg-cover"}>
+                        {/* Background and profile */}
+                        <div
+                            className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover"
+                            style={{ backgroundImage: `url(${banner})` }}
+                        >
+                            <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-navy-700">
+                                <img className="h-full w-full rounded-full" src={empresa.imagens[0]?.imagem || 'ol'} alt="Logo" />
                             </div>
-                            <span className="text-sm text-gray-600 dark:text-white">
-                                Página {pagination.pageIndex + 1} de {pagination.totalPages}
-                            </span>
+                        </div>
+
+                        {/* Name and position */}
+                        <div className="mt-16 flex flex-col items-center">
+                            <h4 className="text-xl font-bold text-navy-700 dark:text-white">
+                                {empresa.nome}
+                            </h4>
+                            <p className="text-base font-normal text-gray-600">{empresa.email}</p>
+                        </div>
+
+                        {/* Post followers */}
+                        <div className="mt-6 mb-3 flex gap-4 md:!gap-14">
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-2xl font-bold text-navy-700 dark:text-white">17</p>
+                                <p className="text-sm font-normal text-gray-600">Posts</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-2xl font-bold text-navy-700 dark:text-white">
+                                    9
+                                </p>
+                                <p className="text-sm font-normal text-gray-600">Produtos Vendidos</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-2xl font-bold text-navy-700 dark:text-white">
+                                    8
+                                </p>
+                                <p className="text-sm font-normal text-gray-600">Disponíveis</p>
+                            </div>
                         </div>
                     </Card>
+
+                    <Card extra="w-full h-full sm:overflow-auto p-6">
+                        <div className="text-xl font-bold text-navy-700 dark:text-white">
+                            Imagens da empresa
+                        </div>
+
+                        <div className="mt-6 flex flex-wrap gap-4">
+                            {empresa.imagens && empresa.imagens.length > 0 ? (
+                                empresa.imagens.map((img, index) => (
+                                    <div key={index} className="cursor-pointer" onClick={() => openImageModal(img.imagem)}>
+                                        <img className="h-[150px] w-[150px] rounded-xl object-cover" src={img.imagem} alt={`Imagem ${index + 1}`} />
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-600">Nenhuma imagem disponível</p>
+                            )}
+                        </div>
+                    </Card>
+
                 </div>
 
-                <div className="w-full md:w-[35%]">
-                    <Card extra="w-full h-full sm:overflow-auto px-6">
-                        <header className="relative flex items-center mt-3 justify-between pt-4">
-                            <div className="text-xl font-bold text-navy-700 dark:text-white">Últimas Transações</div>
-                        </header>
-                        <div className="mt-3">
-                            {transacoes.map((transacao) => (
+                {/* Produtos Divulgados e Últimas Transações*/}
+
+                <div className="mt-5 mb-6 grid h-full grid-cols-1 gap-5 md:flex">
+                    <div className="w-full md:w-[65%]">
+                        <Card extra={"w-full p-4 h-full"}>
+                            <div className="mt-3 w-full ml-3">
+                                <h4 className="text-2xl font-bold text-navy-700 dark:text-white">
+                                    Produtos Divulgados
+                                </h4>
+                            </div>
+
+                            {produtos.map((produto) => (
                                 <div
-                                    key={transacao.id}
+                                    key={produto.id}
                                     className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
                                 >
                                     <div className="flex items-center">
                                         <div className="">
                                             <img
                                                 className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                                src={`${API_BASE_URL}${transacao?.produto.imagens[0]?.imagem}`}
-                                                alt={transacao?.produto.nome}
+                                                src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                                alt={produto.nome}
+                                                onClick={() => handleProdutoClick(produto.id)}
                                             />
                                         </div>
                                         <div className="ml-3">
                                             <p className="text-base font-medium text-navy-700 dark:text-white" >
-                                                {transacao?.produto.nome}
+                                                {produto.nome}
                                             </p>
-                                            <p className=" text-sm text-gray-600">
-                                                {transacao.produto.descricao}
+                                            <p className="mt-2 text-sm text-gray-600">
+                                                {produto.descricao}
                                             </p>
-                                            <p className=" text-sm text-gray-600">
-                                                {transacao.transacao.lance?.preco} AOA
-                                            </p>
-                                            <p className=" text-sm text-gray-600">
-                                                {
-                                                    transacao?.comprador?.id == empresa.id
-                                                        ? 'compra'
-                                                        : 'venda'
-                                                }
+                                            <p className="mt-2 text-sm text-gray-600">
+                                                {produto.preco}Kzs
                                             </p>
                                         </div>
                                     </div>
@@ -481,153 +415,219 @@ const PerfilEmpresa = () => {
                                 <div className="flex items-center space-x-2">
                                     <button
                                         className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                                        onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
-                                        disabled={paginationTrasaction.pageIndex === 0}
+                                        onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                        disabled={pagination.pageIndex === 0}
                                     >
                                         <FaArrowLeft className="mr-2" /> Anterior
                                     </button>
                                     <button
                                         className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                                        onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
-                                        disabled={paginationTrasaction.pageIndex + 1 >= paginationTrasaction.totalPages}
+                                        onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                        disabled={pagination.pageIndex + 1 >= pagination.totalPages}
                                     >
                                         Próxima <FaArrowRight className="ml-2" />
                                     </button>
                                 </div>
                                 <span className="text-sm text-gray-600 dark:text-white">
-                                    Página {paginationTrasaction.pageIndex + 1} de {paginationTrasaction.totalPages}
+                                    Página {pagination.pageIndex + 1} de {pagination.totalPages}
                                 </span>
                             </div>
+                        </Card>
+                    </div>
 
+                    <div className="w-full md:w-[35%]">
+                        <Card extra="w-full h-full sm:overflow-auto px-6">
+                            <header className="relative flex items-center mt-3 justify-between pt-4">
+                                <div className="text-xl font-bold text-navy-700 dark:text-white">Últimas Transações</div>
+                            </header>
+                            <div className="mt-3">
+                                {transacoes.map((transacao) => (
+                                    <div
+                                        key={transacao.id}
+                                        className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none"
+                                    >
+                                        <div className="flex items-center">
+                                            <div className="">
+                                                <img
+                                                    className="h-[83px] w-[83px] rounded-lg cursor-pointer"
+                                                    src={`${API_BASE_URL}${transacao?.produto.imagens[0]?.imagem}`}
+                                                    alt={transacao?.produto.nome}
+                                                />
+                                            </div>
+                                            <div className="ml-3">
+                                                <p className="text-base font-medium text-navy-700 dark:text-white" >
+                                                    {transacao?.produto.nome}
+                                                </p>
+                                                <p className=" text-sm text-gray-600">
+                                                    {transacao.produto.descricao}
+                                                </p>
+                                                <p className=" text-sm text-gray-600">
+                                                    {transacao.transacao.lance?.preco} AOA
+                                                </p>
+                                                <p className=" text-sm text-gray-600">
+                                                    {
+                                                        transacao?.comprador?.id == empresa.id
+                                                            ? 'compra'
+                                                            : 'venda'
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* Paginação */}
+                                <div className="flex items-center justify-between mt-4 mb-4">
+                                    <div className="flex items-center space-x-2">
+                                        <button
+                                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                            onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                            disabled={paginationTrasaction.pageIndex === 0}
+                                        >
+                                            <FaArrowLeft className="mr-2" /> Anterior
+                                        </button>
+                                        <button
+                                            className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                            onClick={() => setPaginationTrasaction((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                            disabled={paginationTrasaction.pageIndex + 1 >= paginationTrasaction.totalPages}
+                                        >
+                                            Próxima <FaArrowRight className="ml-2" />
+                                        </button>
+                                    </div>
+                                    <span className="text-sm text-gray-600 dark:text-white">
+                                        Página {paginationTrasaction.pageIndex + 1} de {paginationTrasaction.totalPages}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+
+                <div className="grid h-full grid-cols-1 gap-5 md:grid-cols-1">
+                    <Card extra="w-full h-full sm:overflow-auto px-6 mt-6">
+                        <header className="relative mt-5 flex items-center justify-between pt-2">
+                            <div className="text-2xl font-bold text-navy-700 dark:text-white">
+                                Informações Cadastrais
+                            </div>
+                            <button onClick={() => setEditing(!editing)} className="text-blue-500 mb-5 hover:text-blue-700 flex items-center">
+                                <FaEdit className="mr-2" />
+                                {editing ? 'Cancelar Edição' : 'Editar Dados'}
+                            </button>
+                        </header>
+                        <div className="mt-2">
+                            {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2', 'email', 'categoria', 'nif'].map((campo) => (
+                                <div key={campo} className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-white">
+                                        {campo.charAt(0).toUpperCase() + campo.slice(1)}
+                                    </label>
+                                    {editing ? (
+                                        <input
+                                            type="text"
+                                            value={formData[campo]}
+                                            onChange={(e) => setFormData({ ...formData, [campo]: e.target.value })}
+                                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                        />
+                                    ) : (
+                                        <p className="text-sm font-bold text-navy-700 dark:text-white">{formData[campo]}</p>
+                                    )}
+                                </div>
+                            ))}
+                            {editing && (
+                                <button onClick={handleSalvarEdicao} className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
+                                    <FaCheck className="mr-2" /> Salvar Alterações
+                                </button>
+                            )}
                         </div>
                     </Card>
-                </div>
-            </div>
 
-            <div className="grid h-full grid-cols-1 gap-5 md:grid-cols-1">
-                <Card extra="w-full h-full sm:overflow-auto px-6 mt-6">
-                    <header className="relative mt-5 flex items-center justify-between pt-2">
-                        <div className="text-2xl font-bold text-navy-700 dark:text-white">
-                            Informações Cadastrais
-                        </div>
-                        <button onClick={() => setEditing(!editing)} className="text-blue-500 mb-5 hover:text-blue-700 flex items-center">
-                            <FaEdit className="mr-2" />
-                            {editing ? 'Cancelar Edição' : 'Editar Dados'}
-                        </button>
-                    </header>
-                    <div className="mt-2">
-                        {['nome', 'descricao', 'endereco', 'telefone1', 'telefone2', 'email', 'categoria','nif'].map((campo) => (
-                            <div key={campo} className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-white">
-                                    {campo.charAt(0).toUpperCase() + campo.slice(1)}
-                                </label>
-                                {editing ? (
-                                    <input
-                                        type="text"
-                                        value={formData[campo]}
-                                        onChange={(e) => setFormData({ ...formData, [campo]: e.target.value })}
-                                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                                    />
-                                ) : (
-                                    <p className="text-sm font-bold text-navy-700 dark:text-white">{formData[campo]}</p>
+                    <Card extra="w-full h-full sm:overflow-auto px-6 mt-6">
+                        <header className="relative flex items-center justify-between pt-4">
+                            <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
+                        </header>
+                        <div className="mt-5">
+                            <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {empresa.status}</p>
+                            <div className="mt-4 flex space-x-4">
+                                {empresa.alvara_comercial && (
+                                    <a
+                                        href={empresa.alvara_comercial}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center space-x-2 text-blue-500 hover:underline"
+                                    >
+                                        <FaFilePdf className="text-red-500" size={20} />
+                                        <span>Alvará Comercial</span>
+                                    </a>
+                                )}
+
+                                {empresa.certidao_registro_comercial && (
+                                    <a
+                                        href={empresa.certidao_registro_comercial}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center space-x-2 text-blue-500 hover:underline"
+                                    >
+                                        <FaFilePdf className="text-red-500" size={20} />
+                                        <span>Registro Comercial</span>
+                                    </a>
                                 )}
                             </div>
-                        ))}
-                        {editing && (
-                            <button onClick={handleSalvarEdicao} className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
-                                <FaCheck className="mr-2" /> Salvar Alterações
-                            </button>
-                        )}
-                    </div>
-                </Card>
+                            {/* Exibir ativar/desativar conta apenas se a empresa estiver verificada */}
+                            {empresa.verificada && (
+                                <div className="flex space-x-2 mt-4">
+                                    {empresa.status === "ativo" ? (
+                                        <button
+                                            onClick={() => handleStatusConta("Suspensa")}
+                                            className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center"
+                                        >
+                                            <FaTimes className="mr-2" /> Suspender Conta
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleStatusConta("Ativa")}
+                                            className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
+                                        >
+                                            <FaCheck className="mr-2" /> Ativar Conta
+                                        </button>
+                                    )}
+                                </div>
+                            )}
 
-                <Card extra="w-full h-full sm:overflow-auto px-6 mt-6">
-    <header className="relative flex items-center justify-between pt-4">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">Status da Conta</div>
-    </header>
-    <div className="mt-5">
-        <p className="text-sm font-bold text-navy-700 dark:text-white">Status atual: {empresa.status}</p>
-        <div className="mt-4 flex space-x-4">
-            {empresa.alvara_comercial && (
-                <a
-                    href={empresa.alvara_comercial}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-blue-500 hover:underline"
-                >
-                    <FaFilePdf className="text-red-500" size={20} />
-                    <span>Alvará Comercial</span>
-                </a>
-            )}
+                            <div className="flex space-x-2 mt-4">
+                                {!empresa.verificada ? (
+                                    <>
+                                        <button
+                                            onClick={() => aceitarEmpresa(empresa.id)}
+                                            className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
+                                        >
+                                            <FaCheck className="mr-2" /> Aprovar Empresa
+                                        </button>
+                                        <button
+                                            onClick={() => negarEmpresa(empresa.id)}
+                                            className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center"
+                                        >
+                                            <FaTimes className="mr-2" /> Negar Empresa
+                                        </button>
+                                    </>
+                                ) : (
+                                    <p className="text-sm font-bold text-navy-700 dark:text-white">Empresa Aprovada</p>
+                                )}
+                            </div>
+                        </div>
+                    </Card>
 
-            {empresa.certidao_registro_comercial && (
-                <a
-                    href={empresa.certidao_registro_comercial}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-blue-500 hover:underline"
-                >
-                    <FaFilePdf className="text-red-500" size={20} />
-                    <span>Registro Comercial</span>
-                </a>
-            )}
-        </div>
-        {/* Exibir ativar/desativar conta apenas se a empresa estiver verificada */}
-        {empresa.verificada && (
-            <div className="flex space-x-2 mt-4">
-                {empresa.status === "ativo" ? (
-                    <button
-                        onClick={() => handleStatusConta("Suspensa")}
-                        className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center"
-                    >
-                        <FaTimes className="mr-2" /> Suspender Conta
-                    </button>
-                ) : (
-                    <button
-                        onClick={() => handleStatusConta("Ativa")}
-                        className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
-                    >
-                        <FaCheck className="mr-2" /> Ativar Conta
-                    </button>
+                </div>
+
+                {/* Modal com imagens adicionais */}
+                {isModalOpen && selectedNft && (
+                    <ImageModal
+                        imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
+                        additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
+                        onClose={closeModal}
+                    />
                 )}
             </div>
-        )}
-
-        <div className="flex space-x-2 mt-4">
-            {!empresa.verificada ? (
-                <>
-                    <button
-                        onClick={() => aceitarEmpresa(empresa.id)}
-                        className="bg-green-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center"
-                    >
-                        <FaCheck className="mr-2" /> Aprovar Empresa
-                    </button>
-                    <button
-                        onClick={() => negarEmpresa(empresa.id)}
-                        className="bg-red-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center"
-                    >
-                        <FaTimes className="mr-2" /> Negar Empresa
-                    </button>
-                </>
-            ) : (
-                <p className="text-sm font-bold text-navy-700 dark:text-white">Empresa Aprovada</p>
-            )}
-        </div>
-    </div>
-</Card>
-
-            </div>
-
-            {/* Modal com imagens adicionais */}
-            {isModalOpen && selectedNft && (
-                <ImageModal
-                    imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
-                    additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
-                    onClose={closeModal}
-                />
-            )}
-        </div>
-    </>);
+        </>);
 };
 
 export default PerfilEmpresa;

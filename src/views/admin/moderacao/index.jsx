@@ -73,7 +73,7 @@ const ModeracaoConteudo = () => {
                                     <td className="py-2 px-4">
                                         <button
                                             onClick={() => removerReporte(rep.id)}
-                                            className="text-red-500 hover:text-red-700"
+                                            className="text-red-500 hover:text-red-700 ml-4"
                                             title="Remover Reporte"
                                         >
                                             <FaBan className="text-red text-lg"/>

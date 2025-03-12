@@ -367,6 +367,10 @@ const GerenciamentoPostos = () => {
 
     // Configuração das colunas para funcionários
     const funcionariosColumns = [
+        columnHelper.accessor('id', {
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
+            cell: (info) => info.getValue(),
+        }),
         columnHelper.accessor('foto', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
@@ -393,6 +397,10 @@ const GerenciamentoPostos = () => {
 
     // Configuração das colunas para atividades
     const atividadesColumns = [
+        columnHelper.accessor('id', {
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
+            cell: (info) => info.getValue(),
+        }),
         columnHelper.accessor(row => row.transacao?.lance?.produto?.imagens?.[0]?.imagem, {
             id: "imagem_produto", // Adicione um ID único
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM DO PRODUTO</p>,

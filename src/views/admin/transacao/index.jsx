@@ -117,7 +117,7 @@ const Transacao = () => {
                 <div className="flex gap-2 space-x-4">
                     <button
                         onClick={() => handleDownload(row.original.id)}
-                        className="text-blue-500 hover:text-blue-700"
+                        className="text-blue-500 hover:text-blue-700 ml-4"
                         title="Download"
                     >
                         <FaDownload />
