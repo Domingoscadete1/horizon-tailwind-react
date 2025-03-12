@@ -2,44 +2,111 @@ import React, { useState } from 'react';
 import { FaTag, FaBullhorn, FaPaperPlane } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+
 const PromocoesMarketing = () => {
     // Estado para gerenciar descontos e ofertas
     const [desconto, setDesconto] = useState('');
     const [condicoes, setCondicoes] = useState('');
-    const [imagem, setImagem] = useState(null); // Estado para armazenar a imagem selecionada
-    const [imagemPreview, setImagemPreview] = useState(null); // Estado para exibir a prévia da imagem
+    const [imagens, setImagens] = useState([null, null, null, null]); // Lista para armazenar as imagens
+    const [imagensPreview, setImagensPreview] = useState([null, null, null, null]); // Estado para exibir a prévia da imagem
     const [mensagem, setMensagem] = useState('');
+    const [tipoNotificacao, setTipoNotificacao] = useState('todos'); // Novo estado para selecionar o tipo
+
 
     // Função para criar uma campanha promocional
-    const criarCampanha = () => {
-        if (!desconto || !condicoes || !imagem) {
-            alert('Preencha todos os campos e adicione uma imagem para criar a campanha.');
+    const criarCampanha = async () => {
+        if (!desconto || !condicoes || imagens.every(img => img === null)) {
+            alert('Preencha todos os campos e adicione pelo menos uma imagem.');
             return;
         }
-        alert(`Campanha criada com sucesso!\nDesconto: ${desconto}\nCondições: ${condicoes}`);
-        setDesconto('');
-        setCondicoes('');
-        setImagem(null);
-        setImagemPreview(null);
+
+        const formData = new FormData();
+        formData.append("descricao", condicoes);
+        formData.append("desconto", desconto);
+        formData.append("condicoes", condicoes);
+
+        // Adiciona imagens apenas se estiverem definidas
+        imagens.forEach((imagem, index) => {
+            if (imagem) {
+                formData.append(`imagem${index + 1}`, imagem);
+            }
+        });
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/anuncio-app/create/`, {
+                method: 'POST',
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                alert('Campanha criada com sucesso!');
+                setDesconto('');
+                setCondicoes('');
+                setImagens([null, null, null, null]);
+                setImagensPreview([null, null, null, null]);
+            } else {
+                alert('Erro ao criar campanha.');
+            }
+        } catch (error) {
+            console.error('Erro ao criar campanha:', error);
+            alert('Erro ao conectar com o servidor.');
+        }
     };
 
     // Função para lidar com o upload da imagem
-    const handleImagemChange = (e) => {
+    const handleImagemChange = (e, index) => {
         const file = e.target.files[0];
         if (file) {
-            setImagem(file);
-            setImagemPreview(URL.createObjectURL(file)); // Cria uma URL para a prévia da imagem
+            const novasImagens = [...imagens];
+            const novasImagensPreview = [...imagensPreview];
+
+            novasImagens[index] = file;
+            novasImagensPreview[index] = URL.createObjectURL(file);
+
+            setImagens(novasImagens);
+            setImagensPreview(novasImagensPreview);
         }
     };
 
-    const enviarNotificacao = () => {
+
+    const enviarNotificacao = async () => {
         if (!mensagem) {
             alert('Escreva uma mensagem para enviar a notificação.');
             return;
         }
-        alert(`Notificação enviada com sucesso!\nMensagem: ${mensagem}`);
-        setMensagem('');
+
+        const data = {
+            tipo: tipoNotificacao,
+            titulo: 'Nova Promoção!',
+            conteudo: mensagem,
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/mandar-notificacoes/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "ngrok-skip-browser-warning": "true",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert('Notificação enviada com sucesso!');
+                setMensagem('');
+            } else {
+                alert('Erro ao enviar notificação.');
+            }
+        } catch (error) {
+            console.error('Erro ao enviar notificação:', error);
+            alert('Erro ao conectar com o servidor.');
+        }
     };
+
 
     return (
         <div className="p-6">
@@ -80,26 +147,29 @@ const PromocoesMarketing = () => {
                         />
                     </div>
 
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-white">
-                            Imagem da Campanha
-                        </label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImagemChange}
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        />
-                        {imagemPreview && (
-                            <div className="mt-4">
-                                <img
-                                    src={imagemPreview}
-                                    alt="Prévia da Imagem"
-                                    className="w-32 h-32 object-cover rounded-lg"
-                                />
-                            </div>
-                        )}
-                    </div>
+                    {/* Campos para upload das 4 imagens */}
+                    {[0, 1, 2, 3].map((index) => (
+                        <div key={index} className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-white">
+                                Imagem {index + 1}
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleImagemChange(e, index)}
+                                className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            />
+                            {imagensPreview[index] && (
+                                <div className="mt-4">
+                                    <img
+                                        src={imagensPreview[index]}
+                                        alt={`Prévia ${index + 1}`}
+                                        className="w-32 h-32 object-cover rounded-lg"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    ))}
 
                     <button
                         onClick={criarCampanha}
@@ -112,6 +182,7 @@ const PromocoesMarketing = () => {
             </Card>
 
             {/* Seção de Notificações em Massa */}
+            {/* Enviar Notificações */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -121,6 +192,21 @@ const PromocoesMarketing = () => {
                 </header>
 
                 <div className="mt-5">
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-white">
+                            Tipo de Destinatário
+                        </label>
+                        <select
+                            value={tipoNotificacao}
+                            onChange={(e) => setTipoNotificacao(e.target.value)}
+                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        >
+                            <option value="todos">Todos</option>
+                            <option value="empresa">Empresas</option>
+                            <option value="usuario">Usuários</option>
+                        </select>
+                    </div>
+
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-white">
                             Mensagem

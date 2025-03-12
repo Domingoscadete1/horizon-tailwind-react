@@ -102,8 +102,8 @@ const GerenciamentoEmpresas = () => {
         columnHelper.accessor('saldo', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">SALDO</p>,
             cell: (info) => (
-                <p className="text-sm font-bold text-green-500">
-                    {parseFloat(info.getValue()).toFixed(2)}Kzs
+                <p className="text-sm font-bold text-gray-51">
+                    {parseFloat(info.getValue()).toFixed(2) | '0'} AOA
                 </p>
             ),
         }),

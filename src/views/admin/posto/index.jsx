@@ -4,6 +4,8 @@ import Card from 'components/card'; // Componente de card personalizado
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from 'leaflet';
 import { Icon } from "leaflet";
+import UpdatePostoModal from "./UpdatePostoModal";
+
 
 import "leaflet/dist/leaflet.css"; // Importa os estilos do Leaflet corretamente
 
@@ -31,6 +33,9 @@ const LocationMarker = ({ position }) => {
     ) : null;
 };
 const GerenciamentoPostos = () => {
+    const [mostrarModalUpdate, setMostrarModalUpdate] = useState(false);
+    const [postoSelecionadoUpdate, setPostoSelecionadoUpdate] = useState(null);
+
     const [postos, setPostos] = useState([]); // Começa vazio
     const [loading, setLoading] = useState(true); // Para indicar carregamento
     const [mostrarModal, setMostrarModal] = useState(false);
@@ -280,12 +285,9 @@ const GerenciamentoPostos = () => {
     };
 
     // Função para editar um posto
-    const editarPosto = (id) => {
-        const posto = postos.find((p) => p.id === id);
-        if (posto) {
-            alert(`Editar posto: ${posto.nome}`);
-            // Aqui você pode abrir um modal ou formulário para edição
-        }
+    const editarPosto = (posto) => {
+        setPostoSelecionadoUpdate(posto);
+        setMostrarModalUpdate(true);
     };
 
     const visualizarPosto = (id) => {
@@ -327,6 +329,10 @@ const GerenciamentoPostos = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">LOCALIZAÇÃO</p>,
             cell: (info) => info.getValue() || "Não informado",
         }),
+        columnHelper.accessor('capacidade', {
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Capacidade</p>,
+            cell: (info) => info.getValue() || "Não informado",
+        }),
         columnHelper.accessor('responsavel', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">RESPONSÁVEL</p>,
             cell: (info) => info.getValue() || "Não informado",
@@ -347,7 +353,7 @@ const GerenciamentoPostos = () => {
                         <FaEye />
                     </button>
                     <button
-                        onClick={() => editarPosto(info.row.original.id)}
+                        onClick={() => editarPosto(info.row.original)}
                         className="text-green-500 hover:text-green-700"
                         title="Editar"
                     >
@@ -473,7 +479,7 @@ const GerenciamentoPostos = () => {
         },
         onGlobalFilterChange: setGlobalFilter,
     });
-    
+
     const handleConfirmLocation = () => {
         setNovoPosto((prev) => ({
             ...prev,
@@ -669,6 +675,14 @@ const GerenciamentoPostos = () => {
                         </header>
                     </div>
                 </div>
+
+            )}
+            {mostrarModalUpdate && (
+                <UpdatePostoModal
+                    postoParaEditar={postoSelecionadoUpdate}
+                    atualizarPostoNaAPI={fetchPostos}
+                    onClose={() => setMostrarModalUpdate(false)} // Passa a função para fechar o modal
+                />
             )}
 
             {/* Modal de Cadastro de Posto */}
