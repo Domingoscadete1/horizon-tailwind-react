@@ -306,7 +306,27 @@ const GerenciamentoPostos = () => {
             setPostos(novaLista);
         }
     };
-    
+    const suspenderposto = async (id) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/posto/${id}/delete/`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+
+            if (response.ok) {
+               window.location.reload();
+
+            } else {
+                alert('Erro ao alterar o status da conta.');
+            }
+        } catch (error) {
+            console.error('Erro ao suspender usuário:', error);
+            alert('Erro ao alterar o status da conta.');
+        }
+    };
 
     // Configuração das colunas para postos
     const columnHelper = createColumnHelper();
@@ -361,7 +381,7 @@ const GerenciamentoPostos = () => {
                         <FaEdit />
                     </button>
                     <button
-                        onClick={() => excluirPosto(info.row.original.id)}
+                        onClick={() => suspenderposto(info.row.original.id)}
                         className="text-red-500 hover:text-red-700"
                         title="Excluir"
                     >
