@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Importação necessária
-
+import Card from "components/card";
 import Banner from "./components/Banner";
 import avatar1 from "assets/img/avatars/avatar1.png";
 import avatar2 from "assets/img/avatars/avatar2.png";
@@ -13,8 +13,35 @@ import NFt4 from "assets/img/nfts/Nft4.png";
 import NFt5 from "assets/img/nfts/Nft5.png";
 import NFt6 from "assets/img/nfts/Nft6.png";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app/api/produtos/";
+// Fix para ícones padrão do Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
+const personIcon = new L.Icon({
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // URL da imagem do ícone
+  iconSize: [32, 32], // Tamanho do ícone
+  iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+  popupAnchor: [0, -32], // Ponto de ancoragem do popup
+});
+const criarIconeUsuario = (fotoUrl) => {
+  return new L.Icon({
+    iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
+    iconSize: [32, 32], // Tamanho do ícone
+    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+    popupAnchor: [0, -32], // Ponto de ancoragem do popup
+    className: 'icone-usuario', // Classe CSS personalizada (opcional)
+  });
+};
+
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const Marketplace = () => {
   const navigate = useNavigate(); // Hook de navegação
@@ -22,10 +49,14 @@ const Marketplace = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNft, setSelectedNft] = useState(null);
   const [produtos, setProdutos] = useState([]);
+  const [produtosMapa, setProdutosMapa] = useState([]);
+
+  const [categoria, setCategorias] = useState([]);
   const [filteredProdutos, setFilteredProdutos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategoria, setSelectedCategoria] = useState(null); // Estado para a categoria selecionada
 
   const nfts = [
     { title: "Computador", author: "Esthera Jackson", price: "0.91", image: NFt3, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
@@ -45,7 +76,7 @@ const Marketplace = () => {
 
   const fetchProdutos = async (page = 1) => {
     try {
-      const url = `${API_BASE_URL}?page=${page}`;
+      const url = `${API_BASE_URL}/api/produtos/?page=${page}`;
       const response = await fetch(url, {
         headers: {
           "ngrok-skip-browser-warning": "true",
@@ -67,17 +98,67 @@ const Marketplace = () => {
       console.error("Erro ao buscar produtos:", error);
     }
   };
+  const fetchProdutosMapa = async () => {
+    try {
+      const url = `${API_BASE_URL}/api/produtos/`;
+      const response = await fetch(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const produtosList = Array.isArray(data.results) ? data.results : [];
+      setProdutosMapa(produtosList);
+      
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
+  const fetchCategorias = async () => {
+    try {
+      const url = `${API_BASE_URL}/api/categorias/`;
+      const response = await fetch(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("categorias:", data);
+
+      
+      setCategorias(data);
+      
+    } catch (error) {
+      console.error("Erro ao buscar categorias:", error);
+    }
+  };
 
   useEffect(() => {
     fetchProdutos(currentPage);
+    fetchProdutosMapa();
+    fetchCategorias();
   }, [currentPage]);
 
   useEffect(() => {
-    const filtered = produtos.filter((produto) =>
-      produto.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    // Filtra os produtos com base no termo de busca e na categoria selecionada
+    const filtered = produtos.filter((produto) => {
+      const matchesSearch = produto.nome.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategoria = selectedCategoria ? produto.categoria.id === selectedCategoria.id : true;
+      return matchesSearch && matchesCategoria;
+    });
     setFilteredProdutos(filtered);
-  }, [searchTerm, produtos]);
+  }, [searchTerm, produtos, selectedCategoria]);
+
 
   const handlePageChange = (direction) => {
     setCurrentPage((prev) => {
@@ -85,6 +166,9 @@ const Marketplace = () => {
       if (direction === "prev" && prev > 1) return prev - 1;
       return prev;
     });
+  };
+  const handleCategoriaClick = (categoria) => {
+    setSelectedCategoria(categoria); // Atualiza a categoria selecionada
   };
 
   const handleImageClick = (produto) => {
@@ -95,6 +179,53 @@ const Marketplace = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedNft(null);
+  };
+  const ProductMap = ({ produtos }) => {
+    // Função para extrair latitude e longitude do campo endereco
+    const extrairCoordenadas = (localizacao) => {
+      if (!localizacao) return null;
+  
+      // Divide o endereco em partes usando a vírgula como separador
+      const partes = localizacao.split(',');
+  
+      // Verifica se há exatamente duas partes (latitude e longitude)
+      if (partes.length === 2) {
+        const latitude = parseFloat(partes[0].trim());
+        const longitude = parseFloat(partes[1].trim());
+  
+        // Verifica se os valores são números válidos
+        if (!isNaN(latitude) && !isNaN(longitude)) {
+          return { latitude, longitude };
+        }
+      }
+  
+      // Retorna null se as coordenadas não forem válidas
+      return null;
+    };
+  
+    // Filtra usuários com coordenadas válidas
+    const produtosComCoordenadas = produtos
+      .map((produto) => {
+        const coordenadas = extrairCoordenadas(produto.localizacao);
+        return coordenadas ? { ...produto, ...coordenadas } : null;
+      })
+      .filter((produto) => produto !== null); // Remove usuários sem coordenadas válidas
+  
+    return (
+      <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {produtosComCoordenadas.map((produto) => (
+          <Marker key={produto.id} position={[produto.latitude, produto.longitude]}  icon={criarIconeUsuario(produto.imagens[0].imagem)}>
+            <Popup  >
+            <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleProdutoClick(produto.id)}>{produto.nome}</p> <br /> {produto.localizacao}
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    );
   };
 
   return (
@@ -107,31 +238,26 @@ const Marketplace = () => {
             Categorias
           </h4>
           <ul className="mt-4 flex items-center justify-between md:mt-0 md:justify-center md:!gap-5 2xl:!gap-12">
-            <li>
-              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
-                Computador
-              </a>
-            </li>
-            <li>
-              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
-                Telefone
-              </a>
-            </li>
-            <li>
-              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
-                Carro
-              </a>
-            </li>
-            <li>
-              <a className="text-base font-medium text-brand-500 hover:text-brand-500 dark:text-white" href=" ">
-                Teclado
-              </a>
-            </li>
+          {categoria.map((categoria) => (
+              <li key={categoria.id}>
+                <a
+                  className={`text-base font-medium ${
+                    selectedCategoria?.id === categoria.id
+                      ? "text-brand-500"
+                      : "text-gray-500 hover:text-brand-500"
+                  } dark:text-white`}
+                  href="#!"
+                  onClick={() => handleCategoriaClick(categoria)}
+                >
+                  {categoria.nome}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
         {/* NFTs Grid */}
-        <div className="z-20 mt-5 grid grid-cols-1 gap-5 md:grid-cols-4">
+        {/* <div className="z-20 mt-5 grid grid-cols-1 gap-5 md:grid-cols-4">
           {nfts.map((nft, index) => (
             <NftCard
               key={index}
@@ -145,7 +271,7 @@ const Marketplace = () => {
             
             />
           ))}
-        </div>
+        </div> */}
 
         <div className="relative flex items-center justify-between pt-4">
           <div className="text-xl mt-5 mb-5 ml-2 font-bold text-navy-700 dark:text-white">
@@ -183,7 +309,7 @@ const Marketplace = () => {
                     ? produto.usuario.foto
                     : produto.empresa?.imagens?.[0]?.imagem
                 }
-                onImageClick={() => handleImageClick(produto)}
+                onImageClick={() =>handleProdutoClick(produto.id)}
                 onNameClick={ () =>handleProdutoClick(produto.id)}
                 onUserClick={
                   produto.usuario
@@ -203,6 +329,11 @@ const Marketplace = () => {
             onClose={closeModal}
           />
         )}
+        <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4">Mapa de Produtos</div>
+            <ProductMap produtos={produtosMapa} />
+          </Card>
+        
 
         {/* Paginação */}
         <div className="flex justify-center mt-10 mb-4">

@@ -10,6 +10,26 @@ import {
     useReactTable,
     getFilteredRowModel,
 } from '@tanstack/react-table';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix para ícones padrão do Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+const criarIconeUsuario = (fotoUrl) => {
+    return new L.Icon({
+      iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
+      iconSize: [32, 32], // Tamanho do ícone
+      iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+      popupAnchor: [0, -32], // Ponto de ancoragem do popup
+      className: 'icone-usuario', // Classe CSS personalizada (opcional)
+    });
+  };
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
@@ -162,8 +182,55 @@ const GerenciamentoEmpresas = () => {
         columns: funcionariosColumns,
         getCoreRowModel: getCoreRowModel(),
     });
-
+    const EmpresaMap = ({ empresas }) => {
+        // Função para extrair latitude e longitude do campo endereco
+        const extrairCoordenadas = (endereco) => {
+          if (!endereco) return null;
+      
+          // Divide o endereco em partes usando a vírgula como separador
+          const partes = endereco.split(',');
+      
+          // Verifica se há exatamente duas partes (latitude e longitude)
+          if (partes.length === 2) {
+            const latitude = parseFloat(partes[0].trim());
+            const longitude = parseFloat(partes[1].trim());
+      
+            // Verifica se os valores são números válidos
+            if (!isNaN(latitude) && !isNaN(longitude)) {
+              return { latitude, longitude };
+            }
+          }
+      
+          // Retorna null se as coordenadas não forem válidas
+          return null;
+        };
+      
+        // Filtra usuários com coordenadas válidas
+        const empresasComCoordenadas = empresas
+          .map((empresa) => {
+            const coordenadas = extrairCoordenadas(empresa.endereco);
+            return coordenadas ? { ...empresa, ...coordenadas } : null;
+          })
+          .filter((empresa) => empresa !== null); // Remove usuários sem coordenadas válidas
+      
+        return (
+          <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {empresasComCoordenadas.map((empresa) => (
+              <Marker key={empresa.user_id} position={[empresa.latitude, empresa.longitude]}  icon={criarIconeUsuario(empresa.imagens[0].imagem)}>
+                <Popup  >
+                <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleEmpresaClick(empresa.id)}>{empresa.nome}</p> <br /> {empresa.endereco}
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        );
+      };
     return (
+        <>
         <div>
             <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                 <header className="relative flex items-center justify-between pt-4">
@@ -238,8 +305,16 @@ const GerenciamentoEmpresas = () => {
                         </table>
                     </div>
                 </Card>
+
+
             )}
+            <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+<div className="text-xl font-bold text-navy-700 dark:text-white mb-4">Mapa de Empresas</div>
+<EmpresaMap empresas={empresas} />
+</Card>
+
         </div>
+        </>
     );
 };
 
