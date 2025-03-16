@@ -44,6 +44,7 @@ import {
   FaExclamationTriangle,
   FaAccusoft,
   FaMapMarkerAlt,
+  FaFilter,
 } from 'react-icons/fa';
 
 const routes = [
@@ -73,11 +74,11 @@ const routes = [
     component: <GerenciamentoUsuarios />,
   },
   {
-    name: "Usuários Bloqueados",
+    name: "Categorias",
     layout: "/admin",
-    admin: false,
+    admin: true,
     path: "bloqueados",
-    icon: <MdBlock className="h-6 w-6" />, // Ícone alterado
+    icon: <FaFilter className="h-6 w-6" />, // Ícone alterado
     component: <UsuariosBloqueados />,
   },
   {

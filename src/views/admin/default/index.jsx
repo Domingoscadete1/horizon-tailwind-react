@@ -1,3 +1,4 @@
+import { useEffect,useState } from "react";
 import MiniCalendar from "components/calendar/MiniCalendar";
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
 import TotalSpent from "views/admin/default/components/TotalSpent";
@@ -16,7 +17,46 @@ import TaskCard from "views/admin/default/components/TaskCard";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
 
+
+const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+
 const Dashboard = () => {
+  const[dados,setDados]=useState();
+  const [loading, setLoading] = useState(true); // Para indicar carregamento
+  const obterDataAtual = () => {
+    const data = new Date();
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+  const dataAtual = obterDataAtual();
+  
+  const fetchDados = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin-analise?data=${dataAtual}`, {
+            headers: {
+                "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+            },
+        }); // URL da API
+        if (!response.ok) {
+            throw new Error("Erro ao buscar postos");
+        }
+        const data = await response.json();
+        console.log(data);
+        setDados(Array.isArray(data) ? data : []);
+    } catch (error) {
+        console.error("Erro ao buscar postos:", error);
+        setDados([]);
+    } finally {
+        setLoading(false); // Finaliza o carregamento
+    }
+};
+
+useEffect(() => {
+    fetchDados();
+}, []);
+  
   return (
     <div>
       {/* Card widget */}

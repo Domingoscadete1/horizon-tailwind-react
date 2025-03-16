@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { FaEye, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
 import Card from "components/card";
 import {
@@ -9,7 +9,33 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom"; // Importação necessária
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
+// Fix para ícones padrão do Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
+const personIcon = new L.Icon({
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // URL da imagem do ícone
+  iconSize: [32, 32], // Tamanho do ícone
+  iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+  popupAnchor: [0, -32], // Ponto de ancoragem do popup
+});
+const criarIconeUsuario = (fotoUrl) => {
+  return new L.Icon({
+    iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
+    iconSize: [32, 32], // Tamanho do ícone
+    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+    popupAnchor: [0, -32], // Ponto de ancoragem do popup
+    className: 'icone-usuario', // Classe CSS personalizada (opcional)
+  });
+};
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app/api/usuarios/";
 
 const GerenciamentoUsuarios = () => {
@@ -54,7 +80,7 @@ const GerenciamentoUsuarios = () => {
   useEffect(() => {
     fetchUsuarios();
   }, []);
-  const usuariosFiltrados = usuarios.filter(user => 
+  const usuariosFiltrados = usuarios.filter(user =>
     filtroStatus === "Todos" || user.status === "suspenso"
   );
   // Funções para gerenciar usuários
@@ -93,6 +119,53 @@ const GerenciamentoUsuarios = () => {
   const handleEdicaoChange = (e, campo) => {
     const { value } = e.target;
     setDadosEditados({ ...dadosEditados, [campo]: value });
+  };
+  const UserMap = ({ usuarios }) => {
+    // Função para extrair latitude e longitude do campo endereco
+    const extrairCoordenadas = (endereco) => {
+      if (!endereco) return null;
+  
+      // Divide o endereco em partes usando a vírgula como separador
+      const partes = endereco.split(',');
+  
+      // Verifica se há exatamente duas partes (latitude e longitude)
+      if (partes.length === 2) {
+        const latitude = parseFloat(partes[0].trim());
+        const longitude = parseFloat(partes[1].trim());
+  
+        // Verifica se os valores são números válidos
+        if (!isNaN(latitude) && !isNaN(longitude)) {
+          return { latitude, longitude };
+        }
+      }
+  
+      // Retorna null se as coordenadas não forem válidas
+      return null;
+    };
+  
+    // Filtra usuários com coordenadas válidas
+    const usuariosComCoordenadas = usuarios
+      .map((usuario) => {
+        const coordenadas = extrairCoordenadas(usuario.endereco);
+        return coordenadas ? { ...usuario, ...coordenadas } : null;
+      })
+      .filter((usuario) => usuario !== null); // Remove usuários sem coordenadas válidas
+  
+    return (
+      <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {usuariosComCoordenadas.map((usuario) => (
+          <Marker key={usuario.user_id} position={[usuario.latitude, usuario.longitude]} onClick={() => handleUsuarioClick(usuario.id)} icon={criarIconeUsuario(usuario.foto)}>
+            <Popup  >
+            <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleUsuarioClick(usuario.id)}>{usuario.nome}</p> <br /> {usuario.endereco}
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    );
   };
 
   // Configuração da tabela
@@ -256,52 +329,60 @@ const GerenciamentoUsuarios = () => {
       {loading ? (
         <p className="mt-10 text-center text-gray-500">Carregando usuários...</p>
       ) : (
-        <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-          <header className="relative flex items-center justify-between pt-4">
-            <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Usuários</div>
-            <input
-              type="text"
-              placeholder="Filtrar por nome..."
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="p-2 border rounded-lg"
-            />
-          </header>
+        <>
+          <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+            <header className="relative flex items-center justify-between pt-4">
+              <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Usuários</div>
+              <input
+                type="text"
+                placeholder="Filtrar por nome..."
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                className="p-2 border rounded-lg"
+              />
+            </header>
 
-          {/* Adicionando scroll horizontal à tabela */}
-          <div className="mt-5 overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="!border-px !border-gray-400">
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        colSpan={header.colSpan}
-                        className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
-                      >
-                        <div className="items-center justify-between text-xs text-gray-200">
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="min-w-[150px] border-white/0 py-3 pr-4">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+            {/* Adicionando scroll horizontal à tabela */}
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id} className="!border-px !border-gray-400">
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          colSpan={header.colSpan}
+                          className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
+                        >
+                          <div className="items-center justify-between text-xs text-gray-200">
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <td key={cell.id} className="min-w-[150px] border-white/0 py-3 pr-4">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4">Mapa de Usuários</div>
+            <UserMap usuarios={usuarios} />
+          </Card>
+        </>
+
       )}
     </div>
   );
