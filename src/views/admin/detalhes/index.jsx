@@ -21,6 +21,8 @@ const DetalhesProduto = () => {
     const [loading, setLoading] = useState(true);    
     const [produto, setProduto] = useState(null);
     const [imagemPrincipal, setImagemPrincipal] = useState();
+    const [mediaPrincipal, setMediaPrincipal] = useState(null); 
+    const [tipoMedia, setTipoMedia] = useState('imagem'); 
 
 
 
@@ -51,7 +53,7 @@ const DetalhesProduto = () => {
                 const data = await response.json();
                 console.log(data);
                 setProduto(data);
-                setImagemPrincipal(data.imagens[0].imagem);
+                setMediaPrincipal(data.imagens[0].imagem);
             } catch (error) {
                 console.error('Erro ao buscar empresa:', error);
             }
@@ -85,9 +87,11 @@ const DetalhesProduto = () => {
     // Estado para controlar a imagem principal
 
     // Função para trocar a imagem principal
-    const trocarImagemPrincipal = (novaImagem) => {
-        setImagemPrincipal(novaImagem);
+    const trocarMediaPrincipal = (novaMedia, tipo) => {
+        setMediaPrincipal(novaMedia);
+        setTipoMedia(tipo);
     };
+
 
     return (
         <div className="p-4">
@@ -96,11 +100,23 @@ const DetalhesProduto = () => {
                 <div className="flex flex-col md:flex-row gap-6">
                     {/* Coluna da Imagem */}
                     <div className="w-full md:w-1/2">
-                        <img
-                            src={imagemPrincipal}
-                            alt={produto.nome}
-                            className="w-120 h-96 object-cover center rounded-lg"
-                        />
+                        {tipoMedia === 'imagem' ? (
+                            <img
+                                src={mediaPrincipal}
+                                alt={produto.nome}
+                                className="w-120 h-96 object-cover center rounded-lg"
+                            />
+                        ) : (
+                            <video
+                                src={mediaPrincipal}
+                                controls
+                                className="w-120 h-96 object-cover center rounded-lg"
+                            >
+                                <track kind="captions" src="" label="Legendas" />
+                            </video>
+                        )}
+
+                        {/* Miniaturas de Imagens */}
                         <div className="mt-4 flex gap-2">
                             {produto.imagens.map((img, index) => (
                                 <img
@@ -108,10 +124,26 @@ const DetalhesProduto = () => {
                                     src={`${img.imagem}`}
                                     alt={`Imagem adicional ${index + 1}`}
                                     className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-75"
-                                    onClick={() => trocarImagemPrincipal(img.imagem)}
+                                    onClick={() => trocarMediaPrincipal(img.imagem, 'imagem')}
                                 />
                             ))}
                         </div>
+
+                        {/* Miniaturas de Vídeos */}
+                        {produto.videos && produto.videos.length > 0 && (
+                            <div className="mt-4 flex gap-2">
+                                {produto.videos.map((video, index) => (
+                                    <video
+                                        key={index}
+                                        src={`${video.video}`}
+                                        className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-75"
+                                        onClick={() => trocarMediaPrincipal(video.video, 'video')}
+                                    >
+                                        <track kind="captions" src="" label="Legendas" />
+                                    </video>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Coluna de Detalhes */}
