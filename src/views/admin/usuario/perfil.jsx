@@ -8,6 +8,17 @@ import image3 from "assets/img/profile/image3.png";
 import banner from "assets/img/profile/banner.png";
 import NftCard from "components/card/NftCard";
 import ImageModal from "../marketplace/components/modal";
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+`;
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
@@ -109,7 +120,11 @@ const PerfilUsuario = () => {
     }, [id, pagination.pageIndex, paginationTrasaction.pageIndex]);
 
     if (loading) {
-        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+        return (
+            <LoaderContainer>
+                <SyncLoader color="#3B82F6" size={15} /> 
+            </LoaderContainer>
+        );
     }
 
     if (!usuario) {

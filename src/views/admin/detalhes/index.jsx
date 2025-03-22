@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 
 import Card from 'components/card';
 import NftCard from "components/card/NftCard";
@@ -23,23 +23,39 @@ const DetalhesProduto = () => {
     const [imagemPrincipal, setImagemPrincipal] = useState();
     const [mediaPrincipal, setMediaPrincipal] = useState(null); 
     const [tipoMedia, setTipoMedia] = useState('imagem'); 
+    const navigate = useNavigate(); 
 
 
 
-    // const produto = {
-    //     nome: "Produtos de Limpeza",
-    //     descricao: "Os produtos de limpeza são agentes químicos que removem sujidades, microrganismos, manchas e odores. São utilizados para higienizar, desinfetar e limpar ambientes e superfícies.",
-    //     preco: 499,
-    //     imagens: [
-    //         "https://www.guimaraespl.com/files/produto/Produto-20240621150521.png",
-    //         "https://medlimp.com.br/wp-content/uploads/2021/03/Lista-de-produtos-de-limpeza.jpg",
-    //         "https://prakolar.com.br/wp-content/uploads/2024/02/Rotulo-de-produto-de-limpeza-quais-informacoes-sao-obrigatorias.webp",
-    //         "https://medlimp.com.br/wp-content/uploads/2021/03/Lista-de-produtos-de-limpeza.jpg",
-    //         "https://prakolar.com.br/wp-content/uploads/2024/02/Rotulo-de-produto-de-limpeza-quais-informacoes-sao-obrigatorias.webp",
-    //     ],
-    //     quantidade: 9,
-    //     status: "A Venda",
-    // };
+    
+    const deletarProduto = async () => {
+        const confirmacao = window.confirm("Tem certeza que deseja deletar este produto?");
+    
+        if (confirmacao) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/produto/${id}/deletar/`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+    
+                if (response.ok) {
+                    alert("Produto deletado com sucesso!");
+                    navigate(-1);
+                } else {
+                    alert("Erro ao deletar o produto.");
+                }
+            } catch (error) {
+                console.error('Erro ao deletar produto:', error);
+                alert("Erro ao deletar o produto.");
+            }
+        } else {
+            // Se o usuário cancelar, não faz nada
+            console.log("Deleção cancelada pelo usuário.");
+        }
+    };
     useEffect(() => {
         const fetchProduto = async () => {
             try {
@@ -167,8 +183,8 @@ const DetalhesProduto = () => {
                             </p>
                         </div>
                         <div className="mt-4">
-                            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-                                Desactivar
+                            <button className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600" onClick={deletarProduto}>
+                                Apagar
                             </button>
                         </div>
                     </div>
