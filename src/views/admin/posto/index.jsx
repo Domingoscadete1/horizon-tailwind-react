@@ -86,6 +86,8 @@ const GerenciamentoPostos = () => {
     const [funcionarios, setFuncionarios] = useState([]);
     const [atividades, setAtividades] = useState([]);
     const [postoSelecionado, setPostoSelecionado] = useState(null);
+    const [postoSelecionadoinformacao, setPostoSelecionadoInformacao] = useState(null);
+
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [proximaPagina, setProximaPagina] = useState(null);
@@ -278,6 +280,7 @@ const GerenciamentoPostos = () => {
             }
             const data = await response.json();
             setPostos(Array.isArray(data) ? data : []);
+            console.log(data);
         } catch (error) {
             console.error("Erro ao buscar postos:", error);
             setPostos([]);
@@ -300,8 +303,9 @@ const GerenciamentoPostos = () => {
     };
 
     // Função para abrir o modal de cadastro
-    const abrirModalInfo = () => {
+    const abrirModalInfo = (posto) => {
         setModalInfo(true);
+        setPostoSelecionadoInformacao(posto);
     };
 
     const handleOpenMapModal = () => {
@@ -453,7 +457,7 @@ const GerenciamentoPostos = () => {
             cell: (info) => (
                 <div className="flex space-x-4">
                     <button
-                        onClick={abrirModalInfo}
+                        onClick={() => abrirModalInfo(info.row.original)}
                         className="text-blue-500 hover:text-blue-700"
                         title="Visualizar"
                     >
@@ -779,7 +783,10 @@ const GerenciamentoPostos = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <header className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-navy-700">Informações do Posto</h2>
+                            <h2 className="text-xl font-bold text-navy-700">Informações do Posto</h2> <br />
+                            <h2 className="text-xl font-bold text-navy-700">{postoSelecionadoinformacao.nome}</h2>
+                            <br />
+                            <img src={`${postoSelecionadoinformacao.imagem}`} alt="" />
 
                             <button
                                 onClick={fecharModalInfo}

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom"; // Importação necessária
+
 import { FaTrash, FaExclamationTriangle,FaBan ,FaUserSlash} from 'react-icons/fa';
 import Card from 'components/card';
 
@@ -7,6 +9,17 @@ const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 const ModeracaoConteudo = () => {
     const [reportes, setReportes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // Hook de navegação
+
+    const handleUsuarioClick = (usuarioId) => {
+        navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
+      };
+      const handleEmpresaClick = (empresaId) => {
+        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
+      };
+      const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+      };
 
     useEffect(() => {
         const fetchReportes = async () => {
@@ -66,8 +79,37 @@ const ModeracaoConteudo = () => {
                         <tbody>
                             {dados.map(rep => (
                                 <tr key={rep.id} className="border-b border-gray-200">
-                                    <td className="py-2 px-4">{rep.usuario_denunciante?.nome || rep.empresa_denunciante?.nome || 'N/A'}</td>
-                                    <td className="py-2 px-4">{rep.denunciado_usuario?.nome || rep.denunciado_empresa?.nome || rep.produto?.nome || 'N/A'}</td>
+                                    {/* Célula do Denunciante */}
+                                    <td
+                                        className="py-2 px-4 cursor-pointer hover:text-brand-500"
+                                        onClick={() => {
+                                            if (rep.usuario_denunciante) {
+                                                handleUsuarioClick(rep.usuario_denunciante.id);
+                                            } else if (rep.empresa_denunciante) {
+                                                handleEmpresaClick(rep.empresa_denunciante.id);
+                                            }
+                                        }}
+                                    >
+                                        {rep.usuario_denunciante?.nome || rep.empresa_denunciante?.nome || 'N/A'}
+                                    </td>
+
+                                    {/* Célula do Denunciado */}
+                                    <td
+                                        className="py-2 px-4 cursor-pointer hover:text-brand-500"
+                                        onClick={() => {
+                                            if (rep.denunciado_usuario) {
+                                                handleUsuarioClick(rep.denunciado_usuario.id);
+                                            } else if (rep.denunciado_empresa) {
+                                                handleEmpresaClick(rep.denunciado_empresa.id);
+                                            } else if (rep.produto) {
+                                                handleProdutoClick(rep.produto.id);
+                                            }
+                                        }}
+                                    >
+                                        {rep.denunciado_usuario?.nome || rep.denunciado_empresa?.nome || rep.produto?.nome || 'N/A'}
+                                    </td>
+
+                                    {/* Outras células */}
                                     <td className="py-2 px-4">{rep.motivo}</td>
                                     <td className="py-2 px-4">{rep.descricao}</td>
                                     <td className="py-2 px-4">
@@ -76,7 +118,7 @@ const ModeracaoConteudo = () => {
                                             className="text-red-500 hover:text-red-700 ml-4"
                                             title="Remover Reporte"
                                         >
-                                            <FaBan className="text-red text-lg"/>
+                                            <FaBan className="text-red text-lg" />
                                         </button>
                                     </td>
                                 </tr>

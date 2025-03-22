@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { FaTag, FaBullhorn, FaPaperPlane } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
@@ -15,6 +16,8 @@ const PromocoesMarketing = () => {
     const [mensagem, setMensagem] = useState('');
     const [tipoNotificacao, setTipoNotificacao] = useState('todos'); // Novo estado para selecionar o tipo
     const [userData, setUserData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // Estado para controlar o loading
+
 
 
     useEffect(() => {
@@ -27,6 +30,9 @@ const PromocoesMarketing = () => {
           } catch (error) {
             console.error('Erro ao recuperar dados:', error);
           }
+          finally{
+            setIsLoading(false); 
+          }
         };
         fetchUserData();
       }, []);
@@ -36,7 +42,7 @@ const PromocoesMarketing = () => {
             alert('Preencha todos os campos e adicione pelo menos uma imagem.');
             return;
         }
-
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("descricao", descricao);
         
@@ -66,12 +72,17 @@ const PromocoesMarketing = () => {
                 setCondicoes('');
                 setImagens([null, null, null, null]);
                 setImagensPreview([null, null, null, null]);
+
             } else {
                 alert('Erro ao criar campanha.');
             }
         } catch (error) {
             console.error('Erro ao criar campanha:', error);
             alert('Erro ao conectar com o servidor.');
+        }
+        finally{
+            setIsLoading(false); // Desativa o loading
+
         }
     };
 
@@ -96,6 +107,8 @@ const PromocoesMarketing = () => {
             alert('Escreva uma mensagem para enviar a notificação.');
             return;
         }
+        setIsLoading(true); // Ativa o loading
+
 
         const data = {
             tipo: tipoNotificacao,
@@ -123,12 +136,21 @@ const PromocoesMarketing = () => {
             console.error('Erro ao enviar notificação:', error);
             alert('Erro ao conectar com o servidor.');
         }
+        finally{
+            setIsLoading(false); // Desativa o loading
+
+        }
     };
 
 
     return (
         <div className="p-6">
-
+             {/* Overlay de loading */}
+             {isLoading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <SyncLoader color="#3B82F6" size={15} /> {/* Spinner animado */}
+                </div>
+            )}
             {/* Seção de Campanhas Promocionais */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">

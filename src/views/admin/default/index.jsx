@@ -36,7 +36,7 @@ const Dashboard = () => {
     try {
         const response = await fetch(`${API_BASE_URL}/api/admin-analise?data=${dataAtual}`, {
             headers: {
-                "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                "ngrok-skip-browser-warning": "true",
             },
         }); // URL da API
         if (!response.ok) {
@@ -44,7 +44,7 @@ const Dashboard = () => {
         }
         const data = await response.json();
         console.log(data);
-        setDados(Array.isArray(data) ? data : []);
+        setDados(data);
     } catch (error) {
         console.error("Erro ao buscar postos:", error);
         setDados([]);
@@ -64,33 +64,33 @@ useEffect(() => {
       <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"Earnings"}
-          subtitle={"$340.5"}
+          title={"Saldo Total"}
+          subtitle={`${dados?.saldo} AOA`}
         />
         <Widget
           icon={<IoDocuments className="h-6 w-6" />}
-          title={"Spend this month"}
-          subtitle={"$642.39"}
+          title={"Funcionários"}
+          subtitle={`${dados?.funcionarios_total}`}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"Sales"}
-          subtitle={"$574.34"}
+          title={"Produtos"}
+          subtitle={`${dados?.produtos_total}`}
         />
         <Widget
           icon={<MdDashboard className="h-6 w-6" />}
-          title={"Your Balance"}
-          subtitle={"$1,000"}
+          title={"Empresas"}
+          subtitle={`${dados?.empresas_total}`}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"New Tasks"}
-          subtitle={"145"}
+          title={"Usuários"}
+          subtitle={`${dados?.usuarios_total}`}
         />
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}
-          title={"Total Projects"}
-          subtitle={"$2433"}
+          title={"Postos"}
+          subtitle={`${dados?.postos_total}`}
         />
       </div>
 

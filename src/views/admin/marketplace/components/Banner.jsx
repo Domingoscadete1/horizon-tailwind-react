@@ -9,18 +9,19 @@ import nft3 from "assets/img/nfts/NftBanner1.png";
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const Banner1 = () => {
+  const [anuncios, setAnuncios] = useState([]);
+
+
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: anuncios.length>1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
   };
-  const [anuncios, setAnuncios] = useState([]);
-
-
+  
 
   const fetchAnuncios = async () => {
     try {
