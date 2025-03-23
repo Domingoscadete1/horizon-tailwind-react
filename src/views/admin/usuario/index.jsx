@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaEye, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
 import Card from "components/card";
 import {
@@ -12,6 +12,18 @@ import { useNavigate } from "react-router-dom"; // Importação necessária
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.1);
+`;
+
 
 // Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -124,25 +136,25 @@ const GerenciamentoUsuarios = () => {
     // Função para extrair latitude e longitude do campo endereco
     const extrairCoordenadas = (endereco) => {
       if (!endereco) return null;
-  
+
       // Divide o endereco em partes usando a vírgula como separador
       const partes = endereco.split(',');
-  
+
       // Verifica se há exatamente duas partes (latitude e longitude)
       if (partes.length === 2) {
         const latitude = parseFloat(partes[0].trim());
         const longitude = parseFloat(partes[1].trim());
-  
+
         // Verifica se os valores são números válidos
         if (!isNaN(latitude) && !isNaN(longitude)) {
           return { latitude, longitude };
         }
       }
-  
+
       // Retorna null se as coordenadas não forem válidas
       return null;
     };
-  
+
     // Filtra usuários com coordenadas válidas
     const usuariosComCoordenadas = usuarios
       .map((usuario) => {
@@ -150,7 +162,7 @@ const GerenciamentoUsuarios = () => {
         return coordenadas ? { ...usuario, ...coordenadas } : null;
       })
       .filter((usuario) => usuario !== null); // Remove usuários sem coordenadas válidas
-  
+
     return (
       <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
         <TileLayer
@@ -160,7 +172,7 @@ const GerenciamentoUsuarios = () => {
         {usuariosComCoordenadas.map((usuario) => (
           <Marker key={usuario.user_id} position={[usuario.latitude, usuario.longitude]} onClick={() => handleUsuarioClick(usuario.id)} icon={criarIconeUsuario(usuario.foto)}>
             <Popup  >
-            <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleUsuarioClick(usuario.id)}>{usuario.nome}</p> <br /> {usuario.endereco}
+              <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleUsuarioClick(usuario.id)}>{usuario.nome}</p> <br /> {usuario.endereco}
             </Popup>
           </Marker>
         ))}
@@ -198,7 +210,7 @@ const GerenciamentoUsuarios = () => {
             className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         ) : (
-          <p className="text-sm font-bold text-gray-20 cursor-pointer hover:underline">
+          <p className="text-sm font-bold text-gray-20">
             {info.getValue()}
           </p>
         ),
@@ -327,7 +339,11 @@ const GerenciamentoUsuarios = () => {
     <div>
       {/* Exibir indicador de carregamento */}
       {loading ? (
-        <p className="mt-10 text-center text-gray-500">Carregando usuários...</p>
+        <div>
+          <LoaderContainer>
+            <SyncLoader color="#3B82F6" size={15} />
+          </LoaderContainer>
+        </div>
       ) : (
         <>
           <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
@@ -335,7 +351,7 @@ const GerenciamentoUsuarios = () => {
               <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Usuários</div>
               <input
                 type="text"
-                placeholder="Filtrar por nome..."
+                placeholder="Pesquise aqui..."
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 className="p-2 border rounded-lg"
@@ -378,11 +394,10 @@ const GerenciamentoUsuarios = () => {
           </Card>
 
           <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4">Mapa de Usuários</div>
+            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-4">Mapa de Usuários</div>
             <UserMap usuarios={usuarios} />
           </Card>
         </>
-
       )}
     </div>
   );

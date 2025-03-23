@@ -279,7 +279,7 @@ const Marketplace = () => {
           </div>
           <input
             type="text"
-            placeholder="Filtrar por nome..."
+            placeholder="Pesquise aqui..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="p-2 border rounded-lg"
@@ -330,7 +330,7 @@ const Marketplace = () => {
           />
         )}
         <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4">Mapa de Produtos</div>
+            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-5">Mapa de Produtos</div>
             <ProductMap produtos={produtosMapa} />
           </Card>
         

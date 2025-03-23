@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"; // Importação necessária
 
-import { FaTrash, FaExclamationTriangle,FaBan ,FaUserSlash} from 'react-icons/fa';
+import { FaTrash, FaExclamationTriangle, FaBan, FaUserSlash } from 'react-icons/fa';
 import Card from 'components/card';
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo semi-transparente */
+`;
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
@@ -13,24 +24,24 @@ const ModeracaoConteudo = () => {
 
     const handleUsuarioClick = (usuarioId) => {
         navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
-      };
-      const handleEmpresaClick = (empresaId) => {
+    };
+    const handleEmpresaClick = (empresaId) => {
         navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
-      };
-      const handleProdutoClick = (produtoId) => {
+    };
+    const handleProdutoClick = (produtoId) => {
         navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
-      };
+    };
 
     useEffect(() => {
         const fetchReportes = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/reportes/`,{
+                const response = await fetch(`${API_BASE_URL}/api/reportes/`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         "ngrok-skip-browser-warning": "true",
                     },
-                }); 
+                });
                 const data = await response.json();
                 console.log(data);
                 setReportes(data.results);
@@ -133,7 +144,9 @@ const ModeracaoConteudo = () => {
     return (
         <div className="p-6">
             {loading ? (
-                <p>Carregando reportes...</p>
+                <LoaderContainer>
+                    <SyncLoader color="#3B82F6" size={15} />
+                </LoaderContainer>
             ) : (
                 <>
                     {renderTabela('Reportes de Empresas', reportesEmpresas)}

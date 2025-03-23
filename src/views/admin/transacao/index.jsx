@@ -5,6 +5,17 @@ import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-tabl
 import Card from "components/card";
 import { data } from 'autoprefixer';
 import { createColumnHelper } from "@tanstack/react-table";
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.1);
+`;
 
 const columnHelper = createColumnHelper(); // Definindo columnHelper
 
@@ -12,6 +23,7 @@ const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 const Transacao = () => {
     const [transacoes, setTransacoes] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 5,
@@ -37,6 +49,8 @@ const Transacao = () => {
             }));
         } catch (error) {
             console.error("Erro ao buscar transações", error);
+        } finally {
+            setLoading(false);
         }
     };
     const handleDownload = (id) => {
@@ -44,10 +58,10 @@ const Transacao = () => {
         try {
             const apiUrl = `https://fad7-154-71-159-172.ngrok-free.app/api/fatura/${id}/`;
             window.open(apiUrl, '_blank'); // Abre a fatura em uma nova aba
-          } catch (error) {
+        } catch (error) {
             console.error('Erro ao baixar fatura:', error);
             alert('Não foi possível baixar a fatura.');
-          }
+        }
         // Implementar lógica de download
     };
 
@@ -55,8 +69,8 @@ const Transacao = () => {
         console.log(`Deletando transação ID: ${id}`);
         // Implementar lógica de exclusão
     };
-    
-    
+
+
 
     const transacaoColumns = [
         columnHelper.accessor(row => row.lance?.produto?.imagens?.[0]?.imagem, {
@@ -132,8 +146,6 @@ const Transacao = () => {
                 </div>
             ),
         },
-
-
     ];
 
     const table = useReactTable({
@@ -142,8 +154,17 @@ const Transacao = () => {
         getCoreRowModel: getCoreRowModel(),
     });
 
+    if (loading) {
+        return (
+            <LoaderContainer>
+                <SyncLoader color="#3B82F6" size={15} />
+            </LoaderContainer>
+        );
+    }
+
     return (
         <div>
+
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Transações</div>

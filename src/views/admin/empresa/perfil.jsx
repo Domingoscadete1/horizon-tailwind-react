@@ -14,6 +14,18 @@ import avatar2 from "assets/img/avatars/avatar2.png";
 import avatar3 from "assets/img/avatars/avatar3.png";
 import NftCard from "components/card/NftCard";
 import ImageModal from "../marketplace/components/modal";
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+`;
+
 
 const nfts = [
     { title: "Computador", author: "Esthera Jackson", price: "0.91", image: NFt3, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
@@ -175,7 +187,11 @@ const PerfilEmpresa = () => {
 
 
     if (loading) {
-        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+        return (
+            <LoaderContainer>
+                <SyncLoader color="#3B82F6" size={15} />
+            </LoaderContainer>
+        );
     }
 
     if (!empresa) {

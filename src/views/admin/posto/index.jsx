@@ -17,16 +17,16 @@ import 'leaflet/dist/leaflet.css';
 // Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
 const personIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // URL da imagem do ícone
-  iconSize: [32, 32], // Tamanho do ícone
-  iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-  popupAnchor: [0, -32], // Ponto de ancoragem do popup
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // URL da imagem do ícone
+    iconSize: [32, 32], // Tamanho do ícone
+    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+    popupAnchor: [0, -32], // Ponto de ancoragem do popup
 });
 const postoDeTrocaIcon = new L.Icon({
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/3659/3659898.png', // URL da imagem do ícone
@@ -34,15 +34,15 @@ const postoDeTrocaIcon = new L.Icon({
     iconAnchor: [16, 32], // Ponto de ancoragem do ícone
     popupAnchor: [0, -32], // Ponto de ancoragem do popup
     className: 'posto-de-troca-icon', // Classe CSS personalizada (opcional)
-  });
+});
 const criarIconeUsuario = (fotoUrl) => {
-  return new L.Icon({
-    iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
-    iconSize: [32, 32], // Tamanho do ícone
-    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-    popupAnchor: [0, -32], // Ponto de ancoragem do popup
-    className: 'icone-usuario', // Classe CSS personalizada (opcional)
-  });
+    return new L.Icon({
+        iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
+        iconSize: [32, 32], // Tamanho do ícone
+        iconAnchor: [16, 32], // Ponto de ancoragem do ícone
+        popupAnchor: [0, -32], // Ponto de ancoragem do popup
+        className: 'icone-usuario', // Classe CSS personalizada (opcional)
+    });
 };
 
 
@@ -109,50 +109,50 @@ const GerenciamentoPostos = () => {
     const PostoMap = ({ postos }) => {
         // Função para extrair latitude e longitude do campo endereco
         const extrairCoordenadas = (localizacao) => {
-          if (!localizacao) return null;
-      
-          // Divide o endereco em partes usando a vírgula como separador
-          const partes = localizacao.split(',');
-      
-          // Verifica se há exatamente duas partes (latitude e longitude)
-          if (partes.length === 2) {
-            const latitude = parseFloat(partes[0].trim());
-            const longitude = parseFloat(partes[1].trim());
-      
-            // Verifica se os valores são números válidos
-            if (!isNaN(latitude) && !isNaN(longitude)) {
-              return { latitude, longitude };
+            if (!localizacao) return null;
+
+            // Divide o endereco em partes usando a vírgula como separador
+            const partes = localizacao.split(',');
+
+            // Verifica se há exatamente duas partes (latitude e longitude)
+            if (partes.length === 2) {
+                const latitude = parseFloat(partes[0].trim());
+                const longitude = parseFloat(partes[1].trim());
+
+                // Verifica se os valores são números válidos
+                if (!isNaN(latitude) && !isNaN(longitude)) {
+                    return { latitude, longitude };
+                }
             }
-          }
-      
-          // Retorna null se as coordenadas não forem válidas
-          return null;
+
+            // Retorna null se as coordenadas não forem válidas
+            return null;
         };
-      
+
         // Filtra usuários com coordenadas válidas
         const postosComCoordenadas = postos
-          .map((posto) => {
-            const coordenadas = extrairCoordenadas(posto.localizacao);
-            return coordenadas ? { ...posto, ...coordenadas } : null;
-          })
-          .filter((posto) => posto !== null); // Remove usuários sem coordenadas válidas
-      
+            .map((posto) => {
+                const coordenadas = extrairCoordenadas(posto.localizacao);
+                return coordenadas ? { ...posto, ...coordenadas } : null;
+            })
+            .filter((posto) => posto !== null); // Remove usuários sem coordenadas válidas
+
         return (
-          <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            {postosComCoordenadas.map((posto) => (
-              <Marker key={posto.id} position={[posto.latitude, posto.longitude]}  icon={postoDeTrocaIcon}>
-                <Popup  >
-                <p className="text-sm text-navy-700 dark:text-white" >{posto.nome}</p> <br /> {posto.localizacao}
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+            <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                {postosComCoordenadas.map((posto) => (
+                    <Marker key={posto.id} position={[posto.latitude, posto.longitude]} icon={postoDeTrocaIcon}>
+                        <Popup  >
+                            <p className="text-sm text-navy-700 dark:text-white" >{posto.nome}</p> <br /> {posto.localizacao}
+                        </Popup>
+                    </Marker>
+                ))}
+            </MapContainer>
         );
-      };
+    };
 
 
 
@@ -298,7 +298,7 @@ const GerenciamentoPostos = () => {
         setMostrarModal(true);
     };
     const abrirMapa = () => {
-        
+
         setMostrarMapa(true);
     };
 
@@ -407,7 +407,7 @@ const GerenciamentoPostos = () => {
             });
 
             if (response.ok) {
-               window.location.reload();
+                window.location.reload();
 
             } else {
                 alert('Erro ao alterar o status da conta.');
@@ -608,21 +608,15 @@ const GerenciamentoPostos = () => {
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
                         Lista de Postos Registrados
                     </div>
-                    
+
                     <input
                         type="text"
-                        placeholder="Filtrar por nome..."
+                        placeholder="Pesquise aqui..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         className="p-2 border rounded-lg"
                     />
-                    <button
-                    onClick={abrirMapa}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center mb-6"
-                >
-                    <FaPlus className="mr-2" />
-                    Mostrar Mapa
-                </button>
+
                 </header>
 
                 <div className="mt-5 overflow-x-auto">
@@ -770,8 +764,15 @@ const GerenciamentoPostos = () => {
             {/* Botão para abrir o modal de cadastro */}
             <div className="flex justify-end">
                 <button
+                    onClick={abrirMapa}
+                    className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center mb-6 mr-5"
+                >
+                    {/* <FaPlus className="mr-2" /> */}
+                    Mostrar Mapa
+                </button>
+                <button
                     onClick={abrirModal}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center mb-6"
+                    className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center mb-6"
                 >
                     <FaPlus className="mr-2" />
                     Cadastrar Posto
@@ -801,11 +802,11 @@ const GerenciamentoPostos = () => {
 
             )}
 
-{mostrarMapa && (
+            {mostrarMapa && (
                 <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-                <div className="text-xl font-bold text-navy-700 dark:text-white mb-4">Mapa de Postos</div>
-                <PostoMap postos={postos} />
-              </Card>
+                    <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-5">Mapa de Postos</div>
+                    <PostoMap postos={postos} />
+                </Card>
 
             )}
             {mostrarModalUpdate && (

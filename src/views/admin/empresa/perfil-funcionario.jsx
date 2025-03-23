@@ -1,8 +1,19 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaBriefcase, FaCalendar, FaEdit, FaSave } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+`;
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
@@ -42,7 +53,7 @@ const PerfilFuncionario = () => {
             }
         };
 
-       
+
 
         const fetchData = async () => {
             await fetchUsuario();
@@ -53,7 +64,9 @@ const PerfilFuncionario = () => {
     }, [id]);
 
     if (loading) {
-        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+        <LoaderContainer>
+            <SyncLoader color="#3B82F6" size={15} />
+        </LoaderContainer>
     }
 
     if (!dadosFuncionario) {
@@ -137,9 +150,8 @@ const PerfilFuncionario = () => {
                                             value={dadosFuncionario.email}
                                             onChange={handleInputChange}
                                             disabled={!editando}
-                                            className={`w-full p-2 border rounded-lg focus:outline-none ${
-                                                editando ? 'bg-white' : 'bg-gray-100'
-                                            }`}
+                                            className={`w-full p-2 border rounded-lg focus:outline-none ${editando ? 'bg-white' : 'bg-gray-100'
+                                                }`}
                                         />
                                     </div>
                                     <div className="flex items-center">
@@ -150,9 +162,8 @@ const PerfilFuncionario = () => {
                                             value={dadosFuncionario.telefone}
                                             onChange={handleInputChange}
                                             disabled={!editando}
-                                            className={`w-full p-2 border rounded-lg focus:outline-none ${
-                                                editando ? 'bg-white' : 'bg-gray-100'
-                                            }`}
+                                            className={`w-full p-2 border rounded-lg focus:outline-none ${editando ? 'bg-white' : 'bg-gray-100'
+                                                }`}
                                         />
                                     </div>
                                     <div className="flex items-center">
@@ -163,9 +174,8 @@ const PerfilFuncionario = () => {
                                             value={dadosFuncionario.endereco}
                                             onChange={handleInputChange}
                                             disabled={!editando}
-                                            className={`w-full p-2 border rounded-lg focus:outline-none ${
-                                                editando ? 'bg-white' : 'bg-gray-100'
-                                            }`}
+                                            className={`w-full p-2 border rounded-lg focus:outline-none ${editando ? 'bg-white' : 'bg-gray-100'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -185,9 +195,8 @@ const PerfilFuncionario = () => {
                                             value={dadosFuncionario.role}
                                             onChange={handleInputChange}
                                             disabled={!editando}
-                                            className={`w-full p-2 border rounded-lg focus:outline-none ${
-                                                editando ? 'bg-white' : 'bg-gray-100'
-                                            }`}
+                                            className={`w-full p-2 border rounded-lg focus:outline-none ${editando ? 'bg-white' : 'bg-gray-100'
+                                                }`}
                                         />
                                     </div>
                                     <div className="flex items-center">
@@ -198,9 +207,8 @@ const PerfilFuncionario = () => {
                                             value={dadosFuncionario.empresa_nome}
                                             onChange={handleInputChange}
                                             disabled
-                                            className={`w-full p-2 border rounded-lg focus:outline-none ${
-                                                editando ? 'bg-white' : 'bg-gray-100'
-                                            }`}
+                                            className={`w-full p-2 border rounded-lg focus:outline-none ${editando ? 'bg-white' : 'bg-gray-100'
+                                                }`}
                                         />
                                     </div>
                                     <div className="flex items-center">
@@ -211,9 +219,8 @@ const PerfilFuncionario = () => {
                                             value={dadosFuncionario.data_associacao}
                                             onChange={handleInputChange}
                                             disabled
-                                            className={`w-full p-2 border rounded-lg focus:outline-none ${
-                                                editando ? 'bg-white' : 'bg-gray-100'
-                                            }`}
+                                            className={`w-full p-2 border rounded-lg focus:outline-none ${editando ? 'bg-white' : 'bg-gray-100'
+                                                }`}
                                         />
                                     </div>
                                 </div>

@@ -107,7 +107,7 @@ const EmpresasParaAprovar = () => {
                     </div>
                     <input
                         type="text"
-                        placeholder="Filtrar por nome..."
+                        placeholder="Pesquise aqui..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         className="p-2 border rounded-lg"

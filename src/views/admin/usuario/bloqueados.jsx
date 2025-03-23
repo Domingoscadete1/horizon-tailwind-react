@@ -2,242 +2,258 @@ import React, { useState, useEffect } from "react";
 import { FaCheck, FaTimes, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import Card from "components/card";
 import axios from "axios";
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+`;
+
 
 const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
 
 
 const UsuariosBloqueados = () => {
-    const [categorias, setCategorias] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentCategoria, setCurrentCategoria] = useState(null);
-    const [formData, setFormData] = useState({
-      nome: "",
-      descricao: "",
+  const [categorias, setCategorias] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentCategoria, setCurrentCategoria] = useState(null);
+  const [formData, setFormData] = useState({
+    nome: "",
+    descricao: "",
+    imagem: null,
+  });
+
+  // Buscar categorias
+  const fetchCategorias = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/categorias/`, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      setCategorias(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Erro ao buscar categorias:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
+
+  // Abrir modal para adicionar/editar categoria
+  const openModal = (categoria = null) => {
+    setCurrentCategoria(categoria);
+    setFormData({
+      nome: categoria ? categoria.nome : "",
+      descricao: categoria ? categoria.descricao : "",
       imagem: null,
     });
-  
-    // Buscar categorias
-    const fetchCategorias = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/api/categorias/`, {
+    setIsModalOpen(true);
+  };
+
+  // Fechar modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentCategoria(null);
+    setFormData({ nome: "", descricao: "", imagem: null });
+  };
+
+  // Manipular mudanças no formulário
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "imagem") {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  // Enviar formulário (criar/editar categoria)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("nome", formData.nome);
+    formDataToSend.append("descricao", formData.descricao);
+    if (formData.imagem) {
+      formDataToSend.append("imagem", formData.imagem);
+    }
+
+    try {
+      if (currentCategoria) {
+        // Editar categoria existente
+        await axios.put(`${API_BASE_URL}/api/categoria/${currentCategoria.id}/atualizar/`, formDataToSend, {
           headers: {
+            "Content-Type": "multipart/form-data",
             "ngrok-skip-browser-warning": "true",
           },
         });
-        setCategorias(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Erro ao buscar categorias:", error);
-        setLoading(false);
-      }
-    };
-  
-    useEffect(() => {
-      fetchCategorias();
-    }, []);
-  
-    // Abrir modal para adicionar/editar categoria
-    const openModal = (categoria = null) => {
-      setCurrentCategoria(categoria);
-      setFormData({
-        nome: categoria ? categoria.nome : "",
-        descricao: categoria ? categoria.descricao : "",
-        imagem: null,
-      });
-      setIsModalOpen(true);
-    };
-  
-    // Fechar modal
-    const closeModal = () => {
-      setIsModalOpen(false);
-      setCurrentCategoria(null);
-      setFormData({ nome: "", descricao: "", imagem: null });
-    };
-  
-    // Manipular mudanças no formulário
-    const handleChange = (e) => {
-      const { name, value, files } = e.target;
-      if (name === "imagem") {
-        setFormData({ ...formData, [name]: files[0] });
       } else {
-        setFormData({ ...formData, [name]: value });
+        // Criar nova categoria
+        await axios.post(`${API_BASE_URL}/api/categoria/create/`, formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
       }
-    };
-  
-    // Enviar formulário (criar/editar categoria)
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      const formDataToSend = new FormData();
-      formDataToSend.append("nome", formData.nome);
-      formDataToSend.append("descricao", formData.descricao);
-      if (formData.imagem) {
-        formDataToSend.append("imagem", formData.imagem);
-      }
-  
-      try {
-        if (currentCategoria) {
-          // Editar categoria existente
-          await axios.put(`${API_BASE_URL}/api/categoria/${currentCategoria.id}/atualizar/`, formDataToSend, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "ngrok-skip-browser-warning": "true",
-            },
-          });
-        } else {
-          // Criar nova categoria
-          await axios.post(`${API_BASE_URL}/api/categoria/create/`, formDataToSend, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "ngrok-skip-browser-warning": "true",
-            },
-          });
-        }
-        fetchCategorias();
-        closeModal();
-      } catch (error) {
-        console.error("Erro ao salvar categoria:", error);
-      }
-    };
-  
-    // Excluir categoria
-    const handleDelete = async (id) => {
-      try {
-        await axios.delete(`${API_BASE_URL}/api/categoria/${id}/deletar/`,{
-            headers: {
-                "ngrok-skip-browser-warning": "true",
-            },
-          });
-        fetchCategorias();
-      } catch (error) {
-        console.error("Erro ao excluir categoria:", error);
-      }
-    };
-  
-    return (
-      <div className="p-4">
-        <Card extra="w-full h-full sm:overflow-auto p-6">
-          <header className="relative flex items-center justify-between pt-4">
-            <div className="text-xl font-bold text-navy-700 dark:text-white">
-              Gerenciamento de Categorias
-            </div>
-            <button
-              onClick={() => openModal()}
-              className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800"
-            >
-              <FaPlus className="mr-2" /> Adicionar Categoria
-            </button>
-          </header>
-  
-          <div className="mt-5">
-            {loading ? (
-              <p>Carregando categorias...</p>
-            ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="!border-px !border-gray-400">
-                    <th className="text-start py-2">Nome</th>
-                    <th className="text-start py-2">Descrição</th>
-                    <th className="text-start py-2">Imagem</th>
-                    <th className="text-start py-2">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categorias.map((categoria) => (
-                    <tr key={categoria.id} className="border-b border-gray-200">
-                      <td className="py-3">{categoria.nome}</td>
-                      <td className="py-3">{categoria.descricao}</td>
-                      <td className="py-3">
-                        {categoria.imagem && (
-                          <img
-                            src={categoria.imagem}
-                            alt={categoria.nome}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        )}
-                      </td>
-                      <td className="py-3">
-                        <button
-                          onClick={() => openModal(categoria)}
-                          className="text-green-500 hover:text-green-700 mr-2"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(categoria.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FaTrash />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </Card>
-  
-        {/* Modal para adicionar/editar categoria */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg w-1/3">
-              <h2 className="text-xl font-bold mb-4">
-                {currentCategoria ? "Editar Categoria" : "Adicionar Categoria"}
-              </h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Nome</label>
-                  <input
-                    type="text"
-                    name="nome"
-                    value={formData.nome}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-lg"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Descrição</label>
-                  <textarea
-                    name="descricao"
-                    value={formData.descricao}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-lg"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Imagem</label>
-                  <input
-                    type="file"
-                    name="imagem"
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-lg"
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-lg hover:bg-brand-800"
-                  >
-                    {currentCategoria ? "Salvar" : "Adicionar"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+      fetchCategorias();
+      closeModal();
+    } catch (error) {
+      console.error("Erro ao salvar categoria:", error);
+    }
   };
+
+  // Excluir categoria
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/categoria/${id}/deletar/`, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      fetchCategorias();
+    } catch (error) {
+      console.error("Erro ao excluir categoria:", error);
+    }
+  };
+
+  return (
+    <div className="p-4">
+      <Card extra="w-full h-full sm:overflow-auto p-6">
+        <div className="relative flex items-center justify-between pt-4">
+          <header className="text-xl font-bold text-navy-700 dark:text-white">
+            Gerenciamento de Categorias
+          </header>
+        </div>
+
+        <div className="mt-5">
+          {loading ? (
+            <LoaderContainer>
+              <SyncLoader color="#3B82F6" size={15} />
+            </LoaderContainer>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="!border-px !border-gray-400">
+                  <th className="text-start py-2">Nome</th>
+                  <th className="text-start py-2">Descrição</th>
+                  <th className="text-start py-2">Imagem</th>
+                  <th className="text-start py-2">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categorias.map((categoria) => (
+                  <tr key={categoria.id} className="border-b border-gray-200">
+                    <td className="py-3">{categoria.nome}</td>
+                    <td className="py-3">{categoria.descricao}</td>
+                    <td className="py-3">
+                      {categoria.imagem && (
+                        <img
+                          src={categoria.imagem}
+                          alt={categoria.nome}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      )}
+                    </td>
+                    <td className="py-3">
+                      <button
+                        onClick={() => openModal(categoria)}
+                        className="text-green-500 hover:text-green-700 mr-2"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(categoria.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </Card>
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => openModal()}
+          className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center mb-6"
+        >
+          <FaPlus className="mr-2" /> Adicionar Categoria
+        </button>
+      </div>
+
+      {/* Modal para adicionar/editar categoria */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-1/3">
+            <h2 className="text-xl font-bold mb-4">
+              {currentCategoria ? "Editar Categoria" : "Adicionar Categoria"}
+            </h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Nome</label>
+                <input
+                  type="text"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Descrição</label>
+                <textarea
+                  name="descricao"
+                  value={formData.descricao}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Imagem</label>
+                <input
+                  type="file"
+                  name="imagem"
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-lg hover:bg-brand-800"
+                >
+                  {currentCategoria ? "Salvar" : "Adicionar"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default UsuariosBloqueados;
