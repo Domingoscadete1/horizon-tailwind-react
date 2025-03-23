@@ -41,7 +41,7 @@ const criarIconeUsuario = (fotoUrl) => {
   });
 };
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const Marketplace = () => {
   const navigate = useNavigate(); // Hook de navegação

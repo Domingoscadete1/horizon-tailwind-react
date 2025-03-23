@@ -3,7 +3,7 @@ import { FaTimes, FaComments, FaStar, FaThumbsUp, FaPaperPlane, FaCheck, FaTrash
 import Card from 'components/card'; // Componente de card personalizado
 import axios from 'axios';
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const SuporteCliente = () => {
     // Estado para gerenciar solicitações de suporte

@@ -5,7 +5,7 @@ import { FaPlus, FaEdit, FaTrash, FaEye, FaArrowLeft, FaArrowRight, FaTimes } fr
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from 'leaflet';
 import { Icon } from "leaflet";
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 const customIcon = new Icon({
     iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
     iconSize: [25, 41],
