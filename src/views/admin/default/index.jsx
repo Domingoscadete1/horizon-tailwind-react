@@ -5,7 +5,7 @@ import TotalSpent from "views/admin/default/components/TotalSpent";
 import PieChartCard from "views/admin/default/components/PieChartCard";
 import { IoMdHome } from "react-icons/io";
 import { IoDocuments } from "react-icons/io5";
-import { MdBarChart, MdDashboard } from "react-icons/md";
+import { MdBarChart, MdCarCrash, MdDashboard, MdInbox, MdMoney, MdOutbox } from "react-icons/md";
 
 import { columnsDataCheck, columnsDataComplex } from "./variables/columnsData";
 
@@ -16,6 +16,7 @@ import DailyTraffic from "views/admin/default/components/DailyTraffic";
 import TaskCard from "views/admin/default/components/TaskCard";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
+import { FaAccusoft, FaBox, FaMapMarkerAlt, FaMoneyCheckAlt, FaUserAlt, FaUserAltSlash, FaUsers, FaUsersCog, FaUserShield } from "react-icons/fa";
 
 
 const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
@@ -63,32 +64,32 @@ useEffect(() => {
 
       <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
+          icon={<FaMoneyCheckAlt className="h-7 w-7" />}
           title={"Saldo Total"}
           subtitle={`${dados?.saldo} AOA`}
         />
         <Widget
-          icon={<IoDocuments className="h-6 w-6" />}
+          icon={<FaUsersCog className="h-6 w-6" />}
           title={"Funcionários"}
           subtitle={`${dados?.funcionarios_total}`}
         />
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
+          icon={<FaBox className="h-7 w-7" />}
           title={"Produtos"}
           subtitle={`${dados?.produtos_total}`}
         />
         <Widget
-          icon={<MdDashboard className="h-6 w-6" />}
+          icon={<FaAccusoft className="h-6 w-6" />}
           title={"Empresas"}
           subtitle={`${dados?.empresas_total}`}
         />
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
+          icon={<FaUsers className="h-7 w-7" />}
           title={"Usuários"}
           subtitle={`${dados?.usuarios_total}`}
         />
         <Widget
-          icon={<IoMdHome className="h-6 w-6" />}
+          icon={<FaMapMarkerAlt className="h-6 w-6" />}
           title={"Postos"}
           subtitle={`${dados?.postos_total}`}
         />

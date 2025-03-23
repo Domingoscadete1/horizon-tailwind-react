@@ -220,6 +220,7 @@ const routes = [
   //   layout: "/auth",
   //   path: "sign-in",
   //   icon: <MdLock className="h-6 w-6" />,
+  //   admin: true,
   //   component: <SignIn />,
   // },
 ];

@@ -55,7 +55,7 @@ const EmpresasParaAprovar = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
             cell: (info) => (
                 <p
-                    className="text-sm font-bold text-navy-51 cursor-pointer hover:underline"
+                    className="text-sm font-bold text-navy-51"
                 >
                     {info.getValue()}
                 </p>

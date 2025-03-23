@@ -14,7 +14,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.0);
 `;
 
 const columnHelper = createColumnHelper(); // Definindo columnHelper

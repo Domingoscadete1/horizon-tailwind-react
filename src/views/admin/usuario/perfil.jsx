@@ -17,7 +17,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
 `;
 const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 

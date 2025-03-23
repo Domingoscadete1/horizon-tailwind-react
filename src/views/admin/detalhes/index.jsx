@@ -12,7 +12,17 @@ import NFt3 from "assets/img/nfts/Nft3.png";
 import NFt4 from "assets/img/nfts/Nft4.png";
 import NFt5 from "assets/img/nfts/Nft5.png";
 import NFt6 from "assets/img/nfts/Nft6.png";
+import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import styled from 'styled-components'; // Para estilização adicional
 
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.0); 
+`;
 
 const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
@@ -86,7 +96,9 @@ const DetalhesProduto = () => {
     }, [id]);
 
     if (loading) {
-        return <div className="mt-10 text-center text-gray-500">Carregando...</div>;
+        return <LoaderContainer>
+        <SyncLoader color="#3B82F6" size={15} />
+    </LoaderContainer>
     }
 
     if (!produto) {

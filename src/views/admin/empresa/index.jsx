@@ -22,7 +22,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.0); 
 `;
 
 // Fix para ícones padrão do Leaflet
@@ -252,99 +252,90 @@ const GerenciamentoEmpresas = () => {
 
     return (
         <div>
-            {loading ? (
-                <div>
-                    <LoaderContainer>
-                        <SyncLoader color="#3B82F6" size={15} />
-                    </LoaderContainer>
-                </div>
-            ) : (
-                <>
-                    <div>
-                        <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                            <header className="relative flex items-center justify-between pt-4">
-                                <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Empresas</div>
-                                <input
-                                    type="text"
-                                    placeholder="Pesquise aqui..."
-                                    value={globalFilter}
-                                    onChange={(e) => setGlobalFilter(e.target.value)}
-                                    className="p-2 border rounded-lg"
-                                />
-                            </header>
-                            <div className="mt-5 overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        {table.getHeaderGroups().map((headerGroup) => (
-                                            <tr key={headerGroup.id}>
-                                                {headerGroup.headers.map((header) => (
-                                                    <th key={header.id} className="border-b py-2 text-start">
-                                                        {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    </th>
-                                                ))}
-                                            </tr>
+
+            <div>
+                <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
+                    <header className="relative flex items-center justify-between pt-4">
+                        <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Empresas</div>
+                        <input
+                            type="text"
+                            placeholder="Pesquise aqui..."
+                            value={globalFilter}
+                            onChange={(e) => setGlobalFilter(e.target.value)}
+                            className="p-2 border rounded-lg"
+                        />
+                    </header>
+                    <div className="mt-5 overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <tr key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => (
+                                            <th key={header.id} className="border-b py-2 text-start">
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                            </th>
                                         ))}
-                                    </thead>
-                                    <tbody>
-                                        {table.getRowModel().rows.map((row) => (
-                                            <tr key={row.id}>
-                                                {row.getVisibleCells().map((cell) => (
-                                                    <td key={cell.id} className="py-2">
-                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                    </td>
-                                                ))}
-                                            </tr>
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody>
+                                {table.getRowModel().rows.map((row) => (
+                                    <tr key={row.id}>
+                                        {row.getVisibleCells().map((cell) => (
+                                            <td key={cell.id} className="py-2">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
                                         ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Card>
-
-                        {empresaSelecionada && (
-                            <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                                <header className="relative flex items-center justify-between pt-4">
-                                    <div className="text-xl font-bold text-navy-700 dark:text-white">
-                                        Funcionários da Empresa: {nomeEmpresaSelecionada} {/* Exibe o nome da empresa selecionada */}
-                                    </div>
-                                </header>
-                                <div className="mt-5 overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            {funcionariosTable.getHeaderGroups().map((headerGroup) => (
-                                                <tr key={headerGroup.id}>
-                                                    {headerGroup.headers.map((header) => (
-                                                        <th key={header.id} className="border-b py-2 text-start">
-                                                            {flexRender(header.column.columnDef.header, header.getContext())}
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            ))}
-                                        </thead>
-                                        <tbody>
-                                            {funcionariosTable.getRowModel().rows.map((row) => (
-                                                <tr key={row.id}>
-                                                    {row.getVisibleCells().map((cell) => (
-                                                        <td key={cell.id} className="py-2">
-                                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                        </td>
-                                                    ))}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </Card>
-
-
-                        )}
-                        <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-                            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-4">Mapa de Empresas</div>
-                            <EmpresaMap empresas={empresas} />
-                        </Card>
-
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                </>
-            )}
+                </Card>
+
+                {empresaSelecionada && (
+                    <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
+                        <header className="relative flex items-center justify-between pt-4">
+                            <div className="text-xl font-bold text-navy-700 dark:text-white">
+                                Funcionários da Empresa: {nomeEmpresaSelecionada} {/* Exibe o nome da empresa selecionada */}
+                            </div>
+                        </header>
+                        <div className="mt-5 overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    {funcionariosTable.getHeaderGroups().map((headerGroup) => (
+                                        <tr key={headerGroup.id}>
+                                            {headerGroup.headers.map((header) => (
+                                                <th key={header.id} className="border-b py-2 text-start">
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </thead>
+                                <tbody>
+                                    {funcionariosTable.getRowModel().rows.map((row) => (
+                                        <tr key={row.id}>
+                                            {row.getVisibleCells().map((cell) => (
+                                                <td key={cell.id} className="py-2">
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
+
+
+                )}
+                <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+                    <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-4">Mapa de Empresas</div>
+                    <EmpresaMap empresas={empresas} />
+                </Card>
+
+            </div>
         </div>
     );
 };

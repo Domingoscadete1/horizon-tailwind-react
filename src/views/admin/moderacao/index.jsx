@@ -12,7 +12,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 80vh;
-  background-color: rgba(255, 255, 255, 0.1); /* Fundo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.0); 
 `;
 
 const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
@@ -92,7 +92,7 @@ const ModeracaoConteudo = () => {
                                 <tr key={rep.id} className="border-b border-gray-200">
                                     {/* Célula do Denunciante */}
                                     <td
-                                        className="py-2 px-4 cursor-pointer hover:text-brand-500"
+                                        className="py-2 px-4 text-sm cursor-pointer text-brand-500 font-bold hover:underline"
                                         onClick={() => {
                                             if (rep.usuario_denunciante) {
                                                 handleUsuarioClick(rep.usuario_denunciante.id);
@@ -106,7 +106,7 @@ const ModeracaoConteudo = () => {
 
                                     {/* Célula do Denunciado */}
                                     <td
-                                        className="py-2 px-4 cursor-pointer hover:text-brand-500"
+                                        className="py-2 px-4 text-sm cursor-pointer text-brand-500 font-bold hover:underline"
                                         onClick={() => {
                                             if (rep.denunciado_usuario) {
                                                 handleUsuarioClick(rep.denunciado_usuario.id);

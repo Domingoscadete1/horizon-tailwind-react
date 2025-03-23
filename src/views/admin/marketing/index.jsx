@@ -1,7 +1,17 @@
 import React, { useState,useEffect } from 'react';
 import { FaTag, FaBullhorn, FaPaperPlane } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
+import { SyncLoader } from 'react-spinners'; // Importe o spinner``
+import styled from 'styled-components'; // Para estilização adicional
+
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
+`;
 
 const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 

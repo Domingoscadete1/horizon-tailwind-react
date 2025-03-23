@@ -11,7 +11,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
 `;
 
 
@@ -197,7 +197,7 @@ const UsuariosBloqueados = () => {
 
       {/* Modal para adicionar/editar categoria */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
           <div className="bg-white p-6 rounded-lg w-1/3">
             <h2 className="text-xl font-bold mb-4">
               {currentCategoria ? "Editar Categoria" : "Adicionar Categoria"}

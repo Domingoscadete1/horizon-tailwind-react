@@ -23,7 +23,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.0); 
 `;
 
 
@@ -312,7 +312,7 @@ const PerfilEmpresa = () => {
             <div>
                 {/* Modal para exibir a imagem em tamanho grande */}
                 {selectedImage && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
                         <div className="bg-white p-6 rounded-lg relative">
                             <button
                                 onClick={closeImageModal}
@@ -588,6 +588,7 @@ const PerfilEmpresa = () => {
                                     </a>
                                 )}
                             </div>
+                            
                             {/* Exibir ativar/desativar conta apenas se a empresa estiver verificada */}
                             {empresa.verificada && (
                                 <div className="flex space-x-2 mt-4">
