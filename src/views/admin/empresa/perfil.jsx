@@ -33,7 +33,7 @@ const nfts = [
     { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
     { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
 ];
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const PerfilEmpresa = () => {
     const navigate = useNavigate(); // Hook de navegação

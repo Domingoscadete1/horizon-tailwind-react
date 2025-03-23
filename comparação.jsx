@@ -787,7 +787,7 @@ import NFt5 from "assets/img/nfts/Nft5.png";
 import NFt6 from "assets/img/nfts/Nft6.png";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app/api/produtos/";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app/api/produtos/";
 
 const Marketplace = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -990,7 +990,7 @@ import image3 from "assets/img/profile/image3.png";
 import banner from "assets/img/profile/banner.png";
 import NftCard from "components/card/NftCard";
 import ImageModal from "../marketplace/components/modal";
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const PerfilUsuario = () => {
     const navigate = useNavigate();

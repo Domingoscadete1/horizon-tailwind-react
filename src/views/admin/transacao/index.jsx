@@ -19,7 +19,7 @@ const LoaderContainer = styled.div`
 
 const columnHelper = createColumnHelper(); // Definindo columnHelper
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const Transacao = () => {
     const [transacoes, setTransacoes] = useState([]);
@@ -56,7 +56,7 @@ const Transacao = () => {
     const handleDownload = (id) => {
         console.log(`Baixando transação ID: ${id}`);
         try {
-            const apiUrl = `https://fad7-154-71-159-172.ngrok-free.app/api/fatura/${id}/`;
+            const apiUrl = `https://dce9-154-71-159-172.ngrok-free.app/api/fatura/${id}/`;
             window.open(apiUrl, '_blank'); // Abre a fatura em uma nova aba
         } catch (error) {
             console.error('Erro ao baixar fatura:', error);

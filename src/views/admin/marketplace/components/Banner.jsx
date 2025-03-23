@@ -6,7 +6,7 @@ import nft1 from "assets/img/nfts/NftBanner1.png";
 import nft2 from "assets/img/nfts/NftBanner1.png";
 import nft3 from "assets/img/nfts/NftBanner1.png";
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const Banner1 = () => {
   const [anuncios, setAnuncios] = useState([]);

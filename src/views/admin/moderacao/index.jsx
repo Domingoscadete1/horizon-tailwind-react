@@ -15,7 +15,7 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.1); /* Fundo semi-transparente */
 `;
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const ModeracaoConteudo = () => {
     const [reportes, setReportes] = useState([]);

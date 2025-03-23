@@ -48,7 +48,7 @@ const criarIconeUsuario = (fotoUrl) => {
     className: 'icone-usuario', // Classe CSS personalizada (opcional)
   });
 };
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app/api/usuarios/";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app/api/usuarios/";
 
 const GerenciamentoUsuarios = () => {
   const navigate = useNavigate(); // Hook de navegação

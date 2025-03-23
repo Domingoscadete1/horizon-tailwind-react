@@ -3,7 +3,7 @@ import { FaTag, FaBullhorn, FaPaperPlane } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 
-const API_BASE_URL = "https://fad7-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
 const PromocoesMarketing = () => {
     // Estado para gerenciar descontos e ofertas
