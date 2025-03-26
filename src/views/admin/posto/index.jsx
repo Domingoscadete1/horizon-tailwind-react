@@ -92,6 +92,16 @@ const GerenciamentoPostos = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [proximaPagina, setProximaPagina] = useState(null);
     const [paginaAnterior, setPaginaAnterior] = useState(null);
+    const [mostrarModalFuncionario, setMostrarModalFuncionario] = useState(false);
+const [novoFuncionario, setNovoFuncionario] = useState({
+    nome: '',
+    email: '',
+    numero_telefone: '',
+    endereco: '',
+    foto: null,
+    posto_id: null
+});
+
     const [location, setLocation] = useState({ lat: 0, lng: 0 });
     const [openMapModal, setOpenMapModal] = useState(false);
     const MapWithInvalidate = ({ location }) => {
@@ -417,6 +427,64 @@ const GerenciamentoPostos = () => {
             alert('Erro ao alterar o status da conta.');
         }
     };
+    const cadastrarFuncionario = async () => {
+        if (!novoFuncionario.nome || !novoFuncionario.email || !novoFuncionario.numero_telefone) {
+            alert('Preencha todos os campos obrigatórios.');
+            return;
+        }
+    
+        if (!postoSelecionado) {
+            alert('Selecione um posto primeiro.');
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('nome', novoFuncionario.nome);
+        formData.append('email', novoFuncionario.email);
+        formData.append('numero_telefone', novoFuncionario.numero_telefone);
+        formData.append('endereco', novoFuncionario.endereco || '');
+        formData.append('posto_id', postoSelecionado.id);
+        if (novoFuncionario.foto) {
+            formData.append('foto', novoFuncionario.foto);
+        }
+    
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/funcionario/create/`, {
+                method: "POST",
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                alert('Funcionário cadastrado com sucesso!');
+                setMostrarModalFuncionario(false);
+                fetchFuncionarios(postoSelecionado.id); // Atualiza a lista de funcionários
+                setNovoFuncionario({
+                    nome: '',
+                    email: '',
+                    numero_telefone: '',
+                    endereco: '',
+                    foto: null,
+                    posto_id: null
+                });
+            } else {
+                const errorData = await response.json();
+                alert(errorData.detail || 'Erro ao cadastrar funcionário.');
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar funcionário:', error);
+            alert('Erro ao cadastrar funcionário.');
+        }
+    };
+    
+    // Adicione esta função para lidar com upload de foto
+    const handleFileChange = (e) => {
+        setNovoFuncionario({ ...novoFuncionario, foto: e.target.files[0] });
+    };
+    
 
     // Configuração das colunas para postos
     const columnHelper = createColumnHelper();
@@ -662,6 +730,13 @@ const GerenciamentoPostos = () => {
                                     onChange={(e) => setGlobalFilter(e.target.value)}
                                     className="p-2 border rounded-lg"
                                 />
+                                 <button
+                    onClick={() => setMostrarModalFuncionario(true)}
+                    className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
+                >
+                    <FaPlus className="mr-2" />
+                    Adicionar Funcionário
+                </button>
                             </header>
                             <div className="mt-5 overflow-x-auto">
                                 <table className="w-full">
@@ -801,6 +876,107 @@ const GerenciamentoPostos = () => {
                 </div>
 
             )}
+{mostrarModalFuncionario && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
+        <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <header className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-navy-700">
+                    Adicionar Funcionário ao Posto: {postoSelecionado?.nome}
+                </h2>
+                <button
+                    onClick={() => setMostrarModalFuncionario(false)}
+                    className="text-navy-700 hover:text-blue-700"
+                >
+                    <FaTimes />
+                </button>
+            </header>
+
+            <div className="mt-4">
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Nome Completo *
+                    </label>
+                    <input
+                        type="text"
+                        name="nome"
+                        value={novoFuncionario.nome}
+                        onChange={(e) => setNovoFuncionario({...novoFuncionario, nome: e.target.value})}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Email *
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={novoFuncionario.email}
+                        onChange={(e) => setNovoFuncionario({...novoFuncionario, email: e.target.value})}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Telefone *
+                    </label>
+                    <input
+                        type="tel"
+                        name="numero_telefone"
+                        value={novoFuncionario.numero_telefone}
+                        onChange={(e) => setNovoFuncionario({...novoFuncionario, numero_telefone: e.target.value})}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Endereço
+                    </label>
+                    <input
+                        type="text"
+                        name="endereco"
+                        value={novoFuncionario.endereco}
+                        onChange={(e) => setNovoFuncionario({...novoFuncionario, endereco: e.target.value})}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Foto
+                    </label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setMostrarModalFuncionario(false)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        onClick={cadastrarFuncionario}
+                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                    >
+                        Cadastrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
 
             {mostrarMapa && (
                 <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>

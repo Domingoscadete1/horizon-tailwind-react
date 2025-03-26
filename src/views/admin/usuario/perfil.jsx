@@ -44,6 +44,80 @@ const PerfilUsuario = () => {
     const [formData1, setFormData] = useState({
         status: 'Ativa',
     });
+    const [mostrarModalNotificacao, setMostrarModalNotificacao] = useState(false);
+const [notificacao, setNotificacao] = useState({
+    tipo: '',
+    conteudo: '',
+    usuario_id: id
+});
+const tiposNotificacao = [
+    {
+        tipo: 'promocao',
+        titulo: 'Promoção Especial!',
+        descricao: 'Enviar promoção exclusiva para o usuário'
+    },
+    {
+        tipo: 'atualizacao',
+        titulo: 'Atualização do Sistema',
+        descricao: 'Notificar sobre atualizações ou manutenção'
+    },
+    {
+        tipo: 'seguranca',
+        titulo: 'Alerta de Segurança',
+        descricao: 'Avisos importantes sobre segurança da conta'
+    },
+    {
+        tipo: 'novidade',
+        titulo: 'Novidades no App',
+        descricao: 'Informar sobre novas funcionalidades'
+    },
+    {
+        tipo: 'personalizada',
+        titulo: 'Mensagem Personalizada',
+        descricao: 'Enviar uma mensagem específica'
+    }
+];
+const enviarNotificacao = async () => {
+    if (!notificacao.tipo || !notificacao.conteudo) {
+        alert('Selecione o tipo e preencha o conteúdo da notificação.');
+        return;
+    }
+
+    try {
+        // Encontra o tipo selecionado para obter o título correspondente
+        const tipoSelecionado = tiposNotificacao.find(t => t.tipo === notificacao.tipo);
+        const titulo = tipoSelecionado ? tipoSelecionado.titulo : 'Notificação';
+
+        const response = await fetch(`${API_BASE_URL}/api/mandar-notificacao-usuario/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
+            },
+            body: JSON.stringify({
+                usuario_id: id,
+                titulo: titulo,
+                conteudo: notificacao.conteudo
+            }),
+        });
+
+        if (response.ok) {
+            alert('Notificação enviada com sucesso!');
+            setMostrarModalNotificacao(false);
+            setNotificacao({
+                tipo: '',
+                conteudo: '',
+                usuario_id: id
+            });
+        } else {
+            const errorData = await response.json();
+            alert(errorData.detail || 'Erro ao enviar notificação.');
+        }
+    } catch (error) {
+        console.error('Erro ao enviar notificação:', error);
+        alert('Erro ao enviar notificação.');
+    }
+};
     const handleProdutoClick = (produtoId) => {
         navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
     };
@@ -388,9 +462,9 @@ const PerfilUsuario = () => {
                             {/* Department */}
                             <div className="relative flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
 
-                                <p className="text-sm text-gray-600">Department</p>
+                                <p className="text-sm text-gray-600">Data de Adesão</p>
                                 <p className="text-base font-medium text-navy-700 dark:text-white">
-                                    Product Design
+                                    {usuario.created_at}
                                 </p>
                             </div>
 
@@ -416,18 +490,11 @@ const PerfilUsuario = () => {
                             <div className="relative flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
 
                                 <p className="text-sm text-gray-600">Morada</p>
-                                {editando ? (
-                                    <input
-                                        type="morada"
-                                        value={usuario.endereco}
-                                        onChange={(e) => setUsuario({ ...usuario, endereco: e.target.value })}
-                                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                                    />
-                                ) : (
+                                
                                     <p className="text-base font-medium text-navy-700 dark:text-whitee">
                                         {usuario.endereco}
                                     </p>
-                                )}
+                                
                             </div>
 
                             {/* Data de Nascimento */}
@@ -616,13 +683,90 @@ const PerfilUsuario = () => {
                                     <FaCheck className="mr-2" /> Ativar Conta
                                 </button>
                             )}
-                            {/* <button onClick={() => alert('Conta excluída com sucesso.')} className="bg-gray-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center">
-                                <FaTrash className="mr-2" /> Excluir Conta
-                            </button> */}
+                            <button 
+                    onClick={() => setMostrarModalNotificacao(true)}
+                    className="bg-blue-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
+                >
+                    Enviar Notificação
+                </button>
                         </div>
                     </div>
                 </Card>
             </div>
+            {mostrarModalNotificacao && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
+        <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <header className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-navy-700">
+                    Enviar Notificação para {usuario.nome}
+                </h2>
+                <button
+                    onClick={() => setMostrarModalNotificacao(false)}
+                    className="text-navy-700 hover:text-blue-700"
+                >
+                    <FaTimes />
+                </button>
+            </header>
+
+            <div className="mt-4">
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Tipo de Notificação *
+                    </label>
+                    <select
+                        value={notificacao.tipo}
+                        onChange={(e) => setNotificacao({...notificacao, tipo: e.target.value})}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        required
+                    >
+                        <option value="">Selecione um tipo</option>
+                        {tiposNotificacao.map((tipo) => (
+                            <option key={tipo.tipo} value={tipo.tipo}>
+                                {tipo.descricao}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {notificacao.tipo && (
+                    <div className="mb-4 bg-blue-50 p-3 rounded-lg">
+                        <p className="text-sm font-medium text-blue-800">
+                            Título: {tiposNotificacao.find(t => t.tipo === notificacao.tipo)?.titulo}
+                        </p>
+                    </div>
+                )}
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Conteúdo da Mensagem *
+                    </label>
+                    <textarea
+                        value={notificacao.conteudo}
+                        onChange={(e) => setNotificacao({...notificacao, conteudo: e.target.value})}
+                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        rows="4"
+                        required
+                    />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setMostrarModalNotificacao(false)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        onClick={enviarNotificacao}
+                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                    >
+                        Enviar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
         </div>
     );
 };
