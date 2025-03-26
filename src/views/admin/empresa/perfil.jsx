@@ -123,7 +123,7 @@ const PerfilEmpresa = () => {
                 setNotificacao({
                     tipo: '',
                     conteudo: '',
-                    usuario_id: id
+                    empresa_id: id
                 });
             } else {
                 const errorData = await response.json();
