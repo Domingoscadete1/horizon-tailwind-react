@@ -80,6 +80,7 @@ const UsuariosBloqueados = () => {
   // Enviar formulário (criar/editar categoria)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formDataToSend = new FormData();
     formDataToSend.append("nome", formData.nome);
@@ -97,6 +98,7 @@ const UsuariosBloqueados = () => {
             "ngrok-skip-browser-warning": "true",
           },
         });
+
       } else {
         // Criar nova categoria
         await axios.post(`${API_BASE_URL}/api/categoria/create/`, formDataToSend, {
@@ -105,16 +107,23 @@ const UsuariosBloqueados = () => {
             "ngrok-skip-browser-warning": "true",
           },
         });
+
       }
       fetchCategorias();
       closeModal();
+      setLoading(false);
+
     } catch (error) {
       console.error("Erro ao salvar categoria:", error);
+      setLoading(false);
+
     }
   };
 
   // Excluir categoria
   const handleDelete = async (id) => {
+    setLoading(true);
+
     try {
       await axios.delete(`${API_BASE_URL}/api/categoria/${id}/deletar/`, {
         headers: {
@@ -122,8 +131,12 @@ const UsuariosBloqueados = () => {
         },
       });
       fetchCategorias();
+      setLoading(false);
+
     } catch (error) {
       console.error("Erro ao excluir categoria:", error);
+      setLoading(false);
+
     }
   };
 
