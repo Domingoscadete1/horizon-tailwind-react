@@ -218,7 +218,7 @@ const Marketplace = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {produtosComCoordenadas.map((produto) => (
-          <Marker key={produto.id} position={[produto.latitude, produto.longitude]}  icon={criarIconeUsuario(produto.imagens[0].imagem)}>
+          <Marker key={produto.id} position={[produto.latitude, produto.longitude]}  icon={criarIconeUsuario(produto?.imagens[0]?.imagem)}>
             <Popup  >
             <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleProdutoClick(produto.id)}>{produto.nome}</p> <br /> {produto.localizacao}
             </Popup>
@@ -290,8 +290,8 @@ const Marketplace = () => {
         <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
           {filteredProdutos.map((produto) => {
             const imageUrl =
-              produto.imagens && produto.imagens.length > 0
-                ? produto.imagens[0].imagem
+              produto?.imagens && produto?.imagens?.length > 0
+                ? produto?.imagens?.[0]?.imagem
                 : "https://via.placeholder.com/150";
 
             return (
