@@ -3,7 +3,8 @@ import { FaTag, FaBullhorn, FaPaperPlane } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import { SyncLoader } from 'react-spinners'; // Importe o spinner``
 import styled from 'styled-components'; // Para estilização adicional
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
 `;
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const PromocoesMarketing = () => {
     // Estado para gerenciar descontos e ofertas
@@ -68,7 +69,7 @@ const PromocoesMarketing = () => {
 
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/anuncio-app/create/`, {
+            const response = await fetchWithToken(`api/anuncio-app/create/`, {
                 method: 'POST',
                 headers: {
                     "ngrok-skip-browser-warning": "true",
@@ -127,7 +128,7 @@ const PromocoesMarketing = () => {
         };
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/mandar-notificacoes/`, {
+            const response = await fetchWithToken(`api/mandar-notificacoes/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

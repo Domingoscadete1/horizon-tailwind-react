@@ -17,9 +17,13 @@ import TaskCard from "views/admin/default/components/TaskCard";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
 import { FaAccusoft, FaBox, FaMapMarkerAlt, FaMoneyCheckAlt, FaUserAlt, FaUserAltSlash, FaUsers, FaUsersCog, FaUserShield } from "react-icons/fa";
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+
+
+const API_BASE_URL = Config.getApiUrl();
 
 const Dashboard = () => {
   const[dados,setDados]=useState();
@@ -35,7 +39,8 @@ const Dashboard = () => {
   
   const fetchDados = async () => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/admin-analise?data=${dataAtual}`, {
+        const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+          method:'GET',
             headers: {
                 "ngrok-skip-browser-warning": "true",
             },

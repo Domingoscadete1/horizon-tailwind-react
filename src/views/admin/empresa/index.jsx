@@ -15,7 +15,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const criarIconeUsuario = (fotoUrl) => {
     });
 };
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const GerenciamentoEmpresas = () => {
     const navigate = useNavigate(); // Hook de navegação
@@ -52,6 +53,7 @@ const GerenciamentoEmpresas = () => {
     const handleFuncionarioClick = (funcionarioId) => {
         navigate(`/admin/funcionario/${funcionarioId}`); // Redireciona para o perfil da empresa
     };
+    const mediaUrl=Config.getApiUrlMedia();
     const [empresas, setEmpresas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [funcionarios, setFuncionarios] = useState([]);
@@ -60,7 +62,8 @@ const GerenciamentoEmpresas = () => {
     const [globalFilter, setGlobalFilter] = useState(''); // Estado para o filtro global
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/api/empresas`, {
+        fetchWithToken(`api/empresas`, {
+            method:'GET',
             headers: {
                 "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
             },
@@ -71,7 +74,8 @@ const GerenciamentoEmpresas = () => {
 
     const fetchFuncionarios = (empresaId, empresaNome) => {
         try {
-            fetch(`${API_BASE_URL}/api/empresa/funcionarios/${empresaId}/`, {
+            fetchWithToken(`api/empresa/funcionarios/${empresaId}/`, {
+                method:'GET',
                 headers: {
                     "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
                 },
@@ -155,7 +159,7 @@ const GerenciamentoEmpresas = () => {
         columnHelper.accessor('foto', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
-                <img src={`${API_BASE_URL}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full cursor-pointer" onClick={() => handleFuncionarioClick(info.row.original.id)} />
+                <img src={`${mediaUrl}${info.getValue()}`} alt="Foto" className="w-10 h-10 rounded-full cursor-pointer" onClick={() => handleFuncionarioClick(info.row.original.id)} />
             ),
         }),
         columnHelper.accessor('usuario_username', {
@@ -201,7 +205,7 @@ const GerenciamentoEmpresas = () => {
         getCoreRowModel: getCoreRowModel(),
     });
     const EmpresaMap = ({ empresas }) => {
-        // Função para extrair latitude e longitude do campo endereco
+        
         const extrairCoordenadas = (endereco) => {
             if (!endereco) return null;
 

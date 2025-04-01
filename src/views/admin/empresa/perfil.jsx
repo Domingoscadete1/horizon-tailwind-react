@@ -16,7 +16,8 @@ import NftCard from "components/card/NftCard";
 import ImageModal from "../marketplace/components/modal";
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ const nfts = [
     { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
     { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
 ];
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const PerfilEmpresa = () => {
     const navigate = useNavigate(); // Hook de navegação
@@ -104,7 +105,7 @@ const PerfilEmpresa = () => {
             const tipoSelecionado = tiposNotificacao.find(t => t.tipo === notificacao.tipo);
             const titulo = tipoSelecionado ? tipoSelecionado.titulo : 'Notificação';
     
-            const response = await fetch(`${API_BASE_URL}/api/mandar-notificacao-empresa/`, {
+            const response = await fetchWithToken(`api/mandar-notificacao-empresa/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -136,7 +137,7 @@ const PerfilEmpresa = () => {
     };
     const fetchEmpresa = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/`, {
+            const response = await fetchWithToken(`api/empresa/${id}/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -154,7 +155,7 @@ const PerfilEmpresa = () => {
     const fetchTransacoes = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/empresa/transacoes/${id}?page=${paginationTrasaction.pageIndex + 1}`, {
+            const response = await fetchWithToken(`api/empresa/transacoes/${id}?page=${paginationTrasaction.pageIndex + 1}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -176,7 +177,7 @@ const PerfilEmpresa = () => {
     };
     const aceitarEmpresa = async (empresaId) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/aceitar-empresa/${empresaId}/`, {
+            const response = await fetchWithToken(`api/aceitar-empresa/${empresaId}/`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -201,7 +202,7 @@ const PerfilEmpresa = () => {
     // Função para negar uma empresa
     const negarEmpresa = async (empresaId) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/negar-empresa/${empresaId}/`, {
+            const response = await fetchWithToken(`api/negar-empresa/${empresaId}/`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -227,7 +228,7 @@ const PerfilEmpresa = () => {
     const fetchProdutos = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/produtos/empresa/${id}?page=${pagination.pageIndex + 1}`, {
+            const response = await fetchWithToken(`api/produtos/empresa/${id}?page=${pagination.pageIndex + 1}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -275,7 +276,7 @@ const PerfilEmpresa = () => {
     };
     const handleSalvarEdicao = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
+            const response = await fetchWithToken(`api/empresa/${id}/atualizar/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -323,7 +324,7 @@ const PerfilEmpresa = () => {
 
     const suspenderUsuario = async (novoStatus) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/suspend/`, {
+            const response = await fetchWithToken(`api/empresa/${id}/suspend/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -357,7 +358,7 @@ const PerfilEmpresa = () => {
             formData.append('nif', empresa.nif);
 
 
-            const response = await fetch(`${API_BASE_URL}/api/empresa/${id}/atualizar/`, {
+            const response = await fetchWithToken(`api/empresa/${id}/atualizar/`, {
                 method: "PUT",
                 headers: {
                     "ngrok-skip-browser-warning": "true",
@@ -479,7 +480,7 @@ const PerfilEmpresa = () => {
                                         <div className="">
                                             <img
                                                 className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                                src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                                src={`${Config.getApiUrlMedia()}${produto.imagens[0]?.imagem}`}
                                                 alt={produto.nome}
                                                 onClick={() => handleProdutoClick(produto.id)}
                                             />
@@ -539,7 +540,7 @@ const PerfilEmpresa = () => {
                                             <div className="">
                                                 <img
                                                     className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                                    src={`${API_BASE_URL}${transacao?.produto.imagens[0]?.imagem}`}
+                                                    src={`${Config.getApiUrlMedia()}${transacao?.produto.imagens[0]?.imagem}`}
                                                     alt={transacao?.produto.nome}
                                                 />
                                             </div>

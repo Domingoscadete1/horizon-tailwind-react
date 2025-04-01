@@ -3,10 +3,13 @@ import { FaTimes, FaComments, FaStar, FaThumbsUp, FaPaperPlane, FaCheck, FaTrash
 import Card from 'components/card'; // Componente de card personalizado
 import axios from 'axios';
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
+const API_BASE_URL = Config.getApiUrl();
 
 const SuporteCliente = () => {
     // Estado para gerenciar solicitações de suporte
+    const wssUrl=Config.getApiUrlWs()
     const [solicitacoes, setSolicitacoes] = useState([]);
     const [novaMensagem, setNovaMensagem] = useState('');
     const socketRef = useRef(null);
@@ -38,30 +41,34 @@ const SuporteCliente = () => {
     // Função para enviar uma mensagem no chat
     useEffect(() => {
         // Carregar lista de solicitações de suporte
-        axios.get(`${API_BASE_URL}/api/chats-suporte/`, {
+        fetchWithToken(`api/chats-suporte/`, {
+            method:'GET',
             headers: {
                 "ngrok-skip-browser-warning": "true"
             }
         })
-            .then(response => {
-                const data = response.data.results || []; // Armazena a resposta na variável
-                console.log("Resposta da API:", data); // Log para debug
-                setSolicitacoes(data); // Atualiza o estado
+            .then(response => response.json())  
+            .then(data => {
+                const data1 = data.results || []; // Armazena a resposta na variável
+                console.log("Resposta da API:", data1); // Log para debug
+                setSolicitacoes(data1); // Atualiza o estado
             })
             .catch(error => console.error('Erro ao buscar chats:', error));
     }, []);
 
     const abrirChat = (chat) => {
-        axios.get(`${API_BASE_URL}/api/chat-suporte/mensagens/${chat.id}/`, {
+        fetchWithToken(`api/chat-suporte/mensagens/${chat.id}/`, {
+            method:'GET',
             headers: {
                 "ngrok-skip-browser-warning": "true"
             }
         })
-            .then(response => {
-                console.log("Mensagens carregadas:", response.data);
+            .then(response => response.json()) 
+            .then(data => {
+                console.log("Mensagens carregadas:", data);
                 setChatAtivo({
                     ...chat,
-                    mensagens: response.data.mensagens || [] // Garante que seja uma lista
+                    mensagens: data.mensagens || [] // Garante que seja uma lista
                 });
                 conectarWebSocket(chat.id);
             })
@@ -80,7 +87,7 @@ const SuporteCliente = () => {
             socketRef.current.close();
         }
 
-        const socketUrl = `wss://fad7-154-71-159-172.ngrok-free.app/ws/suporte/empresa/${chatId}/`;
+        const socketUrl = `wss://${wssUrl}/ws/suporte/empresa/${chatId}/`;
         socketRef.current = new WebSocket(socketUrl);
 
         socketRef.current.onmessage = (event) => {

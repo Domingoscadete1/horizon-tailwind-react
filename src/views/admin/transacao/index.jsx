@@ -8,7 +8,8 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
 
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -19,8 +20,8 @@ const LoaderContainer = styled.div`
 
 const columnHelper = createColumnHelper(); // Definindo columnHelper
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
 
+const API_BASE_URL = Config.getApiUrl();
 const Transacao = () => {
     const [transacoes, setTransacoes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,16 +37,18 @@ const Transacao = () => {
 
     const fetchTransacoes = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/transacaos?page=${pagination.pageIndex + 1}`, {
+            const response = await fetchWithToken(`api/transacaos?page=${pagination.pageIndex + 1}`, {
+                method:'GET',
                 headers: {
                     "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
                 },
             });
-            console.log(response.data.results);
-            setTransacoes(response.data.results);
+            const data =await response.json();
+            console.log(data.results);
+            setTransacoes(data.results);
             setPagination((prev) => ({
                 ...prev,
-                totalPages: Math.ceil(response.data.count / prev.pageSize),
+                totalPages: Math.ceil(data.count / prev.pageSize),
             }));
         } catch (error) {
             console.error("Erro ao buscar transações", error);
@@ -56,7 +59,7 @@ const Transacao = () => {
     const handleDownload = (id) => {
         console.log(`Baixando transação ID: ${id}`);
         try {
-            const apiUrl = `https://dce9-154-71-159-172.ngrok-free.app/api/fatura/${id}/`;
+            const apiUrl = `${API_BASE_URL}api/fatura/${id}/`;
             window.open(apiUrl, '_blank'); // Abre a fatura em uma nova aba
         } catch (error) {
             console.error('Erro ao baixar fatura:', error);

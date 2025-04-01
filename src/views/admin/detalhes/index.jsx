@@ -15,6 +15,8 @@ import NFt6 from "assets/img/nfts/Nft6.png";
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
 
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -24,7 +26,7 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0); 
 `;
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const DetalhesProduto = () => {
     const { id } = useParams();
@@ -43,7 +45,7 @@ const DetalhesProduto = () => {
     
         if (confirmacao) {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/produto/${id}/deletar/`, {
+                const response = await fetchWithToken(`api/produto/${id}/deletar/`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -69,7 +71,7 @@ const DetalhesProduto = () => {
     useEffect(() => {
         const fetchProduto = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/produto/${id}/`, {
+                const response = await fetchWithToken(`api/produto/${id}/`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

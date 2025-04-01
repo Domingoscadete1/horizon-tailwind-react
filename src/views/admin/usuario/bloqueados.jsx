@@ -5,7 +5,8 @@ import axios from "axios";
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
 
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -15,7 +16,7 @@ const LoaderContainer = styled.div`
 `;
 
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 
 const UsuariosBloqueados = () => {
@@ -32,12 +33,15 @@ const UsuariosBloqueados = () => {
   // Buscar categorias
   const fetchCategorias = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/categorias/`, {
+      const response = await fetchWithToken(`api/categorias/`, {
+        method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
       });
-      setCategorias(response.data);
+
+      const data=await response.json();
+      setCategorias(data);
       setLoading(false);
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
@@ -92,20 +96,22 @@ const UsuariosBloqueados = () => {
     try {
       if (currentCategoria) {
         // Editar categoria existente
-        await axios.put(`${API_BASE_URL}/api/categoria/${currentCategoria.id}/atualizar/`, formDataToSend, {
+        await fetchWithToken(`api/categoria/${currentCategoria.id}/atualizar/`,  {
+          method:'PUT',
           headers: {
-            "Content-Type": "multipart/form-data",
             "ngrok-skip-browser-warning": "true",
           },
+          body:formDataToSend
         });
 
       } else {
         // Criar nova categoria
-        await axios.post(`${API_BASE_URL}/api/categoria/create/`, formDataToSend, {
+        await fetchWithToken(`api/categoria/create/`, {
+          method:'POST',
           headers: {
-            "Content-Type": "multipart/form-data",
             "ngrok-skip-browser-warning": "true",
           },
+          body:formDataToSend
         });
 
       }
@@ -123,9 +129,17 @@ const UsuariosBloqueados = () => {
   // Excluir categoria
   const handleDelete = async (id) => {
     setLoading(true);
+    const confirmacao = window.confirm("Tem certeza que deseja apagar esta categoria?");
+    
+    if (!confirmacao) {
+      setLoading(false);
+
+        return; // Se o usuário cancelar, a função para aqui
+    }
 
     try {
-      await axios.delete(`${API_BASE_URL}/api/categoria/${id}/deletar/`, {
+      await fetchWithToken(`api/categoria/${id}/deletar/`, {
+        method:'DELETE',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },

@@ -13,6 +13,8 @@ import L from 'leaflet';
 import { Icon } from "leaflet";
 import UpdatePostoModal from "./UpdatePostoModal";
 import 'leaflet/dist/leaflet.css';
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 // Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -48,7 +50,7 @@ const criarIconeUsuario = (fotoUrl) => {
 
 
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const customIcon = new Icon({
     iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -170,7 +172,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
 
     const fetchFuncionarios = async (postoId) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/funcionarios/posto/?posto_id=${postoId}`, {
+            const response = await fetchWithToken(`api/funcionarios/posto/?posto_id=${postoId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -241,7 +243,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
     // Buscar atividades do posto selecionado
     const fetchAtividades = async (postoId, page = 1) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/posto/registro/${postoId}/?page=${page}`, {
+            const response = await fetchWithToken(`api/posto/registro/${postoId}/?page=${page}`, {
                 method: "GET",
                 headers: {
                     "ngrok-skip-browser-warning": "true",
@@ -280,7 +282,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
     // 🔥 Função para buscar postos da API
     const fetchPostos = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/postos/`, {
+            const response = await fetchWithToken(`api/postos/`, {
                 headers: {
                     "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
                 },
@@ -358,7 +360,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             return;
         }
         try {
-            const response = await fetch(`${API_BASE_URL}/api/posto/create/`, {
+            const response = await fetchWithToken(`api/posto/create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -407,8 +409,13 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }
     };
     const suspenderposto = async (id) => {
+        const confirmacao = window.confirm("Tem certeza que deseja suspender este posto?");
+    
+    if (!confirmacao) {
+        return; // Se o usuário cancelar, a função para aqui
+    }
         try {
-            const response = await fetch(`${API_BASE_URL}/api/posto/${id}/delete/`, {
+            const response = await fetchWithToken(`api/posto/${id}/delete/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -449,7 +456,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }
     
         try {
-            const response = await fetch(`${API_BASE_URL}/api/funcionario/create/`, {
+            const response = await fetchWithToken(`api/funcionario/create/`, {
                 method: "POST",
                 headers: {
                     "ngrok-skip-browser-warning": "true",
@@ -561,7 +568,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
                 <img
-                    src={`${API_BASE_URL}${info.getValue()}`}
+                    src={`${Config.getApiUrlMedia()}${info.getValue()}`}
                     alt="Funcionário"
                     className="w-10 h-10 rounded-full object-cover"
                 />
@@ -594,7 +601,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                 const imageUrl = info.getValue();
                 return imageUrl ? (
                     <img
-                        src={`${API_BASE_URL}${imageUrl}`}
+                        src={`${Config.getApiUrlMedia()}${imageUrl}`}
                         alt="Produto"
                         className="w-16 h-16 rounded-full object-cover"
                     />

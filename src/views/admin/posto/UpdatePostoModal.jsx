@@ -5,7 +5,9 @@ import { FaPlus, FaEdit, FaTrash, FaEye, FaArrowLeft, FaArrowRight, FaTimes } fr
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from 'leaflet';
 import { Icon } from "leaflet";
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
+const API_BASE_URL = Config.getApiUrl();
 const customIcon = new Icon({
     iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
     iconSize: [25, 41],
@@ -115,7 +117,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
 
     const atualizarPosto = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/posto/${posto.id}/atualizar/`, {
+            const response = await fetchWithToken(`api/posto/${posto.id}/atualizar/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

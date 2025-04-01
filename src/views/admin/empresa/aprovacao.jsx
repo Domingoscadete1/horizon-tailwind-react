@@ -10,10 +10,12 @@ import {
     useReactTable,
     getFilteredRowModel,
 } from '@tanstack/react-table';
-
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
+const API_BASE_URL = Config.getApiUrl();
 
 const EmpresasParaAprovar = () => {
+    const mediaUrl=Config.getApiUrlMedia();
     const navigate = useNavigate(); // Hook de navegação
     const handleEmpresaClick = (empresaId) => {
         navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
@@ -21,7 +23,7 @@ const EmpresasParaAprovar = () => {
     const [empresas, setEmpresas] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(''); // Estado para o filtro global
     useEffect(() => {
-        fetch(`${API_BASE_URL}/api/listar-empreasa-nao-vericadas/`, {
+        fetchWithToken(`api/listar-empreasa-nao-vericadas/`, {
             headers: {
                 "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
             },
@@ -44,7 +46,7 @@ const EmpresasParaAprovar = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
               <img
-                src={`${API_BASE_URL}${info.getValue()}` || "https://via.placeholder.com/150"} 
+                src={`${mediaUrl}${info.getValue()}` || "https://via.placeholder.com/150"} 
                 alt="Foto da Empresa"
                 className="w-10 h-10 rounded-full object-cover cursor-pointer"
                 onClick={() => handleEmpresaClick(info.row.original.id)}

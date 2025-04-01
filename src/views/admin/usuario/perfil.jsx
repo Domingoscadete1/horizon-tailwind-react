@@ -10,7 +10,8 @@ import NftCard from "components/card/NftCard";
 import ImageModal from "../marketplace/components/modal";
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const LoaderContainer = styled.div`
   height: 100vh;
   background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
 `;
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const PerfilUsuario = () => {
     const navigate = useNavigate(); // Hook de navegação
@@ -88,7 +89,7 @@ const enviarNotificacao = async () => {
         const tipoSelecionado = tiposNotificacao.find(t => t.tipo === notificacao.tipo);
         const titulo = tipoSelecionado ? tipoSelecionado.titulo : 'Notificação';
 
-        const response = await fetch(`${API_BASE_URL}/api/mandar-notificacao-usuario/`, {
+        const response = await fetchWithToken(`api/mandar-notificacao-usuario/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -124,7 +125,7 @@ const enviarNotificacao = async () => {
     const fetchProdutos = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/produtos/usuario/${id}?page=${pagination.pageIndex + 1}`, {
+            const response = await fetchWithToken(`api/produtos/usuario/${id}?page=${pagination.pageIndex + 1}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -146,7 +147,7 @@ const enviarNotificacao = async () => {
     const fetchTransacoes = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/usuario/transacoes/${id}?page=${paginationTrasaction.pageIndex + 1}`, {
+            const response = await fetchWithToken(`api/usuario/transacoes/${id}?page=${paginationTrasaction.pageIndex + 1}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -168,7 +169,7 @@ const enviarNotificacao = async () => {
 
     const fetchUsuario = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/`, {
+            const response = await fetchWithToken(`api/usuario/${id}/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -231,11 +232,10 @@ const enviarNotificacao = async () => {
             console.log(formData);
 
             // Faz a requisição PUT com o FormData
-            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/atualizar/`, {
+            const response = await fetchWithToken(`api/usuario/${id}/atualizar/`, {
                 method: "PUT",
                 headers: {
                     "ngrok-skip-browser-warning": "true",
-                    // Não defina 'Content-Type' manualmente, o navegador fará isso automaticamente
                 },
                 body: formData, // Envia o FormData
             });
@@ -256,7 +256,7 @@ const enviarNotificacao = async () => {
     };
     const suspenderUsuario = async (novoStatus) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/user/${id}/suspend/`, {
+            const response = await fetchWithToken(`api/user/${id}/suspend/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -279,7 +279,7 @@ const enviarNotificacao = async () => {
 
     const apagarUsuario = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/usuario/${id}/deletar/`, {
+            const response = await fetchWithToken(`api/usuario/${id}/deletar/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -540,7 +540,7 @@ const enviarNotificacao = async () => {
                                     <div className="">
                                         <img
                                             className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                            src={`${API_BASE_URL}${produto.imagens[0]?.imagem}`}
+                                            src={`${Config.getApiUrlMedia()}${produto.imagens[0]?.imagem}`}
                                             alt={produto.nome}
                                             onClick={() => handleProdutoClick(produto.id)}
                                         />
@@ -600,7 +600,7 @@ const enviarNotificacao = async () => {
                                         <div className="">
                                             <img
                                                 className="h-[83px] w-[83px] rounded-lg cursor-pointer"
-                                                src={`${API_BASE_URL}${transacao?.produto.imagens[0]?.imagem}`}
+                                                src={`${Config.getApiUrlMedia()}${transacao?.produto.imagens[0]?.imagem}`}
                                                 alt={transacao?.produto.nome}
                                             />
                                         </div>
@@ -658,7 +658,7 @@ const enviarNotificacao = async () => {
             {
                 isModalOpen && selectedNft && (
                     <ImageModal
-                        imageUrl={`${API_BASE_URL}${selectedNft.imagens[0]?.imagem}` || ''}
+                        imageUrl={`${Config.getApiUrlMedia()}${selectedNft.imagens[0]?.imagem}` || ''}
                         additionalImages={selectedNft.imagens.map(img => `${API_BASE_URL}${img.imagem}`) || []}
                         onClose={closeModal}
                     />

@@ -14,7 +14,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ const criarIconeUsuario = (fotoUrl) => {
     className: 'icone-usuario', // Classe CSS personalizada (opcional)
   });
 };
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app/api/usuarios/";
+const API_BASE_URL = Config.getApiUrl();
 
 const GerenciamentoUsuarios = () => {
   const navigate = useNavigate(); // Hook de navegação
@@ -69,7 +70,8 @@ const GerenciamentoUsuarios = () => {
   // Fetch dos usuários
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch(API_BASE_URL, {
+      const response = await fetchWithToken('api/usuarios/', {
+        method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
         },

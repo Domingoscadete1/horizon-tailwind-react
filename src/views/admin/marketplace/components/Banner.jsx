@@ -5,8 +5,9 @@ import "slick-carousel/slick/slick-theme.css";
 import nft1 from "assets/img/nfts/NftBanner1.png";
 import nft2 from "assets/img/nfts/NftBanner1.png";
 import nft3 from "assets/img/nfts/NftBanner1.png";
-
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+import Config from "../../../../Config";
+import { fetchWithToken } from '../../../../authService';
+const API_BASE_URL = Config.getApiUrl();
 
 const Banner1 = () => {
   const [anuncios, setAnuncios] = useState([]);
@@ -25,8 +26,9 @@ const Banner1 = () => {
 
   const fetchAnuncios = async () => {
     try {
-      const url = `${API_BASE_URL}/api/anuncios-app/`;
-      const response = await fetch(url, {
+      const url = `api/anuncios-app/`;
+      const response = await fetchWithToken(url, {
+        method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -50,7 +52,7 @@ const Banner1 = () => {
     const confirmacao = window.confirm("Tem certeza que deseja desativar este anúncio?");
     if (confirmacao) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/anuncio-app/${id}/deletar/`, {
+        const response = await fetchWithToken(`api/anuncio-app/${id}/deletar/`, {
           method: "DELETE",
           headers: {
             "ngrok-skip-browser-warning": "true",

@@ -16,7 +16,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 // Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -41,7 +42,7 @@ const criarIconeUsuario = (fotoUrl) => {
   });
 };
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrl();
 
 const Marketplace = () => {
   const navigate = useNavigate(); // Hook de navegação
@@ -76,8 +77,9 @@ const Marketplace = () => {
 
   const fetchProdutos = async (page = 1) => {
     try {
-      const url = `${API_BASE_URL}/api/produtos/?page=${page}`;
-      const response = await fetch(url, {
+      const url = `api/produtos/?page=${page}`;
+      const response = await fetchWithToken(url, {
+        method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -100,8 +102,9 @@ const Marketplace = () => {
   };
   const fetchProdutosMapa = async () => {
     try {
-      const url = `${API_BASE_URL}/api/produtos/`;
-      const response = await fetch(url, {
+      const url = `api/produtos/`;
+      const response = await fetchWithToken(url, {
+        method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -121,8 +124,9 @@ const Marketplace = () => {
   };
   const fetchCategorias = async () => {
     try {
-      const url = `${API_BASE_URL}/api/categorias/`;
-      const response = await fetch(url, {
+      const url = `api/categorias/`;
+      const response = await fetchWithToken(url, {
+        method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },

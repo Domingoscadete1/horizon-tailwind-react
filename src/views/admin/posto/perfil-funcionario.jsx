@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaBriefcase, FaCalendar, FaEdit, FaSave } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 const PerfilFuncionario = () => {
     // Estado para controlar o modo de edição
     const [editando, setEditando] = useState(false);

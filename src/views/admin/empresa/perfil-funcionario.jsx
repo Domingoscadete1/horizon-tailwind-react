@@ -5,7 +5,8 @@ import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaBriefcase, FaCalendar, FaEd
 import Card from 'components/card'; // Componente de card personalizado
 import { SyncLoader } from 'react-spinners'; // Importe o spinner
 import styled from 'styled-components'; // Para estilização adicional
-
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -15,7 +16,7 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0); 
 `;
 
-const API_BASE_URL = "https://dce9-154-71-159-172.ngrok-free.app";
+const API_BASE_URL = Config.getApiUrlMedia();
 
 const PerfilFuncionario = () => {
     // Estado para controlar o modo de edição
@@ -39,7 +40,7 @@ const PerfilFuncionario = () => {
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/empresa-usuario/${id}/`, {
+                const response = await fetchWithToken(`api/empresa-usuario/${id}/`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -229,7 +230,7 @@ const PerfilFuncionario = () => {
                     </div>
 
                     {/* Botão de Editar/Salvar */}
-                    <div className="mt-6 flex justify-end">
+                    {/* <div className="mt-6 flex justify-end">
                         {editando ? (
                             <button
                                 onClick={salvarAlteracoes}
@@ -247,7 +248,7 @@ const PerfilFuncionario = () => {
                                 Editar Perfil
                             </button>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             </Card>
         </div>
