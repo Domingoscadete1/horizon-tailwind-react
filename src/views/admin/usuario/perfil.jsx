@@ -133,7 +133,7 @@ const enviarNotificacao = async () => {
                 },
             });
             const data = await response.json();
-            setProdutos(data.results);
+            setProdutos(data.results || []);
             setPagination((prev) => ({
                 ...prev,
                 totalPages: Math.ceil(data.count / prev.pageSize),
@@ -155,7 +155,7 @@ const enviarNotificacao = async () => {
                 },
             });
             const data = await response.json();
-            setTransacoes(data.results);
+            setTransacoes(data.results || []);
             setPaginationTrasaction((prev) => ({
                 ...prev,
                 totalPages: Math.ceil(data.count / prev.pageSize),

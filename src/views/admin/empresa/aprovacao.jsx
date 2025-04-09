@@ -29,7 +29,7 @@ const EmpresasParaAprovar = () => {
             },
         })
             .then((response) => response.json())
-            .then((data) => setEmpresas(data.empresas));
+            .then((data) => setEmpresas(data.empresas || []));
             
     }, []);
     const columnHelper = createColumnHelper();

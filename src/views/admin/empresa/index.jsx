@@ -69,7 +69,7 @@ const GerenciamentoEmpresas = () => {
             },
         })
             .then((response) => response.json())
-            .then((data) => setEmpresas(data.results));
+            .then((data) => setEmpresas(data.results || []));
     }, []);
 
     const fetchFuncionarios = (empresaId, empresaNome) => {

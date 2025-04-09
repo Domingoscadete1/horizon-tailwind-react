@@ -80,7 +80,7 @@ const DetalhesProduto = () => {
                 });
                 const data = await response.json();
                 console.log(data);
-                setProduto(data);
+                setProduto(data || []);
                 setMediaPrincipal(data.imagens[0].imagem);
             } catch (error) {
                 console.error('Erro ao buscar empresa:', error);

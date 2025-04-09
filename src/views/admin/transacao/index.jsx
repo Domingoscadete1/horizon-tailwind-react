@@ -45,7 +45,7 @@ const Transacao = () => {
             });
             const data =await response.json();
             console.log(data.results);
-            setTransacoes(data.results);
+            setTransacoes(data.results || []);
             setPagination((prev) => ({
                 ...prev,
                 totalPages: Math.ceil(data.count / prev.pageSize),
