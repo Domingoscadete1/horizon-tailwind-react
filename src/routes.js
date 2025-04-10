@@ -23,7 +23,7 @@ import PerfilFuncionario2 from "views/admin/posto/perfil-funcionario";
 import DetalhesProduto from "views/admin/detalhes";
 import EmpresasParaAprovar from "views/admin/empresa/aprovacao";
 import UsuariosBloqueados from "views/admin/usuario/bloqueados";
-
+import AcoesSistema from "views/admin/acoes";
 // Icon Imports
 import {
   MdHome,
@@ -45,6 +45,7 @@ import {
   FaAccusoft,
   FaMapMarkerAlt,
   FaFilter,
+  FaHistory,
 } from 'react-icons/fa';
 
 const routes = [
@@ -77,7 +78,7 @@ const routes = [
     name: "Categorias",
     layout: "/admin",
     admin: true,
-    path: "bloqueados",
+    path: "categorias",
     icon: <FaFilter className="h-6 w-6" />, // Ícone alterado
     component: <UsuariosBloqueados />,
   },
@@ -128,6 +129,14 @@ const routes = [
     path: "transacao",
     icon: <MdArchive className="h-6 w-6" />,
     component: <Transacao />,
+  },
+  {
+    name: "Ações",
+    layout: "/admin",
+    path: "acoes",
+    admin: true,
+    icon: <FaHistory className="h-6 w-6" />,
+    component: <AcoesSistema />,
   },
   {
     name: "Moderação de Conteúdo",

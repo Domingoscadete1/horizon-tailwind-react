@@ -5,10 +5,11 @@ import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from "react-router-dom";
 import FixedPlugin from "components/fixedPlugin/FixedPlugin";
 import Footer from 'components/footer/Footer';
+import Config from "../../Config";
 
 export default function Auth() {
   const navigate = useNavigate();
-  const baseUrl = "https://dce9-154-71-159-172.ngrok-free.app/";
+  const baseUrl = Config.getApiUrl();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -50,7 +51,7 @@ export default function Auth() {
       const response = await axios.post(
         `${baseUrl}api/token/`,
         formData, // Envia diretamente o objeto `formData`
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { 'Content-Type': 'application/json',"ngrok-skip-browser-warning": "true" } }
       );
 
       console.log("Resposta da API:", response);
@@ -68,7 +69,8 @@ export default function Auth() {
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
         localStorage.setItem('custom-auth-token', data.access);
-        navigate('/admin/default');
+        window.location.reload();
+        //navigate('/admin/default');
       } else {
         setError('Usuário não autorizado.');
       }

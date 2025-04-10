@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from "react-router-dom";
-
+import Config from "../../Config";
+//import { fetchWithToken } from '../../../authService';
 export default function SignIn() {
   const navigate = useNavigate();
-  const baseUrl = "https://dce9-154-71-159-172.ngrok-free.app/";
+  const baseUrl = Config.getApiUrl();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -47,7 +48,8 @@ export default function SignIn() {
       const response = await axios.post(
         `${baseUrl}api/token/`,
         formData, // Envia diretamente o objeto `formData`
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { 'Content-Type': 'application/json' ,"ngrok-skip-browser-warning": "true",
+        } }
       );
 
       console.log("Resposta da API:", response);

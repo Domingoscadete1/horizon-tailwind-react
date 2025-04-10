@@ -216,7 +216,7 @@ const PerfilEmpresa = () => {
             }
 
             alert("Empresa negada com sucesso!");
-            window.location.reload(); // Recarregar a página ou atualizar a lista
+            window.history.back(); // Recarregar a página ou atualizar a lista
 
         } catch (error) {
             console.error("Erro:", error);
