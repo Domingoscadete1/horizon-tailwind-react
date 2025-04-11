@@ -188,6 +188,17 @@ const AcoesSistema = () => {
             dispositivo: '',
         });
     };
+    const handleDownload = (id) => {
+        console.log(`Baixando transação ID: ${id}`);
+        try {
+            const apiUrl = `${API_BASE_URL}api/acao-pdf/${id}/`;
+            window.open(apiUrl, '_blank'); // Abre a fatura em uma nova aba
+        } catch (error) {
+            console.error('Erro ao baixar fatura:', error);
+            alert('Não foi possível baixar a fatura.');
+        }
+        // Implementar lógica de download
+    };
 
     const acoesColumns = [
         {
@@ -282,7 +293,7 @@ const AcoesSistema = () => {
             cell: ({ row }) => (
                 <div className="flex gap-2">
                     <button
-                        onClick={() => console.log('Detalhes:', row.original)}
+                        onClick={() => handleDownload(row.original.id)}
                         className="text-blue-500 hover:text-blue-700"
                         title="Ver detalhes"
                     >

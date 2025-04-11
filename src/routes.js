@@ -24,6 +24,7 @@ import DetalhesProduto from "views/admin/detalhes";
 import EmpresasParaAprovar from "views/admin/empresa/aprovacao";
 import UsuariosBloqueados from "views/admin/usuario/bloqueados";
 import AcoesSistema from "views/admin/acoes";
+import UsuariosLogados from "views/admin/usuario/usuarios_logados";
 // Icon Imports
 import {
   MdHome,
@@ -73,6 +74,14 @@ const routes = [
     path: "usuario",
     icon: <FaUsers className="h-6 w-6" />,
     component: <GerenciamentoUsuarios />,
+  },
+  {
+    name: "Users Logados",
+    layout: "/admin",
+    admin: true,
+    path: "users-logados",
+    icon: <FaUsers className="h-6 w-6" />,
+    component: <UsuariosLogados />,
   },
   {
     name: "Categorias",

@@ -1,0 +1,322 @@
+import React, { useEffect, useState } from 'react';
+import { 
+  FaArrowLeft, 
+  FaArrowRight, 
+  FaSearch, 
+  FaFilter, 
+  FaUser,
+  FaUserShield,
+  FaUserTie,
+  FaBuilding,
+  FaGasPump,
+  FaSignInAlt,
+  FaSignOutAlt,
+  FaInfoCircle
+} from "react-icons/fa";
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import Card from "components/card";
+import { createColumnHelper } from "@tanstack/react-table";
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
+import Config from "../../../Config";
+import { fetchWithToken } from '../../../authService';
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.0);
+`;
+
+const columnHelper = createColumnHelper();
+const API_BASE_URL = Config.getApiUrl();
+
+const UsuariosLogados = () => {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 10,
+        totalPages: 1,
+    });
+    const [filters, setFilters] = useState({
+        search: '',
+        userType: ''
+    });
+    const [showFilters, setShowFilters] = useState(false);
+
+    useEffect(() => {
+        fetchLoggedInUsers();
+    }, [pagination.pageIndex, filters]);
+
+    const fetchLoggedInUsers = async () => {
+        try {
+            let url = `api/logged-in-users/?page=${pagination.pageIndex + 1}`;
+            const params = new URLSearchParams();
+            
+            if (filters.search) params.append('search', filters.search);
+            if (filters.userType) params.append('user_type', filters.userType);
+            
+            if (params.toString()) {
+                url += `&${params.toString()}`;
+            }
+
+            const response = await fetchWithToken(url, {
+                method: 'GET',
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            
+            const data = await response.json();
+            setUsers(data || []);
+            console.log(data);
+            setPagination((prev) => ({
+                ...prev,
+                totalPages: Math.ceil(data.count / prev.pageSize),
+            }));
+        } catch (error) {
+            console.error("Erro ao buscar usuários logados", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const resetFilters = () => {
+        setFilters({
+            search: '',
+            userType: ''
+        });
+    };
+
+    // Função para determinar o ícone e tipo de usuário
+    const getUserTypeIcon = (user) => {
+        if (user.is_admin) {
+            return { icon: <FaUserShield className="text-purple-500" />, type: 'Administrador' };
+        }
+        // if (user.is_empresa) {
+        //     return { icon: <FaBuilding className="text-blue-500" />, type: 'Empresa' };
+        // }
+        if (user.is_funcionario_posto) {
+            return { icon: <FaBuilding className="text-green-500" />, type: 'Funcionário Posto' };
+        }
+        if (user.is_funcionario_emppresa) {
+            return { icon: <FaUserTie className="text-yellow-500" />, type: 'Funcionário Empresa' };
+        }
+        if (user.is_usuario) {
+            return { icon: <FaUser className="text-teal-500" />, type: 'Usuário' };
+        }
+        return { icon: <FaUser className="text-gray-500" />, type: 'Desconhecido' };
+    };
+
+    const userColumns = [
+        {
+            accessorKey: "username",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">USUÁRIO</p>,
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2">
+                    {getUserTypeIcon(row.original).icon}
+                    <p className="text-sm font-medium text-navy-700 dark:text-white">
+                        {row.getValue("username")}
+                    </p>
+                </div>
+            ),
+        },
+        {
+            accessorKey: "email",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">EMAIL</p>,
+            cell: ({ row }) => (
+                <p className="text-sm text-gray-500">
+                    {row.getValue("email")}
+                </p>
+            ),
+        },
+        {
+            accessorKey: "userType",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">TIPO</p>,
+            cell: ({ row }) => (
+                <p className="text-sm text-gray-500">
+                    {getUserTypeIcon(row.original).type}
+                </p>
+            ),
+        },
+        // {
+        //     accessorKey: "last_login",
+        //     header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ÚLTIMO LOGIN</p>,
+        //     cell: ({ row }) => (
+        //         <p className="text-sm text-gray-500">
+        //             {row.original.last_login ? 
+        //                 new Date(row.original.last_login).toLocaleString() : 
+        //                 'Nunca logou'}
+        //         </p>
+        //     ),
+        // },
+        {
+            accessorKey: "actions",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
+            cell: ({ row }) => (
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => console.log('Detalhes:', row.original)}
+                        className="text-blue-500 hover:text-blue-700"
+                        title="Ver detalhes"
+                    >
+                        <FaInfoCircle />
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
+    const table = useReactTable({
+        data: users,
+        columns: userColumns,
+        getCoreRowModel: getCoreRowModel(),
+    });
+
+    if (loading) {
+        return (
+            <LoaderContainer>
+                <SyncLoader color="#3B82F6" size={15} />
+            </LoaderContainer>
+        );
+    }
+
+    return (
+        <div>
+            <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+                <header className="relative flex items-center justify-between pt-4">
+                    <div className="text-xl font-bold text-navy-700 dark:text-white">Usuários Ativos no Sistema</div>
+                    
+                    <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Pesquisar..."
+                                className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={filters.search}
+                                onChange={(e) => setFilters({...filters, search: e.target.value})}
+                            />
+                            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                        </div>
+                        
+                        <button
+                            onClick={() => setShowFilters(!showFilters)}
+                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center space-x-2"
+                        >
+                            <FaFilter />
+                            <span>Filtros</span>
+                        </button>
+                    </div>
+                </header>
+
+                {showFilters && (
+                    <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Usuário</label>
+                                <select
+                                    name="userType"
+                                    value={filters.userType}
+                                    onChange={handleFilterChange}
+                                    className="w-full p-2 border rounded"
+                                >
+                                    <option value="">Todos</option>
+                                    <option value="admin">Administrador</option>
+                                    <option value="empresa">Empresa</option>
+                                    <option value="funcionario_posto">Funcionário Posto</option>
+                                    <option value="funcionario_empresa">Funcionário Empresa</option>
+                                    <option value="usuario">Usuário</option>
+                                </select>
+                            </div>
+                            
+                            <div className="flex items-end space-x-2">
+                                <button
+                                    onClick={resetFilters}
+                                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+                                >
+                                    Limpar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">
+                    <table className="w-full">
+                        <thead>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <tr key={headerGroup.id} className="!border-px !border-gray-400">
+                                    {headerGroup.headers.map((header) => (
+                                        <th
+                                            key={header.id}
+                                            colSpan={header.colSpan}
+                                            className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
+                                        >
+                                            <div className="items-center justify-between text-xs text-gray-200">
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                            </div>
+                                        </th>
+                                    ))}
+                                </tr>
+                            ))}
+                        </thead>
+                        <tbody>
+                            {table.getRowModel().rows.length > 0 ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <tr key={row.id} className="hover:bg-gray-50">
+                                        {row.getVisibleCells().map((cell) => (
+                                            <td key={cell.id} className="min-w-[150px] border-white/0 py-3 pr-4">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={userColumns.length} className="text-center py-4 text-gray-500">
+                                        Nenhum usuário logado encontrado
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
+
+            {/* Paginação */}
+            <div className="flex items-center justify-between mt-4 mb-4">
+                <div className="flex items-center space-x-2">
+                    <button
+                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                        onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                        disabled={pagination.pageIndex === 0}
+                    >
+                        <FaArrowLeft className="mr-2" /> Anterior
+                    </button>
+                    <button
+                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                        onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                        disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                    >
+                        Próxima <FaArrowRight className="ml-2" />
+                    </button>
+                </div>
+                <span className="text-sm text-gray-600 dark:text-white">
+                    Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                </span>
+            </div>
+        </div>
+    );
+};
+
+export default UsuariosLogados;
