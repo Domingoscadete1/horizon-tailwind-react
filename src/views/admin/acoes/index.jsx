@@ -209,6 +209,8 @@ const AcoesSistema = () => {
                     {new Date(row.getValue("data_hora")).toLocaleString()}
                 </p>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "usuario.username",
@@ -218,6 +220,8 @@ const AcoesSistema = () => {
                     {row.original.usuario?.username || 'Sistema'}
                 </p>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "tipo",
@@ -230,6 +234,8 @@ const AcoesSistema = () => {
                     </p>
                 </div>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "modulo",
@@ -242,6 +248,8 @@ const AcoesSistema = () => {
                     </p>
                 </div>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "descricao",
@@ -251,6 +259,8 @@ const AcoesSistema = () => {
                     {row.getValue("descricao")}
                 </p>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "dispositivo",
@@ -260,6 +270,8 @@ const AcoesSistema = () => {
                     {row.original.dispositivo || '-'}
                 </p>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "ip",
@@ -269,6 +281,8 @@ const AcoesSistema = () => {
                     {row.original.ip || '-'}
                 </p>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "sucesso",
@@ -286,6 +300,9 @@ const AcoesSistema = () => {
                     </p>
                 </span>
             ),
+
+            size: 150, // Largura aproximada em pixels
+
         },
         {
             accessorKey: "detalhes",
@@ -301,6 +318,8 @@ const AcoesSistema = () => {
                     </button>
                 </div>
             ),
+            size: 150, // Largura aproximada em pixels
+
         },
     ];
 
@@ -319,8 +338,8 @@ const AcoesSistema = () => {
     }
 
     return (
-        <div>
-            <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
+        <div className="px-2 sm:px-4">
+            <Card extra={"w-full h-full overflow-x-auto px-2 sm:px-4 mt-4 mb-4"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Registro de Ações do Sistema</div>
                     
@@ -507,7 +526,7 @@ const AcoesSistema = () => {
                     </div>
                 )}
 
-                <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">
+                <div className="mt-5 overflow-x-auto hidden sm:block">
                     <table className="w-full">
                         <thead>
                             {table.getHeaderGroups().map((headerGroup) => (

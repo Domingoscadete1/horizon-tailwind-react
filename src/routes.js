@@ -47,6 +47,7 @@ import {
   FaMapMarkerAlt,
   FaFilter,
   FaHistory,
+  FaFingerprint,
 } from 'react-icons/fa';
 
 const routes = [
@@ -80,7 +81,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "users-logados",
-    icon: <FaUsers className="h-6 w-6" />,
+    icon: <FaFingerprint className="h-6 w-6" />,
     component: <UsuariosLogados />,
   },
   {

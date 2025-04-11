@@ -37,7 +37,7 @@ const UsuariosLogados = () => {
     const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 4,
         totalPages: 1,
     });
     const [filters, setFilters] = useState({
@@ -70,7 +70,8 @@ const UsuariosLogados = () => {
             });
             
             const data = await response.json();
-            setUsers(data || []);
+            console.log(data);
+            setUsers(data.results || []);
             console.log(data);
             setPagination((prev) => ({
                 ...prev,
