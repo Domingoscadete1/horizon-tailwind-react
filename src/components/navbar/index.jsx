@@ -13,18 +13,49 @@ import {
   IoMdInformationCircleOutline,
 } from "react-icons/io";
 import avatar from "assets/img/avatars/avatar4.png";
+import Config from "../../Config";
+import { fetchWithToken } from '../../authService';
+
 
 const Navbar = (props) => {
   const { onOpenSidenav, brandText } = props;
   const [darkmode, setDarkmode] = React.useState(false);
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        console.log('Token sendo enviado:', refreshToken);
 
-    localStorage.removeItem("accessToken"); // Remove os dados do usuário
+        // Limpa localStorage primeiro
+        
 
-    localStorage.removeItem("userData"); // Remove os dados do usuário
-    navigate("/auth/sign-in"); // Redireciona para a página de login
-  };
+        const response = await fetchWithToken(`api/logout/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "ngrok-skip-browser-warning": "true",
+
+            },
+            body: JSON.stringify({ refresh: refreshToken }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Erro no logout:', errorData);
+            return;
+        }
+
+        console.log('Logout realizado com sucesso');
+        await localStorage.removeItem('custom-auth-token');
+        await localStorage.removeItem('userData');
+        await localStorage.removeItem('refreshToken');
+        await localStorage.removeItem('accessToken');
+        await localStorage.removeItem('registeredDeviceToken');
+        window.location.reload();
+    } catch (error) {
+        console.error('Erro durante logout:', error);
+    }
+};
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
       <div className="ml-[6px]">
