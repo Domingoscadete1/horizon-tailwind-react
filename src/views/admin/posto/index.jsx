@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom"; // Importação necessária
+
 import { FaPlus, FaEdit, FaTrash, FaEye, FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import Card from 'components/card'; // Componente de card personalizado
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
@@ -486,10 +488,14 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             alert('Erro ao cadastrar funcionário.');
         }
     };
-    
+    const navigate = useNavigate(); // Hook de navegação
+
     // Adicione esta função para lidar com upload de foto
     const handleFileChange = (e) => {
         setNovoFuncionario({ ...novoFuncionario, foto: e.target.files[0] });
+    };
+    const handleFuncionarioClick = (funcionarioId) => {
+        navigate(`/admin/funcionario-posto/${funcionarioId}`); // Redireciona para o perfil da empresa
     };
     
 
@@ -571,6 +577,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                     src={`${Config.getApiUrlMedia()}${info.getValue()}`}
                     alt="Funcionário"
                     className="w-10 h-10 rounded-full object-cover"
+                    onClick={()=>handleFuncionarioClick(info.row.original.id)}
                 />
             ),
         }),
@@ -724,7 +731,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
 
             {postoSelecionado && postoSelecionado.id && (
                 <div>
-                    {funcionarios.length > 0 && (
+                    {funcionarios.length >= 0 && (
                         <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                             <header className="relative flex items-center justify-between pt-4">
                                 <div className="text-xl font-bold text-navy-700 dark:text-white">

@@ -26,7 +26,6 @@ const Navbar = (props) => {
         const refreshToken = localStorage.getItem('refreshToken');
         console.log('Token sendo enviado:', refreshToken);
 
-        // Limpa localStorage primeiro
         
 
         const response = await fetchWithToken(`api/logout/`, {

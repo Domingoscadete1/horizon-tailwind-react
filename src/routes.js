@@ -207,7 +207,7 @@ const routes = [
   {
     name: "Perfil Funcionário do Posto",
     layout: "/admin",
-    path: "ddd",
+    path: "funcionario-posto/:id",
     icon: <MdPerson className="h-6 w-6" />,
     admin: false,
     component: <PerfilFuncionario2 />,
