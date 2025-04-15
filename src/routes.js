@@ -25,6 +25,7 @@ import EmpresasParaAprovar from "views/admin/empresa/aprovacao";
 import UsuariosBloqueados from "views/admin/usuario/bloqueados";
 import AcoesSistema from "views/admin/acoes";
 import UsuariosLogados from "views/admin/usuario/usuarios_logados";
+import GerenciamentoAdmins from "views/admin/admins";
 // Icon Imports
 import {
   MdHome,
@@ -48,6 +49,7 @@ import {
   FaFilter,
   FaHistory,
   FaFingerprint,
+  FaKey,
 } from 'react-icons/fa';
 
 const routes = [
@@ -220,13 +222,14 @@ const routes = [
     admin: false,
     component: <PerfilEmpresa />,
   },
-  // {
-  //   name: "Tabelas",
-  //   layout: "/admin",
-  //   icon: <FaTable className="inline-block h-5 w-5" />,
-  //   path: "data-tables",
-  //   component: <DataTables />,
-  // },
+   {
+     name: "Admins",
+     layout: "/admin",
+     icon: <FaKey className="inline-block h-5 w-5" />,
+     path: "admins",
+     admin: true,
+     component: <GerenciamentoAdmins />,
+   },
   // {
   //   name: "Relatórios",
   //   layout: "/admin",

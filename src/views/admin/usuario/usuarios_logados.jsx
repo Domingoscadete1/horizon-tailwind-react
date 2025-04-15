@@ -11,7 +11,8 @@ import {
   FaGasPump,
   FaSignInAlt,
   FaSignOutAlt,
-  FaInfoCircle
+  FaInfoCircle,
+  FaPowerOff
 } from "react-icons/fa";
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import Card from "components/card";
@@ -35,6 +36,8 @@ const API_BASE_URL = Config.getApiUrl();
 const UsuariosLogados = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 4,
@@ -45,6 +48,10 @@ const UsuariosLogados = () => {
         userType: ''
     });
     const [showFilters, setShowFilters] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
+    const [actionMessage, setActionMessage] = useState({ type: '', text: '' });
+    const [selectedUser, setSelectedUser] = useState(null);
+
 
     useEffect(() => {
         fetchLoggedInUsers();
@@ -81,6 +88,31 @@ const UsuariosLogados = () => {
             console.error("Erro ao buscar usuários logados", error);
         } finally {
             setLoading(false);
+        }
+    };
+    const handleLogoutAllSessions = async () => {
+        setActionLoading(true);
+        try {
+            const response = await fetchWithToken(`api/logout-all/`, {
+                method: 'POST',
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha ao desconectar todas as sessões');
+            }
+
+            setActionMessage({ type: 'success', text: 'Todas as sessões foram desconectadas com sucesso' });
+            fetchLoggedInUsers(); // Atualiza a lista
+        } catch (error) {
+            console.error("Erro ao desconectar sessões", error);
+            setActionMessage({ type: 'error', text: error.message });
+        } finally {
+            setActionLoading(false);
+            setShowLogoutModal(false);
+            setSelectedUser(null);
         }
     };
 
@@ -166,6 +198,7 @@ const UsuariosLogados = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
             cell: ({ row }) => (
                 <div className="flex gap-2">
+                    
                     <button
                         onClick={() => console.log('Detalhes:', row.original)}
                         className="text-blue-500 hover:text-blue-700"
@@ -194,6 +227,12 @@ const UsuariosLogados = () => {
 
     return (
         <div>
+            {/* Mensagens de ação */}
+            {actionMessage.text && (
+                <div className={`mb-4 p-4 rounded-lg ${actionMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    {actionMessage.text}
+                </div>
+            )}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Usuários Ativos no Sistema</div>
@@ -217,6 +256,14 @@ const UsuariosLogados = () => {
                             <FaFilter />
                             <span>Filtros</span>
                         </button>
+                        <button
+                        onClick={() => setShowLogoutModal(true)
+                        }
+                        className="px-4 py-2 bg-red-200 hover:bg-red-300 rounded-lg flex items-center space-x-2"
+                        title="Desconectar todas as sessões"
+                    >
+                        <FaPowerOff />
+                    </button>
                     </div>
                 </header>
 
@@ -316,6 +363,43 @@ const UsuariosLogados = () => {
                     Página {pagination.pageIndex + 1} de {pagination.totalPages}
                 </span>
             </div>
+            {/* Modal de Confirmação de Logout */}
+            {showLogoutModal  && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h3 className="text-lg font-semibold mb-4">Confirmar Logout em Todas as Sessões</h3>
+                        <p className="mb-4">
+                            Deseja realmente desconectar todas as sessões dos usuários
+                        </p>
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                onClick={() => {
+                                    setShowLogoutModal(false);
+                                   
+                                }}
+                                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                                disabled={actionLoading}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={() => handleLogoutAllSessions()}
+                                disabled={actionLoading}
+                                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex items-center"
+                            >
+                                {actionLoading ? (
+                                    <SyncLoader color="#ffffff" size={8} />
+                                ) : (
+                                    <>
+                                        <FaPowerOff className="mr-2" />
+                                        Desconectar
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
