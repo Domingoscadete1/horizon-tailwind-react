@@ -285,6 +285,17 @@ const AcoesSistema = () => {
 
         },
         {
+            accessorKey: "localizacao",
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Localização</p>,
+            cell: ({ row }) => (
+                <p className="text-sm text-gray-500">
+                    {row.original.localizacao || '-'}
+                </p>
+            ),
+            size: 150, // Largura aproximada em pixels
+
+        },
+        {
             accessorKey: "sucesso",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">STATUS</p>,
             cell: ({ row }) => (
