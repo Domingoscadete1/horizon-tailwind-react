@@ -72,7 +72,7 @@ const PerfilFuncionario2 = () => {
     const handleDeleteFuncionario = async () => {
         setLoading(true);
         try {
-            const response = await fetchWithToken(`api/funcionario/${id}/`, {
+            const response = await fetchWithToken(`api/funcionario/${id}/deletar/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -86,9 +86,9 @@ const PerfilFuncionario2 = () => {
             }
 
             setSuccess("Funcionário deletado com sucesso!");
-            // Redirect after successful deletion
+            
             setTimeout(() => {
-                navigate('/funcionarios'); // Adjust this to your route
+                window.history.back(); 
             }, 1500);
         } catch (error) {
             console.error("Erro:", error);
