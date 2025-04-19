@@ -26,6 +26,7 @@ import UsuariosBloqueados from "views/admin/usuario/bloqueados";
 import AcoesSistema from "views/admin/acoes";
 import UsuariosLogados from "views/admin/usuario/usuarios_logados";
 import GerenciamentoAdmins from "views/admin/admins";
+import LancesList from "views/admin/lances";
 // Icon Imports
 import {
   MdHome,
@@ -141,6 +142,14 @@ const routes = [
     path: "transacao",
     icon: <MdArchive className="h-6 w-6" />,
     component: <Transacao />,
+  },
+  {
+    name: "Lances",
+    layout: "/admin",
+    admin: true,
+    path: "lances",
+    icon: <MdArchive className="h-6 w-6" />,
+    component: <LancesList />,
   },
   {
     name: "Ações",
