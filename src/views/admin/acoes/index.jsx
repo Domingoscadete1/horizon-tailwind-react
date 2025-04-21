@@ -537,46 +537,116 @@ const AcoesSistema = () => {
                     </div>
                 )}
 
-                <div className="mt-5 overflow-x-auto hidden sm:block">
-                    <table className="w-full">
-                        <thead>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <tr key={headerGroup.id} className="!border-px !border-gray-400">
-                                    {headerGroup.headers.map((header) => (
-                                        <th
-                                            key={header.id}
-                                            colSpan={header.colSpan}
-                                            className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
-                                        >
-                                            <div className="items-center justify-between text-xs text-gray-200">
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                            </div>
-                                        </th>
-                                    ))}
-                                </tr>
-                            ))}
-                        </thead>
-                        <tbody>
-                            {table.getRowModel().rows.length > 0 ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <tr key={row.id} className="hover:bg-gray-50">
-                                        {row.getVisibleCells().map((cell) => (
-                                            <td key={cell.id} className="min-w-[150px] border-white/0 py-3 pr-4">
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={acoesColumns.length} className="text-center py-4 text-gray-500">
-                                        Nenhuma ação encontrada com os filtros aplicados
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+<div className="mt-5">
+  {/* Versão para desktop (telas maiores) */}
+  <div className="hidden sm:block overflow-x-auto">
+    <table className="w-full">
+      <thead>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id} className="!border-px !border-gray-400">
+            {headerGroup.headers.map((header) => (
+              <th
+                key={header.id}
+                colSpan={header.colSpan}
+                className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
+                style={{ width: `${header.column.getSize()}px` }}
+              >
+                <div className="items-center justify-between text-xs text-gray-200">
+                  {flexRender(header.column.columnDef.header, header.getContext())}
                 </div>
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.length > 0 ? (
+          table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="hover:bg-gray-50">
+              {row.getVisibleCells().map((cell) => (
+                <td 
+                  key={cell.id} 
+                  className="border-white/0 py-3 pr-4"
+                  style={{ width: `${cell.column.getSize()}px` }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={acoesColumns.length} className="text-center py-4 text-gray-500">
+              Nenhuma ação encontrada com os filtros aplicados
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Versão para mobile (telas pequenas) */}
+  <div className="sm:hidden space-y-4">
+    {table.getRowModel().rows.length > 0 ? (
+      table.getRowModel().rows.map((row) => (
+        <div key={row.id} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="font-medium text-gray-500">Data/Hora:</div>
+            <div className="text-gray-700">
+              {new Date(row.original.data_hora).toLocaleString()}
+            </div>
+
+            <div className="font-medium text-gray-500">Usuário:</div>
+            <div className="text-gray-700">
+              {row.original.usuario?.username || 'Sistema'}
+            </div>
+
+            <div className="font-medium text-gray-500">Tipo:</div>
+            <div className="flex items-center gap-2 text-gray-700">
+              {tipoIcones[row.original.tipo] || <FaInfoCircle className="text-gray-500" />}
+              <span className="capitalize">{row.original.tipo.replace(/_/g, ' ')}</span>
+            </div>
+
+            <div className="font-medium text-gray-500">Módulo:</div>
+            <div className="flex items-center gap-2 text-gray-700">
+              {moduloIcones[row.original.modulo] || <FaBox className="text-gray-500" />}
+              <span className="capitalize">{row.original.modulo.replace(/_/g, ' ')}</span>
+            </div>
+
+            <div className="font-medium text-gray-500">Status:</div>
+            <div className="flex items-center gap-2 text-gray-700">
+              {row.original.sucesso ? (
+                <FaCheckCircle className="text-green-500" />
+              ) : (
+                <FaTimesCircle className="text-red-500" />
+              )}
+              <span>{row.original.sucesso ? 'Sucesso' : 'Falha'}</span>
+            </div>
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="font-medium text-gray-500 mb-1">Descrição:</div>
+            <p className="text-gray-700 text-sm">{row.original.descricao}</p>
+          </div>
+
+          <div className="mt-3 flex justify-end">
+            <button
+              onClick={() => handleDownload(row.original.id)}
+              className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
+              title="Ver detalhes"
+            >
+              <FaInfoCircle /> Detalhes
+            </button>
+          </div>
+        </div>
+      ))
+    ) : (
+      <div className="text-center py-4 text-gray-500">
+        Nenhuma ação encontrada com os filtros aplicados
+      </div>
+    )}
+  </div>
+</div>
             </Card>
 
             {/* Paginação */}
