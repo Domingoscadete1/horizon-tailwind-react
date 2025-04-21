@@ -16,6 +16,11 @@ export default function Auth() {
   const [userData, setUserData] = useState(null);
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
+  const [resetError, setResetError] = useState('');
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -95,6 +100,32 @@ export default function Auth() {
       console.error('Erro ao buscar dados do usuário:', error);
     }
   };
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setResetError('');
+    setResetMessage('');
+
+    if (!resetEmail) {
+      setResetError('Por favor, insira seu e-mail');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}api/password-reset/`,
+        { email: resetEmail },
+        { headers: { 'Content-Type': 'application/json', "ngrok-skip-browser-warning": "true" } }
+      );
+
+      if (response.status === 200) {
+        setResetMessage('E-mail de redefinição enviado. Verifique sua caixa de entrada.');
+        setShowResetForm(false);
+      }
+    } catch (error) {
+      console.error("Erro ao solicitar redefinição:", error);
+      setResetError(error.response?.data?.error || 'Erro ao solicitar redefinição de senha');
+    }
+  };
 
   return (
     <div>
@@ -107,44 +138,95 @@ export default function Auth() {
 
                 <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
                   <div className="mt-[10vh] w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-                    <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
-                      Login
-                    </h4>
-                    <p className="mb-9 ml-1 text-base text-gray-600">
-                      Insira seus dados nos respectivos campos!
-                    </p>
+                    {!showResetForm ? (
+                      <>
+                        <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+                          Login
+                        </h4>
+                        <p className="mb-9 ml-1 text-base text-gray-600">
+                          Insira seus dados nos respectivos campos!
+                        </p>
 
-                    <form onSubmit={onSubmit}>
-                      <label className="block text-gray-700 text-sm font-bold mb-2">Nome*</label>
-                      <input
-                        className="w-full px-3 py-2 border rounded-lg"
-                        type="text"
-                        name="username"
-                        placeholder="Digite seu nome..."
-                        value={formData.username}
-                        onChange={handleInputChange}
-                      />
+                        <form onSubmit={onSubmit}>
+                          <label className="block text-gray-700 text-sm font-bold mb-2">Nome*</label>
+                          <input
+                            className="w-full px-3 py-2 border rounded-lg"
+                            type="text"
+                            name="username"
+                            placeholder="Digite seu nome..."
+                            value={formData.username}
+                            onChange={handleInputChange}
+                          />
 
-                      <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">Senha*</label>
-                      <input
-                        className="w-full px-3 py-2 border rounded-lg"
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        placeholder="Digite sua senha..."
-                        value={formData.password}
-                        onChange={handleInputChange}
-                      />
+                          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">Senha*</label>
+                          <input
+                            className="w-full px-3 py-2 border rounded-lg"
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Digite sua senha..."
+                            value={formData.password}
+                            onChange={handleInputChange}
+                          />
 
-                      {error && <p className="text-red-500 mt-5">Preencha os campos devidamente...</p>}
+                          {error && <p className="text-red-500 mt-5">Preencha os campos devidamente...</p>}
 
-                      <button
-                        type="submit"
-                        className="mt-4 w-full bg-brand-500 py-2 text-white rounded-lg"
-                        disabled={isPending}
-                      >
-                        {isPending ? 'Signing In...' : 'Sign In'}
-                      </button>
-                    </form>
+                          <button
+                            type="submit"
+                            className="mt-4 w-full bg-brand-500 py-2 text-white rounded-lg"
+                            disabled={isPending}
+                          >
+                            {isPending ? 'Signing In...' : 'Sign In'}
+                          </button>
+
+                          <button
+                            type="button"
+                            className="mt-4 text-sm text-brand-500 hover:underline"
+                            onClick={() => setShowResetForm(true)}
+                          >
+                            Esqueceu sua senha?
+                          </button>
+                        </form>
+                      </>
+                    ) : (
+                      <>
+                        <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+                          Redefinir Senha
+                        </h4>
+                        <p className="mb-9 ml-1 text-base text-gray-600">
+                          Insira seu e-mail para receber o link de redefinição
+                        </p>
+
+                        <form onSubmit={handleResetPassword}>
+                          <label className="block text-gray-700 text-sm font-bold mb-2">E-mail*</label>
+                          <input
+                            className="w-full px-3 py-2 border rounded-lg"
+                            type="email"
+                            placeholder="Digite seu e-mail cadastrado..."
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                          />
+
+                          {resetError && <p className="text-red-500 mt-2">{resetError}</p>}
+                          {resetMessage && <p className="text-green-500 mt-2">{resetMessage}</p>}
+
+                          <div className="mt-4 flex gap-2">
+                            <button
+                              type="submit"
+                              className="flex-1 bg-brand-500 py-2 text-white rounded-lg"
+                            >
+                              Enviar Link
+                            </button>
+                            <button
+                              type="button"
+                              className="flex-1 bg-gray-300 py-2 text-gray-700 rounded-lg"
+                              onClick={() => setShowResetForm(false)}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </form>
+                      </>
+                    )}
                   </div>
                 </div>
 
