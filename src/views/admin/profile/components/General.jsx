@@ -1,8 +1,22 @@
 import Card from "components/card";
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { MdModeEditOutline } from "react-icons/md";
 
 const General = () => {
+  const [funcionarioId, setfuncionarioId] = useState('');
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('userData');
+    if (token) {
+        const userData = JSON.parse(token);
+        const postoId = userData;
+        console.log(userData);
+        if (postoId) {
+            setfuncionarioId(postoId);
+        }
+    }
+}, []);
   return (
     <Card extra={"w-full h-full p-3"}>
       {/* Header */}
@@ -27,7 +41,7 @@ const General = () => {
           </button>
           <p className="text-sm text-gray-600">Nome</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
-            Domingos Délcio
+            {funcionarioId.username || 'DDStore'}
           </p>
         </div>
 
@@ -38,7 +52,7 @@ const General = () => {
           </button>
           <p className="text-sm text-gray-600">Email</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
-            delciodomingos@gmail.com
+            {funcionarioId.email || '@@@'}
           </p>
         </div>
 
@@ -47,42 +61,24 @@ const General = () => {
           <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
             <MdModeEditOutline />
           </button>
-          <p className="text-sm text-gray-600">Department</p>
+          <p className="text-sm text-gray-600">Cargo</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
-            Product Design
+            Admin
           </p>
         </div>
 
-        {/* Número de Telefone */}
-        <div className="relative flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
-          <p className="text-sm text-gray-600">Número de Telefone</p>
-          <p className="text-base font-medium text-navy-700 dark:text-white">
-            +244 923 456 789
-          </p>
-        </div>
+       
 
-        {/* Morada */}
-        <div className="relative flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
-            <MdModeEditOutline />
-          </button>
-          <p className="text-sm text-gray-600">Morada</p>
-          <p className="text-base font-medium text-navy-700 dark:text-white">
-            Bairro Paraíso, Viana
-          </p>
-        </div>
+        
 
         {/* Data de Nascimento */}
         <div className="relative flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
           <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" title="Editar">
             <MdModeEditOutline />
           </button>
-          <p className="text-sm text-gray-600">Data de Nascimento</p>
+          <p className="text-sm text-gray-600">Data de adesão</p>
           <p className="text-base font-medium text-navy-700 dark:text-white">
-            20 July 1986
+            {funcionarioId.created_at}
           </p>
         </div>
       </div>

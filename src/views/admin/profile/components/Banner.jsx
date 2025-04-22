@@ -1,9 +1,26 @@
-import React from "react";
-import avatar from "assets/img/avatars/avatar11.png";
+import React,{useState,useEffect} from "react";
+import avatar from "assets/img/avatars/Imagem WhatsApp 2025-03-24 às 13.51.21_62a4ceab.jpg";
 import banner from "assets/img/profile/banner.png";
 import Card from "components/card";
 
+
 const Banner = () => {
+  const [funcionarioId, setfuncionarioId] = useState('');
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('userData');
+    if (token) {
+        const userData = JSON.parse(token);
+        const postoId = userData;
+        console.log(userData);
+        if (postoId) {
+            setfuncionarioId(postoId);
+        }
+    }
+}, []);
+
+
   return (
     <Card extra={"items-center w-full h-full p-[16px] bg-cover"}>
       {/* Background and profile */}
@@ -19,9 +36,9 @@ const Banner = () => {
       {/* Name and position */}
       <div className="mt-16 flex flex-col items-center">
         <h4 className="text-xl font-bold text-navy-700 dark:text-white">
-          Domingos Délcio
+          {funcionarioId.username}
         </h4>
-        <p className="text-base font-normal text-gray-600">delciodomingos@gmail.com</p>
+        <p className="text-base font-normal text-gray-600">{funcionarioId.email || '@@@'}</p>
       </div>
 
       {/* Post followers */}
