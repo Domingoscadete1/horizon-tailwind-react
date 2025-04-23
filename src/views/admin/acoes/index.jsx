@@ -287,13 +287,55 @@ const AcoesSistema = () => {
         {
             accessorKey: "localizacao",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Localização</p>,
-            cell: ({ row }) => (
-                <p className="text-sm text-gray-500">
-                    {row.original.localizacao || '-'}
-                </p>
-            ),
-            size: 150, // Largura aproximada em pixels
-
+            cell: ({ row }) => {
+                try {
+                    let locStr = row.original.localizacao;
+                    
+                    if (typeof locStr === 'string' && locStr.startsWith("{'")) {
+                        locStr = locStr.replace(/'/g, '"'); 
+                    }
+                    
+                    const localizacao = typeof locStr === 'string' ? JSON.parse(locStr) : locStr;
+                    
+                    const cidade = localizacao?.cidade || '';
+                    const regiao = localizacao?.regiao || '';
+                    const pais = localizacao?.pais || '';
+                    const latitude = localizacao?.latitude;
+                    const longitude = localizacao?.longitude;
+                    
+                    const textoLocalizacao = [cidade, regiao, pais].filter(Boolean).join(', ');
+                    
+                    const hasCoords = !isNaN(latitude) && !isNaN(longitude);
+                    const coords = hasCoords ? `${latitude},${longitude}` : null;
+                    
+                    return (
+                        <div className="text-sm text-gray-500">
+                            {coords ? (
+                                <a 
+                                    href={`https://www.google.com/maps?q=${coords}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 hover:underline"
+                                    title="Abrir no mapa"
+                                >
+                                    {textoLocalizacao || 'Ver no mapa'}
+                                </a>
+                            ) : (
+                                textoLocalizacao || '-'
+                            )}
+                            {hasCoords && (
+                                <span className="text-xs block text-gray-400 mt-1">
+                                    Coord: {Number(latitude).toFixed(4)}, {Number(longitude).toFixed(4)}
+                                </span>
+                            )}
+                        </div>
+                    );
+                } catch (e) {
+                    console.error('Erro ao processar localização:', e);
+                    return <p className="text-sm text-gray-500">-</p>;
+                }
+            },
+            size: 200,
         },
         {
             accessorKey: "sucesso",
