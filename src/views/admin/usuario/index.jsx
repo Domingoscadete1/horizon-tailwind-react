@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaEye, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaSave, FaTimes,FaArrowLeft,FaArrowRight } from "react-icons/fa";
 import Card from "components/card";
 import {
   createColumnHelper,
@@ -67,10 +67,15 @@ const GerenciamentoUsuarios = () => {
   const handleUsuarioClick = (usuarioId) => {
     navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
   };
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+    totalPages: 1,
+});
   // Fetch dos usuários
   const fetchUsuarios = async () => {
     try {
-      const response = await fetchWithToken('api/usuarios/', {
+      const response = await fetchWithToken(`api/usuarios/?page=${pagination.pageIndex + 1}`, {
         method:'GET',
         headers: {
           "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
@@ -84,6 +89,10 @@ const GerenciamentoUsuarios = () => {
       const data = await response.json();
       console.log("Usuários carregados:", data);
       setUsuarios(data.results);
+      setPagination((prev) => ({
+        ...prev,
+        totalPages: Math.ceil(data.count / prev.pageSize),
+    }));
     } catch (error) {
       console.error(error);
     } finally {
@@ -93,7 +102,7 @@ const GerenciamentoUsuarios = () => {
 
   useEffect(() => {
     fetchUsuarios();
-  }, []);
+  }, [pagination.pageIndex]);
   const usuariosFiltrados = usuarios.filter(user =>
     filtroStatus === "Todos" || user.status === "suspenso"
   );
@@ -393,6 +402,28 @@ const GerenciamentoUsuarios = () => {
                 </tbody>
               </table>
             </div>
+
+            <div className="flex items-center justify-between mt-4 mb-4">
+                            <div className="flex items-center space-x-2">
+                                <button
+                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                                    disabled={pagination.pageIndex === 0}
+                                >
+                                    <FaArrowLeft className="mr-2" /> Anterior
+                                </button>
+                                <button
+                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                                    disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                                >
+                                    Próxima <FaArrowRight className="ml-2" />
+                                </button>
+                            </div>
+                            <span className="text-sm text-gray-600 dark:text-white">
+                                Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                            </span>
+                        </div>
           </Card>
 
           <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>

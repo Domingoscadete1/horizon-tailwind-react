@@ -70,7 +70,7 @@ const SuporteCliente = () => {
                     ...chat,
                     mensagens: data.mensagens || [] // Garante que seja uma lista
                 });
-                conectarWebSocket(chat.id);
+                conectarWebSocket(chat);
             })
             .catch(error => {
                 console.error("Erro ao buscar mensagens do chat:", error);
@@ -82,12 +82,20 @@ const SuporteCliente = () => {
     };
 
 
-    const conectarWebSocket = (chatId) => {
+    const conectarWebSocket = (chat) => {
         if (socketRef.current) {
             socketRef.current.close();
         }
+        var socketUrl='';
 
-        const socketUrl = `wss://${wssUrl}/ws/suporte/empresa/${chatId}/`;
+        if (chat.empresa_nome){
+            socketUrl = `wss://${wssUrl}/ws/suporte/empresa/${chat.id}/`;
+
+        }
+        else{
+            socketUrl = `wss://${wssUrl}/ws/suporte/usuario/${chat.id}/`;
+
+        }
         socketRef.current = new WebSocket(socketUrl);
 
         socketRef.current.onmessage = (event) => {
@@ -171,7 +179,7 @@ const SuporteCliente = () => {
                         <tbody>
                             {solicitacoes.map((solicitacao) => (
                                 <tr key={solicitacao.id} className="border-b border-gray-200">
-                                    <td className="py-2 px-4">{solicitacao.empresa_nome || solicitacao.empresa.nome}</td>
+                                    <td className="py-2 px-4">{solicitacao.empresa_nome || solicitacao.empresa?.nome || solicitacao.usuario_nome}</td>
                                     <td className="py-2 px-4">{solicitacao.created_at}</td>
                                     <td className="py-2 px-4 flex space-x-4">
                                         <button
