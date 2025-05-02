@@ -32,6 +32,8 @@ const DetalhesProduto = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState(true);    
     const [produto, setProduto] = useState(null);
+    const [produtosemelhantes, setProdutoSemelhantes] = useState(null);
+
     const [imagemPrincipal, setImagemPrincipal] = useState();
     const [mediaPrincipal, setMediaPrincipal] = useState(null); 
     const [tipoMedia, setTipoMedia] = useState('imagem'); 
@@ -86,16 +88,35 @@ const DetalhesProduto = () => {
                 console.error('Erro ao buscar empresa:', error);
             }
         };
+        const fetchProdutoSemelhantes = async () => {
+            try {
+                const response = await fetchWithToken(`api/produtos/categoria/${produto?.categoria?.id}/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                const data = await response.json();
+                console.log(data);
+                setProdutoSemelhantes(data.results || []);
+            } catch (error) {
+                console.error('Erro ao buscar empresa:', error);
+            }
+        };
 
         
 
         const fetchData = async () => {
             await fetchProduto();
+            await fetchProdutoSemelhantes();
+
+            
             setLoading(false); // Agora só desativa o loading após buscar os dados
         };
 
         fetchData();
-    }, [id]);
+    }, [id,produto?.categoria?.id]);
 
     if (loading) {
         return <LoaderContainer>
@@ -121,6 +142,15 @@ const DetalhesProduto = () => {
         setMediaPrincipal(novaMedia);
         setTipoMedia(tipo);
     };
+    const handleUsuarioClick = (usuarioId) => {
+        navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
+      };
+      const handleEmpresaClick = (empresaId) => {
+        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
+      };
+      const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+      };
 
 
     return (
@@ -214,14 +244,31 @@ const DetalhesProduto = () => {
 
             {/* Grid de Produtos Relacionados */}
             <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
-                {nfts.map((nft, index) => (
+                {produtosemelhantes?.map((nft, index) => (
+                    
                     <div key={index} className="h-full">
                         <NftCard
+                            key={nft.id}
                             bidders={[avatar1, avatar2, avatar3]}
-                            title={nft.title}
-                            author={nft.author}
-                            price={nft.price}
-                            image={nft.image}
+                            title={nft.nome}
+                            author={nft.empresa ? nft.empresa.nome : nft.usuario.nome}
+                            price={`${nft.preco}`}
+                            image={`${Config.getApiUrlMedia()}${nft?.imagens[0]?.imagem}`}
+                            quantidade={nft.quantidade}
+                            status={nft.status}
+                            descricao={nft?.descricao}
+                            image_user={
+                              nft.usuario
+                                ? `${Config.getApiUrlMedia()}${nft.usuario.foto}`
+                                : `${Config.getApiUrlMedia()}${nft.empresa?.imagens?.[0]?.imagem}`
+                            }
+                            onImageClick={() =>handleProdutoClick(nft.id)}
+                            onNameClick={ () =>handleProdutoClick(nft.id)}
+                            onUserClick={
+                              nft.usuario
+                                ? () => handleUsuarioClick(nft.usuario.id)
+                                : () =>handleEmpresaClick(nft.empresa.id)
+                            }
                             extraClasses="h-full" // Garante que o card ocupe toda a altura do container
                         />
                     </div>
