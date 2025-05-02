@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Ação #{{ acao.id }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3B82F6;
+            padding-bottom: 10px;
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        .title {
+            color: #3B82F6;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            background-color: #f0f0f0;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-left: 4px solid #3B82F6;
+            margin-bottom: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .json-container {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            color: red;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            width: 100%;
+        }
+
+        .status-success {
+            color: #10B981;
+            font-weight: bold;
+        }
+
+        .status-failure {
+            color: #EF4444;
+            font-weight: bold;
+        }
+
+        .error-container {
+            background-color: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            color: #e53e3e;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .no-error {
+            color: #718096;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="header">
+            <div>
+                <h1 class="title">Detalhes da Ação</h1>
+                <p class="subtitle">Registro #{{ acao.id }} - {{ acao.data_hora|date:"d/m/Y H:i" }}</p>
+            </div>
+            <img src="{{ logo_url }}" class="logo" alt="Logo">
+        </div>
+
+        <div class="section">
+            <div class="section-title">Informações Básicas</div>
+
+            <div class="details-grid">
+                <div class="detail-label">Tipo:</div>
+                <div>{{ acao.get_tipo_display }}</div>
+
+                <div class="detail-label">Módulo:</div>
+                <div>{{ acao.get_modulo_display }}</div>
+
+                <div class="detail-label">Usuário:</div>
+                <div>
+                    {% if acao.usuario %}
+                    {{ acao.usuario.username }} (ID: {{ acao.usuario.id }})
+                    {% else %}
+                    Sistema
+                    {% endif %}
+                </div>
+
+                <div class="detail-label">Empresa:</div>
+                <div>
+                    {% if acao.empresa %}
+                    {{ acao.empresa.nome }} (ID: {{ acao.empresa.id }})
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+
+                <div class="detail-label">Status:</div>
+                <div class="{% if acao.sucesso %}status-success{% else %}status-failure{% endif %}">
+                    {% if acao.sucesso %}Sucesso{% else %}Falha{% endif %}
+                </div>
+
+                <div class="detail-label">Data/Hora:</div>
+                <div>{{ acao.data_hora|date:"d/m/Y H:i:s" }}</div>
+
+                <div class="detail-label">IP:</div>
+                <div>{{ acao.ip|default:"-" }}</div>
+
+                <div class="detail-label">Dispositivo:</div>
+                <div>{{ acao.dispositivo|default:"-" }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Descrição</div>
+            <p>{{ acao.descricao }}</p>
+        </div>
+
+        {% if acao.objeto_id or acao.objeto_tipo %}
+        <div class="section">
+            <div class="section-title">Objeto Relacionado</div>
+            <div class="details-grid">
+                <div class="detail-label">Tipo do Objeto:</div>
+                <div>{{ acao.objeto_tipo|default:"-" }}</div>
+
+                <div class="detail-label">ID do Objeto:</div>
+                <div>{{ acao.objeto_id|default:"-" }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not acao.sucesso and acao.mensagem_erro %}
+        <div class="section">
+            <div class="section-title">Erro</div>
+            <div>{{ acao.mensagem_erro }}</div>
+        </div>
+        {% endif %}
+
+        {% if acao.dados_antes %}
+        <div class="section">
+            <div class="section-title">Estado Anterior</div>
+            <div class="json-container">{{ acao.dados_antes|pprint }}</div>
+        </div>
+        {% endif %}
+
+        {% if acao.dados_depois %}
+        <div class="section">
+            <div class="section-title">Estado Posterior</div>
+            <div class="json-container">{{ acao.dados_depois|pprint }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        <p>Documento gerado em {% now "d/m/Y H:i" %} - DDSTORE</p>
+    </div>
+</body>
+
+</html>

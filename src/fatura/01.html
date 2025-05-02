@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ logo_url }}" type="image/x-icon">
+    <title>Comprovativo Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            flex-grow: 1;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            background-color: #f1731f;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .logo img {
+            width: 55px;
+            height: auto;
+        }
+
+        .title {
+            text-align: center;
+            color: #f1731f;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .title2 {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .divider {
+            border-top: 2px solid #f1731f;
+            margin: 10px 0;
+        }
+
+        .info {
+            padding: 10px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info p {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .info p strong {
+            flex: 1;
+            text-align: left;
+        }
+
+        .info p span {
+            flex: 1;
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 400;
+            margin-top: auto;
+            background: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .divider2 {
+            border-top: 2px solid #555;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 400px) {
+            .info p {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .info p span {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ logo_url }}" alt="Logo" width="150">
+        </div>
+        <h2 class="title">Comprovativo Digital</h2>
+        <p class="title2">Detalhe da operação realizada através do canal DD Express.</p>
+        <div class="divider"></div>
+        <div class="info">
+            <p><strong>ID da Transação:</strong> {{ transacao.id }}</p>
+            <p><strong>Data:</strong> {{ transacao.data_transacao }}</p>
+            <p><strong>Tipo:</strong> {{ transacao.get_tipo_transacao_display }}</p>
+            <p><strong>Valor:</strong> {{ transacao.valor }} KZ</p>
+            <p><strong>Status:</strong> {{ transacao.get_status_display }}</p>
+            <p><strong>Método de Pagamento:</strong> {{ transacao.get_metodo_pagamento_display }}</p>
+            <p><strong>Taxa:</strong> {{ transacao.taxa|default:"0.00" }} KZ</p>
+        </div>
+
+        <div class="footer">
+            Linha de Atendimento DD 937 774 011 <br>
+            Caso necessite de obter alguma informação, contacte por favor a nossa linha de apoio MULTICAIXA (24h): <br>
+            (+244) 993 587 445 | 926 364 622 <br>
+            <div class="divider2"></div>
+            Conta: 0060003766957431021 | 502695**2231
+        </div>
+    </div>
+</body>
+
+</html>
