@@ -178,6 +178,7 @@ const enviarNotificacao = async () => {
             });
             const data = await response.json();
             setUsuario(data);
+            console.log(data);
         } catch (error) {
             console.error('Erro ao buscar usuario:', error);
         }
@@ -368,20 +369,20 @@ const enviarNotificacao = async () => {
                     {/* Contadores */}
                     <div className="mt-6 mb-3 flex gap-4 md:!gap-14">
                         <div className="flex flex-col items-center justify-center">
-                            <p className="text-2xl font-bold text-navy-700 dark:text-white">17</p>
+                            <p className="text-2xl font-bold text-navy-700 dark:text-white">{usuario?.quantidade_produtos}</p>
                             <p className="text-sm font-normal text-gray-600">Posts</p>
                         </div>
                         <div className="flex flex-col items-center justify-center">
                             <p className="text-2xl font-bold text-navy-700 dark:text-white">
-                                9
+                            {usuario?.quantidade_vendas}
                             </p>
                             <p className="text-sm font-normal text-gray-600">Produtos Vendidos</p>
                         </div>
                         <div className="flex flex-col items-center justify-center">
                             <p className="text-2xl font-bold text-navy-700 dark:text-white">
-                                8
+                            {usuario?.quantidade_comprados}
                             </p>
-                            <p className="text-sm font-normal text-gray-600">Disponíveis</p>
+                            <p className="text-sm font-normal text-gray-600">Produtos Comprados</p>
                         </div>
                     </div>
                 </Card>

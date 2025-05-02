@@ -304,7 +304,7 @@ const Marketplace = () => {
                 bidders={[avatar1, avatar2, avatar3]}
                 title={produto.nome}
                 author={produto.empresa ? produto.empresa.nome : produto.usuario.nome}
-                price={`${produto.preco.toFixed(2)}`}
+                price={`${produto.preco}`}
                 image={imageUrl}
                 quantidade={produto.quantidade}
                 status={produto.status}
