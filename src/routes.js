@@ -33,9 +33,9 @@ import {
   MdPerson,
   MdArchive,
   MdLock,
-  MdBlock, 
+  MdBlock,
   MdOutlinePendingActions,
-  MdLandslide, 
+  MdLandslide,
 } from "react-icons/md";
 
 import {
@@ -92,7 +92,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "categorias",
-    icon: <FaFilter className="h-6 w-6" />, 
+    icon: <FaFilter className="h-6 w-6" />,
     component: <UsuariosBloqueados />,
   },
   {
@@ -108,7 +108,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "aprovacao",
-    icon: <MdOutlinePendingActions className="h-6 w-6" />, 
+    icon: <MdOutlinePendingActions className="h-6 w-6" />,
     component: <EmpresasParaAprovar />,
   },
   {
@@ -231,29 +231,14 @@ const routes = [
     admin: false,
     component: <PerfilEmpresa />,
   },
-   {
-     name: "Admins",
-     layout: "/admin",
-     icon: <FaKey className="inline-block h-5 w-5" />,
-     path: "admins",
-     admin: true,
-     component: <GerenciamentoAdmins />,
-   },
-  // {
-  //   name: "Relatórios",
-  //   layout: "/admin",
-  //   path: "relatorio",
-  //   icon: <MdArchive className="h-6 w-6" />,
-  //   component: <Relatorio />,
-  // }, 
-  // {
-  //   name: "Sign In",
-  //   layout: "/auth",
-  //   path: "sign-in",
-  //   icon: <MdLock className="h-6 w-6" />,
-  //   admin: true,
-  //   component: <SignIn />,
-  // },
+  {
+    name: "Admins",
+    layout: "/admin",
+    icon: <FaKey className="inline-block h-5 w-5" />,
+    path: "admins",
+    admin: true,
+    component: <GerenciamentoAdmins />,
+  },
 ];
 
 export default routes;

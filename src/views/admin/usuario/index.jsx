@@ -321,9 +321,9 @@ const GerenciamentoUsuarios = () => {
     data: usuarios,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(), 
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
-      globalFilter, 
+      globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
   });
