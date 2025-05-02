@@ -105,7 +105,7 @@ const UsuariosLogados = () => {
             }
 
             setActionMessage({ type: 'success', text: 'Todas as sessões foram desconectadas com sucesso' });
-            fetchLoggedInUsers(); // Atualiza a lista
+            fetchLoggedInUsers(); 
         } catch (error) {
             console.error("Erro ao desconectar sessões", error);
             setActionMessage({ type: 'error', text: error.message });
@@ -131,7 +131,6 @@ const UsuariosLogados = () => {
         });
     };
 
-    // Função para determinar o ícone e tipo de usuário
     const getUserTypeIcon = (user) => {
         if (user.is_admin) {
             return { icon: <FaUserShield className="text-purple-500" />, type: 'Administrador' };
@@ -227,7 +226,6 @@ const UsuariosLogados = () => {
 
     return (
         <div>
-            {/* Mensagens de ação */}
             {actionMessage.text && (
                 <div className={`mb-4 p-4 rounded-lg ${actionMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {actionMessage.text}
@@ -242,7 +240,7 @@ const UsuariosLogados = () => {
                             <input
                                 type="text"
                                 placeholder="Pesquisar..."
-                                className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="pl-10 pr-4 py-2 border text-navy-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value={filters.search}
                                 onChange={(e) => setFilters({...filters, search: e.target.value})}
                             />
@@ -251,7 +249,7 @@ const UsuariosLogados = () => {
                         
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center space-x-2"
+                            className="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-lg flex items-center space-x-2"
                         >
                             <FaFilter />
                             <span>Filtros</span>
@@ -259,7 +257,7 @@ const UsuariosLogados = () => {
                         <button
                         onClick={() => setShowLogoutModal(true)
                         }
-                        className="px-4 py-2 bg-red-200 hover:bg-red-300 rounded-lg flex items-center space-x-2"
+                        className="px-4 py-3 bg-red-500 hover:bg-red-600 rounded-lg flex items-center space-x-2"
                         title="Desconectar todas as sessões"
                     >
                         <FaPowerOff />
@@ -276,21 +274,21 @@ const UsuariosLogados = () => {
                                     name="userType"
                                     value={filters.userType}
                                     onChange={handleFilterChange}
-                                    className="w-full p-2 border rounded"
+                                    className="w-full p-2 border text-navy-700  rounded"
                                 >
-                                    <option value="">Todos</option>
-                                    <option value="admin">Administrador</option>
-                                    <option value="empresa">Empresa</option>
-                                    <option value="funcionario_posto">Funcionário Posto</option>
-                                    <option value="funcionario_empresa">Funcionário Empresa</option>
-                                    <option value="usuario">Usuário</option>
+                                    <option value="" className='text-navy-700'>Todos</option>
+                                    <option value="admin" className='text-navy-700'>Administrador</option>
+                                    <option value="empresa" className='text-navy-700'>Empresa</option>
+                                    <option value="funcionario_posto" className='text-navy-700'>Funcionário Posto</option>
+                                    <option value="funcionario_empresa" className='text-navy-700'>Funcionário Empresa</option>
+                                    <option value="usuario" className='text-navy-700'>Usuário</option>
                                 </select>
                             </div>
                             
                             <div className="flex items-end space-x-2">
                                 <button
                                     onClick={resetFilters}
-                                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+                                    className="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded"
                                 >
                                     Limpar Filtros
                                 </button>
@@ -363,6 +361,7 @@ const UsuariosLogados = () => {
                     Página {pagination.pageIndex + 1} de {pagination.totalPages}
                 </span>
             </div>
+
             {/* Modal de Confirmação de Logout */}
             {showLogoutModal  && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaEye, FaEdit, FaTrash, FaSave, FaTimes,FaArrowLeft,FaArrowRight } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaSave, FaTimes, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Card from "components/card";
 import {
   createColumnHelper,
@@ -8,12 +8,12 @@ import {
   useReactTable,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { useNavigate } from "react-router-dom"; // Importação necessária
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
-import styled from 'styled-components'; // Para estilização adicional
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
 
@@ -25,8 +25,6 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0);
 `;
 
-
-// Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -35,50 +33,45 @@ L.Icon.Default.mergeOptions({
 });
 
 const personIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // URL da imagem do ícone
-  iconSize: [32, 32], // Tamanho do ícone
-  iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-  popupAnchor: [0, -32], // Ponto de ancoragem do popup
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
 });
+
 const criarIconeUsuario = (fotoUrl) => {
   return new L.Icon({
-    iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
-    iconSize: [32, 32], // Tamanho do ícone
-    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-    popupAnchor: [0, -32], // Ponto de ancoragem do popup
-    className: 'icone-usuario', // Classe CSS personalizada (opcional)
+    iconUrl: fotoUrl || 'https://via.placeholder.com/150',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+    className: 'icone-usuario',
   });
 };
 const API_BASE_URL = Config.getApiUrl();
 
 const GerenciamentoUsuarios = () => {
-  const navigate = useNavigate(); // Hook de navegação
+  const navigate = useNavigate();
   const [globalFilter, setGlobalFilter] = useState('');
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filtroStatus, setFiltroStatus] = useState("Todos"); // Filtro de status
-
-
-  // Estado para controlar qual usuário está sendo editado
+  const [filtroStatus, setFiltroStatus] = useState("Todos");
   const [usuarioEditando, setUsuarioEditando] = useState(null);
-
-  // Estado para armazenar os dados temporários durante a edição
   const [dadosEditados, setDadosEditados] = useState({});
   const handleUsuarioClick = (usuarioId) => {
-    navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
+    navigate(`/admin/perfiluser/${usuarioId}`);
   };
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
     totalPages: 1,
-});
-  // Fetch dos usuários
+  });
   const fetchUsuarios = async () => {
     try {
       const response = await fetchWithToken(`api/usuarios/?page=${pagination.pageIndex + 1}`, {
-        method:'GET',
+        method: 'GET',
         headers: {
-          "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+          "ngrok-skip-browser-warning": "true",
         },
       });
 
@@ -92,7 +85,7 @@ const GerenciamentoUsuarios = () => {
       setPagination((prev) => ({
         ...prev,
         totalPages: Math.ceil(data.count / prev.pageSize),
-    }));
+      }));
     } catch (error) {
       console.error(error);
     } finally {
@@ -103,10 +96,11 @@ const GerenciamentoUsuarios = () => {
   useEffect(() => {
     fetchUsuarios();
   }, [pagination.pageIndex]);
+
   const usuariosFiltrados = usuarios.filter(user =>
     filtroStatus === "Todos" || user.status === "suspenso"
   );
-  // Funções para gerenciar usuários
+
   const excluirUsuario = (id) => {
     setUsuarios(usuarios.filter((user) => user.user_id !== id));
   };
@@ -115,64 +109,53 @@ const GerenciamentoUsuarios = () => {
     alert(`Visualizar detalhes do usuário com ID: ${id}`);
   };
 
-  // Função para iniciar a edição de um usuário
   const iniciarEdicao = (id) => {
     const usuario = usuarios.find((user) => user.user_id === id);
     if (usuario) {
       setUsuarioEditando(id);
-      setDadosEditados({ ...usuario }); // Copia os dados do usuário para edição
+      setDadosEditados({ ...usuario });
     }
   };
 
-  // Função para salvar as alterações de um usuário
   const salvarEdicao = (id) => {
     const novosUsuarios = usuarios.map((user) =>
       user.user_id === id ? { ...user, ...dadosEditados } : user
     );
-    setUsuarios(novosUsuarios); // Atualiza a lista de usuários
-    setUsuarioEditando(null); // Sai do modo de edição
+    setUsuarios(novosUsuarios);
+    setUsuarioEditando(null);
   };
 
-  // Função para cancelar a edição
   const cancelarEdicao = () => {
-    setUsuarioEditando(null); // Sai do modo de edição
+    setUsuarioEditando(null);
   };
 
-  // Função para lidar com a mudança nos campos de edição
   const handleEdicaoChange = (e, campo) => {
     const { value } = e.target;
     setDadosEditados({ ...dadosEditados, [campo]: value });
   };
   const UserMap = ({ usuarios }) => {
-    // Função para extrair latitude e longitude do campo endereco
     const extrairCoordenadas = (endereco) => {
       if (!endereco) return null;
 
-      // Divide o endereco em partes usando a vírgula como separador
       const partes = endereco.split(',');
 
-      // Verifica se há exatamente duas partes (latitude e longitude)
       if (partes.length === 2) {
         const latitude = parseFloat(partes[0].trim());
         const longitude = parseFloat(partes[1].trim());
 
-        // Verifica se os valores são números válidos
         if (!isNaN(latitude) && !isNaN(longitude)) {
           return { latitude, longitude };
         }
       }
-
-      // Retorna null se as coordenadas não forem válidas
       return null;
     };
 
-    // Filtra usuários com coordenadas válidas
     const usuariosComCoordenadas = usuarios
       .map((usuario) => {
         const coordenadas = extrairCoordenadas(usuario.endereco);
         return coordenadas ? { ...usuario, ...coordenadas } : null;
       })
-      .filter((usuario) => usuario !== null); // Remove usuários sem coordenadas válidas
+      .filter((usuario) => usuario !== null);
 
     return (
       <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
@@ -191,7 +174,6 @@ const GerenciamentoUsuarios = () => {
     );
   };
 
-  // Configuração da tabela
   const columnHelper = createColumnHelper();
   const columns = [
     columnHelper.accessor("user_id", {
@@ -202,7 +184,7 @@ const GerenciamentoUsuarios = () => {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
       cell: (info) => (
         <img
-          src={info.getValue() || "https://via.placeholder.com/150"} // URL da foto ou imagem padrão
+          src={info.getValue() || "https://via.placeholder.com/150"}
           alt="Foto do usuário"
           className="w-10 h-10 rounded-full object-cover cursor-pointer"
           onClick={() => handleUsuarioClick(info.row.original.id)}
@@ -339,16 +321,15 @@ const GerenciamentoUsuarios = () => {
     data: usuarios,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+    getFilteredRowModel: getFilteredRowModel(), 
     state: {
-      globalFilter, // Estado do filtro global
+      globalFilter, 
     },
     onGlobalFilterChange: setGlobalFilter,
   });
 
   return (
     <div>
-      {/* Exibir indicador de carregamento */}
       {loading ? (
         <div>
           <LoaderContainer>
@@ -365,11 +346,10 @@ const GerenciamentoUsuarios = () => {
                 placeholder="Pesquise aqui..."
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="p-2 border rounded-lg"
+                className="p-2 border text-navy-700 rounded-lg"
               />
             </header>
 
-            {/* Adicionando scroll horizontal à tabela */}
             <div className="mt-5 overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -404,26 +384,26 @@ const GerenciamentoUsuarios = () => {
             </div>
 
             <div className="flex items-center justify-between mt-4 mb-4">
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
-                                    disabled={pagination.pageIndex === 0}
-                                >
-                                    <FaArrowLeft className="mr-2" /> Anterior
-                                </button>
-                                <button
-                                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                                    onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
-                                    disabled={pagination.pageIndex + 1 >= pagination.totalPages}
-                                >
-                                    Próxima <FaArrowRight className="ml-2" />
-                                </button>
-                            </div>
-                            <span className="text-sm text-gray-600 dark:text-white">
-                                Página {pagination.pageIndex + 1} de {pagination.totalPages}
-                            </span>
-                        </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                  onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                  disabled={pagination.pageIndex === 0}
+                >
+                  <FaArrowLeft className="mr-2" /> Anterior
+                </button>
+                <button
+                  className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                  onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                  disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                >
+                  Próxima <FaArrowRight className="ml-2" />
+                </button>
+              </div>
+              <span className="text-sm text-gray-600 dark:text-white">
+                Página {pagination.pageIndex + 1} de {pagination.totalPages}
+              </span>
+            </div>
           </Card>
 
           <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>

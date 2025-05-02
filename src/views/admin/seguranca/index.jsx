@@ -3,31 +3,26 @@ import { FaShieldAlt, FaDatabase, FaSync, FaBan, FaClock } from 'react-icons/fa'
 import Card from 'components/card'; // Componente de card personalizado
 
 const Seguranca = () => {
-    // Estado para logs de atividades suspeitas
     const [logs, setLogs] = useState([
         { id: 1, descricao: 'Tentativa de login falha - IP: 192.168.1.1', data: '2023-10-01 14:30' },
         { id: 2, descricao: 'Acesso não autorizado detectado - IP: 192.168.1.2', data: '2023-10-02 09:15' },
     ]);
 
-    // Estado para backups
     const [backups, setBackups] = useState([
-        { id: 1, data: '2023-10-01 00:00', status: 'Sucesso' },
-        { id: 2, data: '2023-10-02 00:00', status: 'Sucesso' },
+        { id: 1, data: '2025-05-01 00:00', status: 'Sucesso' },
+        { id: 2, data: '2025-05-01 00:00', status: 'Sucesso' },
     ]);
 
-    // Estado para atualizações do sistema
     const [atualizacoes, setAtualizacoes] = useState([
-        { id: 1, versao: 'v1.2.3', data: '2023-10-01', status: 'Pendente' },
-        { id: 2, versao: 'v1.2.4', data: '2023-10-02', status: 'Instalada' },
+        { id: 1, versao: 'v1.2.3', data: '2025-05-10', status: 'Pendente' },
+        { id: 2, versao: 'v1.2.4', data: '2025-05-12', status: 'Instalada' },
     ]);
 
-    // Função para bloquear uma atividade suspeita
     const bloquearAtividade = (id) => {
         setLogs(logs.filter(log => log.id !== id));
         alert(`Atividade suspeita bloqueada: ID ${id}`);
     };
 
-    // Função para agendar um backup
     const agendarBackup = () => {
         const novoBackup = {
             id: backups.length + 1,
@@ -38,7 +33,6 @@ const Seguranca = () => {
         alert('Backup agendado com sucesso!');
     };
 
-    // Função para aplicar uma atualização
     const aplicarAtualizacao = (id) => {
         setAtualizacoes(atualizacoes.map(atualizacao =>
             atualizacao.id === id ? { ...atualizacao, status: 'Instalada' } : atualizacao
@@ -49,7 +43,6 @@ const Seguranca = () => {
     return (
         <div className="p-6">
 
-            {/* Seção de Monitoramento de Atividades Suspeitas */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -98,7 +91,6 @@ const Seguranca = () => {
                 </div>
             </Card>
 
-            {/* Seção de Gerenciamento de Backups */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -143,7 +135,6 @@ const Seguranca = () => {
                 </div>
             </Card>
 
-            {/* Seção de Atualizações do Sistema */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">

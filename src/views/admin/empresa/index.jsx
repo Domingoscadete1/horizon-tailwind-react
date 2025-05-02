@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom"; // Importação necessária
-
+import { useNavigate } from "react-router-dom"; 
 import Card from 'components/card';
 import {
     createColumnHelper,
@@ -13,8 +12,8 @@ import {
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
-import styled from 'styled-components'; // Para estilização adicional
+import { SyncLoader } from 'react-spinners'; 
+import styled from 'styled-components'; 
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
 
@@ -26,7 +25,6 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0); 
 `;
 
-// Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -35,23 +33,23 @@ L.Icon.Default.mergeOptions({
 });
 const criarIconeUsuario = (fotoUrl) => {
     return new L.Icon({
-        iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
-        iconSize: [32, 32], // Tamanho do ícone
-        iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-        popupAnchor: [0, -32], // Ponto de ancoragem do popup
-        className: 'icone-usuario', // Classe CSS personalizada (opcional)
+        iconUrl: fotoUrl || 'https://via.placeholder.com/150', 
+        iconSize: [32, 32], 
+        iconAnchor: [16, 32], 
+        popupAnchor: [0, -32], 
+        className: 'icone-usuario', 
     });
 };
 
 const API_BASE_URL = Config.getApiUrl();
 
 const GerenciamentoEmpresas = () => {
-    const navigate = useNavigate(); // Hook de navegação
+    const navigate = useNavigate(); 
     const handleEmpresaClick = (empresaId) => {
-        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
+        navigate(`/admin/perfilempresa/${empresaId}`); 
     };
     const handleFuncionarioClick = (funcionarioId) => {
-        navigate(`/admin/funcionario/${funcionarioId}`); // Redireciona para o perfil da empresa
+        navigate(`/admin/funcionario/${funcionarioId}`); 
     };
     const mediaUrl=Config.getApiUrlMedia();
     const [empresas, setEmpresas] = useState([]);
@@ -59,13 +57,13 @@ const GerenciamentoEmpresas = () => {
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
     const [nomeEmpresaSelecionada, setNomeEmpresaSelecionada] = useState('');
-    const [globalFilter, setGlobalFilter] = useState(''); // Estado para o filtro global
+    const [globalFilter, setGlobalFilter] = useState(''); 
 
     useEffect(() => {
         fetchWithToken(`api/empresas`, {
             method:'GET',
             headers: {
-                "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                "ngrok-skip-browser-warning": "true", 
             },
         })
             .then((response) => response.json())
@@ -77,14 +75,14 @@ const GerenciamentoEmpresas = () => {
             fetchWithToken(`api/empresa/funcionarios/${empresaId}/`, {
                 method:'GET',
                 headers: {
-                    "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                    "ngrok-skip-browser-warning": "true", 
                 },
             })
                 .then((response) => response.json())
                 .then((data) => {
                     setFuncionarios(data.funcionarios);
                     setEmpresaSelecionada(empresaId);
-                    setNomeEmpresaSelecionada(empresaNome); // Armazena o nome da empresa selecionada
+                    setNomeEmpresaSelecionada(empresaNome);
                 });
         } catch (error) {
             console.error(error);
@@ -192,11 +190,11 @@ const GerenciamentoEmpresas = () => {
         data: empresas,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        getFilteredRowModel: getFilteredRowModel(), 
         state: {
-            globalFilter, // Estado do filtro global
+            globalFilter, 
         },
-        onGlobalFilterChange: setGlobalFilter, // Função para atualizar o filtro global
+        onGlobalFilterChange: setGlobalFilter, 
     });
 
     const funcionariosTable = useReactTable({
@@ -209,31 +207,25 @@ const GerenciamentoEmpresas = () => {
         const extrairCoordenadas = (endereco) => {
             if (!endereco) return null;
 
-            // Divide o endereco em partes usando a vírgula como separador
             const partes = endereco.split(',');
 
-            // Verifica se há exatamente duas partes (latitude e longitude)
             if (partes.length === 2) {
                 const latitude = parseFloat(partes[0].trim());
                 const longitude = parseFloat(partes[1].trim());
 
-                // Verifica se os valores são números válidos
                 if (!isNaN(latitude) && !isNaN(longitude)) {
                     return { latitude, longitude };
                 }
             }
-
-            // Retorna null se as coordenadas não forem válidas
             return null;
         };
 
-        // Filtra usuários com coordenadas válidas
         const empresasComCoordenadas = empresas
             .map((empresa) => {
                 const coordenadas = extrairCoordenadas(empresa.endereco);
                 return coordenadas ? { ...empresa, ...coordenadas } : null;
             })
-            .filter((empresa) => empresa !== null); // Remove usuários sem coordenadas válidas
+            .filter((empresa) => empresa !== null); 
 
         return (
             <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
@@ -266,7 +258,7 @@ const GerenciamentoEmpresas = () => {
                             placeholder="Pesquise aqui..."
                             value={globalFilter}
                             onChange={(e) => setGlobalFilter(e.target.value)}
-                            className="p-2 border rounded-lg"
+                            className="p-2 border text-gray-700 rounded-lg"
                         />
                     </header>
                     <div className="mt-5 overflow-x-auto">
@@ -301,7 +293,7 @@ const GerenciamentoEmpresas = () => {
                     <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                         <header className="relative flex items-center justify-between pt-4">
                             <div className="text-xl font-bold text-navy-700 dark:text-white">
-                                Funcionários da Empresa: {nomeEmpresaSelecionada} {/* Exibe o nome da empresa selecionada */}
+                                Funcionários da Empresa: {nomeEmpresaSelecionada}
                             </div>
                         </header>
                         <div className="mt-5 overflow-x-auto">

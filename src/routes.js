@@ -27,15 +27,15 @@ import AcoesSistema from "views/admin/acoes";
 import UsuariosLogados from "views/admin/usuario/usuarios_logados";
 import GerenciamentoAdmins from "views/admin/admins";
 import LancesList from "views/admin/lances";
-// Icon Imports
 import {
   MdHome,
   MdOutlineShoppingCart,
   MdPerson,
   MdArchive,
   MdLock,
-  MdBlock, // Ícone para usuários bloqueados
-  MdOutlinePendingActions, // Ícone para empresas a aprovar
+  MdBlock, 
+  MdOutlinePendingActions,
+  MdLandslide, 
 } from "react-icons/md";
 
 import {
@@ -92,7 +92,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "categorias",
-    icon: <FaFilter className="h-6 w-6" />, // Ícone alterado
+    icon: <FaFilter className="h-6 w-6" />, 
     component: <UsuariosBloqueados />,
   },
   {
@@ -108,7 +108,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "aprovacao",
-    icon: <MdOutlinePendingActions className="h-6 w-6" />, // Ícone alterado
+    icon: <MdOutlinePendingActions className="h-6 w-6" />, 
     component: <EmpresasParaAprovar />,
   },
   {
@@ -148,7 +148,7 @@ const routes = [
     layout: "/admin",
     admin: true,
     path: "lances",
-    icon: <MdArchive className="h-6 w-6" />,
+    icon: <MdLandslide className="h-6 w-6" />,
     component: <LancesList />,
   },
   {
@@ -179,7 +179,7 @@ const routes = [
     name: "Configurações Gerais",
     layout: "/admin",
     admin: true,
-    path: "configuracoes",
+    path: "geral",
     icon: <FaCog className="h-6 w-6" />,
     component: <ConfiguracaoPlataforma />,
   },

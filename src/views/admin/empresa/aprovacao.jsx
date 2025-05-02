@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom"; // Importação necessária
-
+import { useNavigate } from "react-router-dom";
 import Card from 'components/card';
 import {
     createColumnHelper,
@@ -12,47 +11,50 @@ import {
 } from '@tanstack/react-table';
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
+
 const API_BASE_URL = Config.getApiUrl();
 
 const EmpresasParaAprovar = () => {
-    const mediaUrl=Config.getApiUrlMedia();
-    const navigate = useNavigate(); // Hook de navegação
+    const mediaUrl = Config.getApiUrlMedia();
+    const navigate = useNavigate();
     const handleEmpresaClick = (empresaId) => {
-        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
+        navigate(`/admin/perfilempresa/${empresaId}`);
     };
     const [empresas, setEmpresas] = useState([]);
-    const [globalFilter, setGlobalFilter] = useState(''); // Estado para o filtro global
+    const [globalFilter, setGlobalFilter] = useState(''); 
     useEffect(() => {
         fetchWithToken(`api/listar-empreasa-nao-vericadas/`, {
             headers: {
-                "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                "ngrok-skip-browser-warning": "true", 
             },
         })
             .then((response) => response.json())
             .then((data) => setEmpresas(data.empresas || []));
-            
+
     }, []);
+
     const columnHelper = createColumnHelper();
+
     const columns = [
         columnHelper.accessor('id', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
-            cell: (info) => 
-            <p className="text-sm text-navy-700 dark:text-white">
-                {info.getValue()}
-            </p>,
+            cell: (info) =>
+                <p className="text-sm text-navy-700 dark:text-white">
+                    {info.getValue()}
+                </p>,
         }),
         columnHelper.accessor(row => row.imagens?.[0]?.imagem, {
             id: "imagem_produto",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">FOTO</p>,
             cell: (info) => (
-              <img
-                src={`${mediaUrl}${info.getValue()}` || "https://via.placeholder.com/150"} 
-                alt="Foto da Empresa"
-                className="w-10 h-10 rounded-full object-cover cursor-pointer"
-                onClick={() => handleEmpresaClick(info.row.original.id)}
-              />
+                <img
+                    src={`${mediaUrl}${info.getValue()}` || "https://via.placeholder.com/150"}
+                    alt="Foto da Empresa"
+                    className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                    onClick={() => handleEmpresaClick(info.row.original.id)}
+                />
             ),
-          }),
+        }),
         columnHelper.accessor('nome', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">NOME</p>,
             cell: (info) => (
@@ -83,20 +85,21 @@ const EmpresasParaAprovar = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Data de Solicitação</p>,
             cell: (info) => (
                 <p className="text-sm font-bold text-navy-700">
-                    {info.getValue()} 
+                    {info.getValue()}
                 </p>
             ),
         }),
     ];
+
     const table = useReactTable({
         data: empresas,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
-            globalFilter, // Estado do filtro global
+            globalFilter, 
         },
-        onGlobalFilterChange: setGlobalFilter, // Função para atualizar o filtro global
+        onGlobalFilterChange: setGlobalFilter, 
     });
 
 
@@ -112,12 +115,12 @@ const EmpresasParaAprovar = () => {
                         placeholder="Pesquise aqui..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="p-2 border rounded-lg"
+                        className="p-2 border text-gray-700 rounded-lg"
                     />
                 </header>
 
                 <div className="mt-5">
-                <table className="w-full">
+                    <table className="w-full">
                         <thead>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id}>

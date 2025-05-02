@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import { FaCog, FaMapMarkerAlt, FaSave, FaEdit } from 'react-icons/fa';
-import Card from 'components/card'; // Componente de card personalizado
+import Card from 'components/card';
 
 const ConfiguracaoPlataforma = () => {
-    // Estados para configurações gerais
     const [politicas, setPoliticas] = useState('');
     const [termosUso, setTermosUso] = useState('');
     const [privacidade, setPrivacidade] = useState('');
     const [funcionalidadesUsuarios, setFuncionalidadesUsuarios] = useState('');
     const [funcionalidadesEmpresas, setFuncionalidadesEmpresas] = useState('');
-
-    // Estados para gerenciamento de geolocalização
     const [pontosColeta, setPontosColeta] = useState('');
     const [localizacao, setLocalizacao] = useState('');
 
-    // Função para salvar configurações gerais
     const salvarConfiguracoesGerais = () => {
         if (!politicas || !termosUso || !privacidade || !funcionalidadesUsuarios || !funcionalidadesEmpresas) {
             alert('Preencha todos os campos das configurações gerais.');
@@ -23,7 +19,6 @@ const ConfiguracaoPlataforma = () => {
         alert('Configurações gerais salvas com sucesso!');
     };
 
-    // Função para salvar configurações de geolocalização
     const salvarGeolocalizacao = () => {
         if (!pontosColeta || !localizacao) {
             alert('Preencha todos os campos de geolocalização.');
@@ -35,7 +30,6 @@ const ConfiguracaoPlataforma = () => {
     return (
         <div className="p-6">
 
-            {/* Seção de Configurações Gerais */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -53,7 +47,7 @@ const ConfiguracaoPlataforma = () => {
                             value={politicas}
                             onChange={(e) => setPoliticas(e.target.value)}
                             placeholder="Digite as políticas da plataforma..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>
@@ -66,7 +60,7 @@ const ConfiguracaoPlataforma = () => {
                             value={termosUso}
                             onChange={(e) => setTermosUso(e.target.value)}
                             placeholder="Digite os termos de uso..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>
@@ -79,7 +73,7 @@ const ConfiguracaoPlataforma = () => {
                             value={privacidade}
                             onChange={(e) => setPrivacidade(e.target.value)}
                             placeholder="Digite a política de privacidade..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>
@@ -92,7 +86,7 @@ const ConfiguracaoPlataforma = () => {
                             value={funcionalidadesUsuarios}
                             onChange={(e) => setFuncionalidadesUsuarios(e.target.value)}
                             placeholder="Descreva as funcionalidades disponíveis para usuários..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>
@@ -105,7 +99,7 @@ const ConfiguracaoPlataforma = () => {
                             value={funcionalidadesEmpresas}
                             onChange={(e) => setFuncionalidadesEmpresas(e.target.value)}
                             placeholder="Descreva as funcionalidades disponíveis para empresas..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>
@@ -120,7 +114,6 @@ const ConfiguracaoPlataforma = () => {
                 </div>
             </Card>
 
-            {/* Seção de Gerenciamento de Geolocalização e Mapas */}
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -138,7 +131,7 @@ const ConfiguracaoPlataforma = () => {
                             value={pontosColeta}
                             onChange={(e) => setPontosColeta(e.target.value)}
                             placeholder="Descreva os pontos de coleta..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>
@@ -151,7 +144,7 @@ const ConfiguracaoPlataforma = () => {
                             value={localizacao}
                             onChange={(e) => setLocalizacao(e.target.value)}
                             placeholder="Descreva as informações de localização..."
-                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            className="mt-1 p-2 w-full border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             rows={4}
                         />
                     </div>

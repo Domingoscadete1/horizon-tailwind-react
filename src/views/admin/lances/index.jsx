@@ -143,14 +143,14 @@ const LancesList = () => {
   const columnHelper = createColumnHelper();
   const columns = [
     {
-        accessorKey: "id",
-        header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
-        cell: ({ row }) => (
-          <p className="text-sm text-gray-500">
-            {row.original.id || 'N-A'}
-          </p>
-        ),
-      },
+      accessorKey: "id",
+      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
+      cell: ({ row }) => (
+        <p className="text-sm text-gray-500">
+          {row.original.id || 'N-A'}
+        </p>
+      ),
+    },
     columnHelper.accessor(row => row.produto?.imagens?.[0]?.imagem, {
       id: "imagem_produto",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM</p>,
@@ -172,7 +172,7 @@ const LancesList = () => {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">USUÁRIO</p>,
       cell: ({ row }) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {row.original.usuario?.username || row.original?.empresa_compradora?.nome|| 'N/A'}
+          {row.original.usuario?.username || row.original?.empresa_compradora?.nome || 'N/A'}
         </p>
       ),
     },
@@ -287,7 +287,7 @@ const LancesList = () => {
             placeholder="Pesquise aqui..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="p-2 border rounded-lg"
+            className="p-2 border text-gray-700 rounded-lg"
           />
         </header>
         <div className="mt-5 overflow-x-auto">
@@ -316,11 +316,11 @@ const LancesList = () => {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center mt-4 mb-5">
           <button
             onClick={() => setPagination(prev => ({ ...prev, pageIndex: Math.max(prev.pageIndex - 1, 0) }))}
             disabled={pagination.pageIndex === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-md disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50"
           >
             <FaArrowLeft /> Anterior
           </button>
@@ -328,7 +328,7 @@ const LancesList = () => {
           <button
             onClick={() => setPagination(prev => ({ ...prev, pageIndex: Math.min(prev.pageIndex + 1, prev.totalPages - 1) }))}
             disabled={pagination.pageIndex >= pagination.totalPages - 1}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-md disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50"
           >
             Próxima <FaArrowRight />
           </button>
@@ -418,19 +418,19 @@ const LancesList = () => {
               </div>
             </div>
             <div className="flex justify-end mt-4 space-x-3">
-              <button 
+              <button
                 onClick={() => {
                   setShowDenyModal(false);
                   setEstadoProduto('');
                   setObservacoes('');
                   setSelectedImage(null);
-                }} 
+                }}
                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
               >
                 Cancelar
               </button>
-              <button 
-                onClick={handleDenyLance} 
+              <button
+                onClick={handleDenyLance}
                 disabled={!estadoProduto}
                 className={`px-4 py-2 text-white rounded-md ${!estadoProduto ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'}`}
               >

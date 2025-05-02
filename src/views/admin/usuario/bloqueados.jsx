@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FaCheck, FaTimes, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import Card from "components/card";
 import axios from "axios";
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
-import styled from 'styled-components'; // Para estilização adicional
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
 
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
@@ -15,9 +15,7 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
 `;
 
-
 const API_BASE_URL = Config.getApiUrl();
-
 
 const UsuariosBloqueados = () => {
   const [categorias, setCategorias] = useState([]);
@@ -30,17 +28,16 @@ const UsuariosBloqueados = () => {
     imagem: null,
   });
 
-  // Buscar categorias
   const fetchCategorias = async () => {
     try {
       const response = await fetchWithToken(`api/categorias/`, {
-        method:'GET',
+        method: 'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
       });
 
-      const data=await response.json();
+      const data = await response.json();
       setCategorias(data);
       setLoading(false);
     } catch (error) {
@@ -53,7 +50,6 @@ const UsuariosBloqueados = () => {
     fetchCategorias();
   }, []);
 
-  // Abrir modal para adicionar/editar categoria
   const openModal = (categoria = null) => {
     setCurrentCategoria(categoria);
     setFormData({
@@ -64,14 +60,12 @@ const UsuariosBloqueados = () => {
     setIsModalOpen(true);
   };
 
-  // Fechar modal
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentCategoria(null);
     setFormData({ nome: "", descricao: "", imagem: null });
   };
 
-  // Manipular mudanças no formulário
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "imagem") {
@@ -81,7 +75,6 @@ const UsuariosBloqueados = () => {
     }
   };
 
-  // Enviar formulário (criar/editar categoria)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -96,22 +89,21 @@ const UsuariosBloqueados = () => {
     try {
       if (currentCategoria) {
         // Editar categoria existente
-        await fetchWithToken(`api/categoria/${currentCategoria.id}/atualizar/`,  {
-          method:'PUT',
+        await fetchWithToken(`api/categoria/${currentCategoria.id}/atualizar/`, {
+          method: 'PUT',
           headers: {
             "ngrok-skip-browser-warning": "true",
           },
-          body:formDataToSend
+          body: formDataToSend
         });
 
       } else {
-        // Criar nova categoria
         await fetchWithToken(`api/categoria/create/`, {
-          method:'POST',
+          method: 'POST',
           headers: {
             "ngrok-skip-browser-warning": "true",
           },
-          body:formDataToSend
+          body: formDataToSend
         });
 
       }
@@ -126,20 +118,19 @@ const UsuariosBloqueados = () => {
     }
   };
 
-  // Excluir categoria
   const handleDelete = async (id) => {
     setLoading(true);
     const confirmacao = window.confirm("Tem certeza que deseja apagar esta categoria?");
-    
+
     if (!confirmacao) {
       setLoading(false);
 
-        return; // Se o usuário cancelar, a função para aqui
+      return; 
     }
 
     try {
       await fetchWithToken(`api/categoria/${id}/deletar/`, {
-        method:'DELETE',
+        method: 'DELETE',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },

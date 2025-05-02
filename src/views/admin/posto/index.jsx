@@ -18,7 +18,6 @@ import 'leaflet/dist/leaflet.css';
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
 
-// Fix para ícones padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -26,31 +25,13 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
-const personIcon = new L.Icon({
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // URL da imagem do ícone
-    iconSize: [32, 32], // Tamanho do ícone
-    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-    popupAnchor: [0, -32], // Ponto de ancoragem do popup
-});
 const postoDeTrocaIcon = new L.Icon({
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3659/3659898.png', // URL da imagem do ícone
-    iconSize: [32, 32], // Tamanho do ícone
-    iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-    popupAnchor: [0, -32], // Ponto de ancoragem do popup
-    className: 'posto-de-troca-icon', // Classe CSS personalizada (opcional)
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3659/3659898.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+    className: 'posto-de-troca-icon',
 });
-const criarIconeUsuario = (fotoUrl) => {
-    return new L.Icon({
-        iconUrl: fotoUrl || 'https://via.placeholder.com/150', // URL da foto ou imagem padrão
-        iconSize: [32, 32], // Tamanho do ícone
-        iconAnchor: [16, 32], // Ponto de ancoragem do ícone
-        popupAnchor: [0, -32], // Ponto de ancoragem do popup
-        className: 'icone-usuario', // Classe CSS personalizada (opcional)
-    });
-};
-
-
-
 
 const API_BASE_URL = Config.getApiUrl();
 
@@ -71,8 +52,8 @@ const GerenciamentoPostos = () => {
     const [mostrarModalUpdate, setMostrarModalUpdate] = useState(false);
     const [postoSelecionadoUpdate, setPostoSelecionadoUpdate] = useState(null);
 
-    const [postos, setPostos] = useState([]); // Começa vazio
-    const [loading, setLoading] = useState(true); // Para indicar carregamento
+    const [postos, setPostos] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [mostrarModal, setMostrarModal] = useState(false);
     const [mostrarMapa, setMostrarMapa] = useState(false);
     const [novoPosto, setNovoPosto] = useState({
@@ -84,27 +65,25 @@ const GerenciamentoPostos = () => {
         telefone: '',
         email: '',
         capacidade: '',
-
     });
     const [globalFilter, setGlobalFilter] = useState('');
     const [funcionarios, setFuncionarios] = useState([]);
     const [atividades, setAtividades] = useState([]);
     const [postoSelecionado, setPostoSelecionado] = useState(null);
     const [postoSelecionadoinformacao, setPostoSelecionadoInformacao] = useState(null);
-
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [proximaPagina, setProximaPagina] = useState(null);
     const [paginaAnterior, setPaginaAnterior] = useState(null);
     const [mostrarModalFuncionario, setMostrarModalFuncionario] = useState(false);
-const [novoFuncionario, setNovoFuncionario] = useState({
-    nome: '',
-    email: '',
-    numero_telefone: '',
-    endereco: '',
-    foto: null,
-    posto_id: null
-});
+    const [novoFuncionario, setNovoFuncionario] = useState({
+        nome: '',
+        email: '',
+        numero_telefone: '',
+        endereco: '',
+        foto: null,
+        posto_id: null
+    });
 
     const [location, setLocation] = useState({ lat: 0, lng: 0 });
     const [openMapModal, setOpenMapModal] = useState(false);
@@ -121,35 +100,28 @@ const [novoFuncionario, setNovoFuncionario] = useState({
     };
 
     const PostoMap = ({ postos }) => {
-        // Função para extrair latitude e longitude do campo endereco
         const extrairCoordenadas = (localizacao) => {
             if (!localizacao) return null;
 
-            // Divide o endereco em partes usando a vírgula como separador
             const partes = localizacao.split(',');
 
-            // Verifica se há exatamente duas partes (latitude e longitude)
             if (partes.length === 2) {
                 const latitude = parseFloat(partes[0].trim());
                 const longitude = parseFloat(partes[1].trim());
 
-                // Verifica se os valores são números válidos
                 if (!isNaN(latitude) && !isNaN(longitude)) {
                     return { latitude, longitude };
                 }
             }
-
-            // Retorna null se as coordenadas não forem válidas
             return null;
         };
 
-        // Filtra usuários com coordenadas válidas
         const postosComCoordenadas = postos
             .map((posto) => {
                 const coordenadas = extrairCoordenadas(posto.localizacao);
                 return coordenadas ? { ...posto, ...coordenadas } : null;
             })
-            .filter((posto) => posto !== null); // Remove usuários sem coordenadas válidas
+            .filter((posto) => posto !== null);
 
         return (
             <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
@@ -167,8 +139,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             </MapContainer>
         );
     };
-
-
 
     const [modalInfo, setModalInfo] = useState(false);
 
@@ -193,6 +163,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             setFuncionarios([]);
         }
     };
+
     function LocationMarker() {
         const map = useMapEvents({
             click(e) {
@@ -208,6 +179,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             })} />
         ) : null;
     }
+
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -221,7 +193,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             );
         }
     }, []);
-
 
     const handleGetCurrentLocation = () => {
         if (navigator.geolocation) {
@@ -240,9 +211,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }
     };
 
-
-
-    // Buscar atividades do posto selecionado
     const fetchAtividades = async (postoId, page = 1) => {
         try {
             const response = await fetchWithToken(`api/posto/registro/${postoId}/?page=${page}`, {
@@ -265,8 +233,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }
     };
 
-
-    // Quando o usuário clica em um posto, busca os detalhes
     const selecionarPosto = (posto) => {
         if (postoSelecionado && postoSelecionado.id === posto.id) {
             setPostoSelecionado(null);
@@ -281,14 +247,13 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }
     };
 
-    // 🔥 Função para buscar postos da API
     const fetchPostos = async () => {
         try {
             const response = await fetchWithToken(`api/postos/`, {
                 headers: {
-                    "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
+                    "ngrok-skip-browser-warning": "true", 
                 },
-            }); // URL da API
+            }); 
             if (!response.ok) {
                 throw new Error("Erro ao buscar postos");
             }
@@ -299,7 +264,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             console.error("Erro ao buscar postos:", error);
             setPostos([]);
         } finally {
-            setLoading(false); // Finaliza o carregamento
+            setLoading(false); 
         }
     };
 
@@ -307,7 +272,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         fetchPostos();
     }, []);
 
-    // Função para abrir o modal de cadastro
     const abrirModal = () => {
         setMostrarModal(true);
     };
@@ -316,7 +280,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         setMostrarMapa(true);
     };
 
-    // Função para abrir o modal de cadastro
     const abrirModalInfo = (posto) => {
         setModalInfo(true);
         setPostoSelecionadoInformacao(posto);
@@ -338,24 +301,21 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             setOpenMapModal(true);
         }
     };
-    // Função para fechar o modal de cadastro
+ 
     const fecharModalInfo = () => {
         setModalInfo(false);
     };
 
-    // Função para fechar o modal de cadastro
     const fecharModal = () => {
         setMostrarModal(false);
-        setNovoPosto({ nome: '', criadoPor: '', dataCriacao: '' }); // Limpa o formulário
+        setNovoPosto({ nome: '', criadoPor: '', dataCriacao: '' }); 
     };
 
-    // Função para lidar com a mudança nos campos do formulário
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNovoPosto({ ...novoPosto, [name]: value });
     };
 
-    // Função para cadastrar um novo posto
     const cadastrarPosto = async () => {
         if (!novoPosto.nome || !novoPosto.telefone || !novoPosto.email) {
             alert('Preencha todos os campos para cadastrar o posto.');
@@ -385,10 +345,8 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         // const novoId = postos.length + 1; // Gera um novo ID
         // const posto = { id: novoId, ...novoPosto };
         // setPostos([...postos, posto]); // Adiciona o novo posto à lista
-        //  // Fecha o modal após o cadastro
     };
 
-    // Função para editar um posto
     const editarPosto = (posto) => {
         setPostoSelecionadoUpdate(posto);
         setMostrarModalUpdate(true);
@@ -398,11 +356,9 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         const posto = postos.find((p) => p.id === id);
         if (posto) {
             alert(`Visualizar: ${posto.nome}`);
-            // Aqui você pode abrir um modal ou formulário para edição
         }
     };
 
-    // Função para excluir um posto
     const excluirPosto = (id) => {
         const confirmacao = window.confirm('Tem certeza que deseja excluir este posto?');
         if (confirmacao) {
@@ -412,10 +368,10 @@ const [novoFuncionario, setNovoFuncionario] = useState({
     };
     const suspenderposto = async (id) => {
         const confirmacao = window.confirm("Tem certeza que deseja suspender este posto?");
-    
-    if (!confirmacao) {
-        return; // Se o usuário cancelar, a função para aqui
-    }
+
+        if (!confirmacao) {
+            return; 
+        }
         try {
             const response = await fetchWithToken(`api/posto/${id}/delete/`, {
                 method: "DELETE",
@@ -441,12 +397,12 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             alert('Preencha todos os campos obrigatórios.');
             return;
         }
-    
+
         if (!postoSelecionado) {
             alert('Selecione um posto primeiro.');
             return;
         }
-    
+
         const formData = new FormData();
         formData.append('nome', novoFuncionario.nome);
         formData.append('email', novoFuncionario.email);
@@ -456,7 +412,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         if (novoFuncionario.foto) {
             formData.append('foto', novoFuncionario.foto);
         }
-    
+
         try {
             const response = await fetchWithToken(`api/funcionario/create/`, {
                 method: "POST",
@@ -465,12 +421,12 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                 },
                 body: formData,
             });
-    
+
             if (response.ok) {
                 const data = await response.json();
                 alert('Funcionário cadastrado com sucesso!');
                 setMostrarModalFuncionario(false);
-                fetchFuncionarios(postoSelecionado.id); // Atualiza a lista de funcionários
+                fetchFuncionarios(postoSelecionado.id); 
                 setNovoFuncionario({
                     nome: '',
                     email: '',
@@ -488,18 +444,15 @@ const [novoFuncionario, setNovoFuncionario] = useState({
             alert('Erro ao cadastrar funcionário.');
         }
     };
-    const navigate = useNavigate(); // Hook de navegação
+    const navigate = useNavigate(); 
 
-    // Adicione esta função para lidar com upload de foto
     const handleFileChange = (e) => {
         setNovoFuncionario({ ...novoFuncionario, foto: e.target.files[0] });
     };
     const handleFuncionarioClick = (funcionarioId) => {
-        navigate(`/admin/funcionario-posto/${funcionarioId}`); // Redireciona para o perfil da empresa
+        navigate(`/admin/funcionario-posto/${funcionarioId}`); 
     };
-    
 
-    // Configuração das colunas para postos
     const columnHelper = createColumnHelper();
     const columns = [
         columnHelper.accessor('id', {
@@ -563,8 +516,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }),
     ];
 
-
-    // Configuração das colunas para funcionários
     const funcionariosColumns = [
         columnHelper.accessor('id', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
@@ -577,7 +528,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                     src={`${Config.getApiUrlMedia()}${info.getValue()}`}
                     alt="Funcionário"
                     className="w-10 h-10 rounded-full object-cover"
-                    onClick={()=>handleFuncionarioClick(info.row.original.id)}
+                    onClick={() => handleFuncionarioClick(info.row.original.id)}
                 />
             ),
         }),
@@ -595,7 +546,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }),
     ];
 
-    // Configuração das colunas para atividades
     const atividadesColumns = [
         columnHelper.accessor('id', {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ID</p>,
@@ -640,14 +590,13 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         }),
     ];
 
-    // Tabelas com react-table
     const table = useReactTable({
         data: postos,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        getFilteredRowModel: getFilteredRowModel(), 
         state: {
-            globalFilter, // Estado do filtro global
+            globalFilter, 
         },
         onGlobalFilterChange: setGlobalFilter,
     });
@@ -656,9 +605,9 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         data: funcionarios,
         columns: funcionariosColumns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        getFilteredRowModel: getFilteredRowModel(), 
         state: {
-            globalFilter, // Estado do filtro global
+            globalFilter, 
         },
         onGlobalFilterChange: setGlobalFilter,
     });
@@ -667,9 +616,9 @@ const [novoFuncionario, setNovoFuncionario] = useState({
         data: atividades,
         columns: atividadesColumns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), // Adicionado para suporte a filtros
+        getFilteredRowModel: getFilteredRowModel(), 
         state: {
-            globalFilter, // Estado do filtro global
+            globalFilter, 
         },
         onGlobalFilterChange: setGlobalFilter,
     });
@@ -696,7 +645,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                         placeholder="Pesquise aqui..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="p-2 border rounded-lg"
+                        className="p-2 border text-gray-700 rounded-lg"
                     />
 
                 </header>
@@ -744,13 +693,13 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                                     onChange={(e) => setGlobalFilter(e.target.value)}
                                     className="p-2 border rounded-lg"
                                 />
-                                 <button
-                    onClick={() => setMostrarModalFuncionario(true)}
-                    className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
-                >
-                    <FaPlus className="mr-2" />
-                    Adicionar Funcionário
-                </button>
+                                <button
+                                    onClick={() => setMostrarModalFuncionario(true)}
+                                    className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
+                                >
+                                    <FaPlus className="mr-2" />
+                                    Adicionar Funcionário
+                                </button>
                             </header>
                             <div className="mt-5 overflow-x-auto">
                                 <table className="w-full">
@@ -850,7 +799,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                 </div>
             )}
 
-            {/* Botão para abrir o modal de cadastro */}
             <div className="flex justify-end">
                 <button
                     onClick={abrirMapa}
@@ -890,107 +838,107 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                 </div>
 
             )}
-{mostrarModalFuncionario && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <header className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-navy-700">
-                    Adicionar Funcionário ao Posto: {postoSelecionado?.nome}
-                </h2>
-                <button
-                    onClick={() => setMostrarModalFuncionario(false)}
-                    className="text-navy-700 hover:text-blue-700"
-                >
-                    <FaTimes />
-                </button>
-            </header>
+            {mostrarModalFuncionario && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                        <header className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold text-navy-700">
+                                Adicionar Funcionário ao Posto: {postoSelecionado?.nome}
+                            </h2>
+                            <button
+                                onClick={() => setMostrarModalFuncionario(false)}
+                                className="text-navy-700 hover:text-blue-700"
+                            >
+                                <FaTimes />
+                            </button>
+                        </header>
 
-            <div className="mt-4">
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Nome Completo *
-                    </label>
-                    <input
-                        type="text"
-                        name="nome"
-                        value={novoFuncionario.nome}
-                        onChange={(e) => setNovoFuncionario({...novoFuncionario, nome: e.target.value})}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        required
-                    />
-                </div>
+                        <div className="mt-4">
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Nome Completo *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="nome"
+                                    value={novoFuncionario.nome}
+                                    onChange={(e) => setNovoFuncionario({ ...novoFuncionario, nome: e.target.value })}
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                    required
+                                />
+                            </div>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Email *
-                    </label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={novoFuncionario.email}
-                        onChange={(e) => setNovoFuncionario({...novoFuncionario, email: e.target.value})}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        required
-                    />
-                </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Email *
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={novoFuncionario.email}
+                                    onChange={(e) => setNovoFuncionario({ ...novoFuncionario, email: e.target.value })}
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                    required
+                                />
+                            </div>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Telefone *
-                    </label>
-                    <input
-                        type="tel"
-                        name="numero_telefone"
-                        value={novoFuncionario.numero_telefone}
-                        onChange={(e) => setNovoFuncionario({...novoFuncionario, numero_telefone: e.target.value})}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        required
-                    />
-                </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Telefone *
+                                </label>
+                                <input
+                                    type="tel"
+                                    name="numero_telefone"
+                                    value={novoFuncionario.numero_telefone}
+                                    onChange={(e) => setNovoFuncionario({ ...novoFuncionario, numero_telefone: e.target.value })}
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                    required
+                                />
+                            </div>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Endereço
-                    </label>
-                    <input
-                        type="text"
-                        name="endereco"
-                        value={novoFuncionario.endereco}
-                        onChange={(e) => setNovoFuncionario({...novoFuncionario, endereco: e.target.value})}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    />
-                </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Endereço
+                                </label>
+                                <input
+                                    type="text"
+                                    name="endereco"
+                                    value={novoFuncionario.endereco}
+                                    onChange={(e) => setNovoFuncionario({ ...novoFuncionario, endereco: e.target.value })}
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Foto
-                    </label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    />
-                </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Foto
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                />
+                            </div>
 
-                <div className="flex justify-end space-x-2">
-                    <button
-                        onClick={() => setMostrarModalFuncionario(false)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-                    >
-                        Cancelar
-                    </button>
-                    <button
-                        onClick={cadastrarFuncionario}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-                    >
-                        Cadastrar
-                    </button>
+                            <div className="flex justify-end space-x-2">
+                                <button
+                                    onClick={() => setMostrarModalFuncionario(false)}
+                                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={cadastrarFuncionario}
+                                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                                >
+                                    Cadastrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-)}
+            )}
 
             {mostrarMapa && (
                 <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
@@ -1003,7 +951,7 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                 <UpdatePostoModal
                     postoParaEditar={postoSelecionadoUpdate}
                     atualizarPostoNaAPI={fetchPostos}
-                    onClose={() => setMostrarModalUpdate(false)} // Passa a função para fechar o modal
+                    onClose={() => setMostrarModalUpdate(false)} 
                 />
             )}
 
@@ -1160,7 +1108,6 @@ const [novoFuncionario, setNovoFuncionario] = useState({
                             </button>
                         </header>
 
-                        {/* Contêiner fixo para o mapa */}
                         <div className="flex-grow relative overflow-hidden rounded-md">
                             <MapContainer
                                 center={location}
