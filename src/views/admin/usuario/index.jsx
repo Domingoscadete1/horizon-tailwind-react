@@ -61,11 +61,13 @@ const GerenciamentoUsuarios = () => {
   const handleUsuarioClick = (usuarioId) => {
     navigate(`/admin/perfiluser/${usuarioId}`);
   };
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
     totalPages: 1,
   });
+  
   const fetchUsuarios = async () => {
     try {
       const response = await fetchWithToken(`api/usuarios/?page=${pagination.pageIndex + 1}`, {
@@ -96,38 +98,6 @@ const GerenciamentoUsuarios = () => {
   useEffect(() => {
     fetchUsuarios();
   }, [pagination.pageIndex]);
-
-  const usuariosFiltrados = usuarios.filter(user =>
-    filtroStatus === "Todos" || user.status === "suspenso"
-  );
-
-  const excluirUsuario = (id) => {
-    setUsuarios(usuarios.filter((user) => user.user_id !== id));
-  };
-
-  const visualizarUsuario = (id) => {
-    alert(`Visualizar detalhes do usuário com ID: ${id}`);
-  };
-
-  const iniciarEdicao = (id) => {
-    const usuario = usuarios.find((user) => user.user_id === id);
-    if (usuario) {
-      setUsuarioEditando(id);
-      setDadosEditados({ ...usuario });
-    }
-  };
-
-  const salvarEdicao = (id) => {
-    const novosUsuarios = usuarios.map((user) =>
-      user.user_id === id ? { ...user, ...dadosEditados } : user
-    );
-    setUsuarios(novosUsuarios);
-    setUsuarioEditando(null);
-  };
-
-  const cancelarEdicao = () => {
-    setUsuarioEditando(null);
-  };
 
   const handleEdicaoChange = (e, campo) => {
     const { value } = e.target;
@@ -273,48 +243,6 @@ const GerenciamentoUsuarios = () => {
           </span>
         ),
     }),
-    // columnHelper.accessor("acao", {
-    //   header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
-    //   cell: (info) => (
-    //     <div className="flex space-x-4">
-    //       {usuarioEditando === info.row.original.user_id ? (
-    //         <>
-    //           <button
-    //             onClick={() => salvarEdicao(info.row.original.user_id)}
-    //             className="text-green-500 hover:text-green-700"
-    //             title="Salvar"
-    //           >
-    //             <FaSave />
-    //           </button>
-    //           <button
-    //             onClick={cancelarEdicao}
-    //             className="text-red-500 hover:text-red-700"
-    //             title="Cancelar"
-    //           >
-    //             <FaTimes />
-    //           </button>
-    //         </>
-    //       ) : (
-    //         <>
-    //           <button
-    //             onClick={() => iniciarEdicao(info.row.original.user_id)}
-    //             className="text-green-500 hover:text-green-700"
-    //             title="Editar"
-    //           >
-    //             <FaEdit />
-    //           </button>
-    //           <button
-    //             onClick={() => excluirUsuario(info.row.original.user_id)}
-    //             className="text-red-500 hover:text-red-700"
-    //             title="Excluir"
-    //           >
-    //             <FaTrash />
-    //           </button>
-    //         </>
-    //       )}
-    //     </div>
-    //   ),
-    // }),
   ];
 
   const table = useReactTable({

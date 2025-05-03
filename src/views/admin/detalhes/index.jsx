@@ -1,7 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { useParams,useNavigate } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
 import Card from 'components/card';
 import NftCard from "components/card/NftCard";
 import avatar1 from "assets/img/avatars/avatar1.png";
@@ -12,11 +11,33 @@ import NFt3 from "assets/img/nfts/Nft3.png";
 import NFt4 from "assets/img/nfts/Nft4.png";
 import NFt5 from "assets/img/nfts/Nft5.png";
 import NFt6 from "assets/img/nfts/Nft6.png";
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
-import styled from 'styled-components'; // Para estilização adicional
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
+import Modal from 'react-modal';
 
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        maxWidth: '90%',
+        maxHeight: '90%',
+        padding: 0,
+        border: 'none',
+        background: 'transparent',
+        overflow: 'hidden'
+    },
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        zIndex: 1000
+    }
+};
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -28,23 +49,29 @@ const LoaderContainer = styled.div`
 
 const API_BASE_URL = Config.getApiUrl();
 
+Modal.setAppElement('#root');
+
 const DetalhesProduto = () => {
     const { id } = useParams();
-    const [loading, setLoading] = useState(true);    
+    const [loading, setLoading] = useState(true);
     const [produto, setProduto] = useState(null);
     const [produtosemelhantes, setProdutoSemelhantes] = useState(null);
+    const [mediaPrincipal, setMediaPrincipal] = useState(null);
+    const [tipoMedia, setTipoMedia] = useState('imagem');
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const navigate = useNavigate();
 
-    const [imagemPrincipal, setImagemPrincipal] = useState();
-    const [mediaPrincipal, setMediaPrincipal] = useState(null); 
-    const [tipoMedia, setTipoMedia] = useState('imagem'); 
-    const navigate = useNavigate(); 
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
 
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
 
-
-    
     const deletarProduto = async () => {
         const confirmacao = window.confirm("Tem certeza que deseja deletar este produto?");
-    
+
         if (confirmacao) {
             try {
                 const response = await fetchWithToken(`api/produto/${id}/deletar/`, {
@@ -54,7 +81,7 @@ const DetalhesProduto = () => {
                         "ngrok-skip-browser-warning": "true",
                     },
                 });
-    
+
                 if (response.ok) {
                     alert("Produto deletado com sucesso!");
                     navigate(-1);
@@ -66,10 +93,10 @@ const DetalhesProduto = () => {
                 alert("Erro ao deletar o produto.");
             }
         } else {
-            // Se o usuário cancelar, não faz nada
             console.log("Deleção cancelada pelo usuário.");
         }
     };
+
     useEffect(() => {
         const fetchProduto = async () => {
             try {
@@ -81,13 +108,13 @@ const DetalhesProduto = () => {
                     },
                 });
                 const data = await response.json();
-                console.log(data);
                 setProduto(data || []);
                 setMediaPrincipal(data.imagens[0].imagem);
             } catch (error) {
                 console.error('Erro ao buscar empresa:', error);
             }
         };
+
         const fetchProdutoSemelhantes = async () => {
             try {
                 const response = await fetchWithToken(`api/produtos/categoria/${produto?.categoria?.id}/${id}`, {
@@ -98,73 +125,84 @@ const DetalhesProduto = () => {
                     },
                 });
                 const data = await response.json();
-                console.log(data);
                 setProdutoSemelhantes(data.results || []);
             } catch (error) {
                 console.error('Erro ao buscar empresa:', error);
             }
         };
 
-        
-
         const fetchData = async () => {
             await fetchProduto();
             await fetchProdutoSemelhantes();
-
-            
-            setLoading(false); // Agora só desativa o loading após buscar os dados
+            setLoading(false);
         };
 
         fetchData();
-    }, [id,produto?.categoria?.id]);
+    }, [id, produto?.categoria?.id]);
 
     if (loading) {
         return <LoaderContainer>
-        <SyncLoader color="#3B82F6" size={15} />
-    </LoaderContainer>
+            <SyncLoader color="#3B82F6" size={15} />
+        </LoaderContainer>
     }
 
     if (!produto) {
-        return <div className="mt-10 text-center text-gray-500">Usuário não encontrado</div>;
+        return <div className="mt-10 text-center text-gray-500">Produto não encontrado</div>;
     }
 
-    const nfts = [
-        { title: "Computador", author: "Esthera Jackson", price: "0.91", image: NFt3, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
-        { title: "Telefone", author: "Nick Wilson", price: "0.7", image: NFt2, additionalImages: [NFt3, NFt4, NFt5, NFt6] },
-        { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
-        { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
-    ];
-
-    // Estado para controlar a imagem principal
-
-    // Função para trocar a imagem principal
     const trocarMediaPrincipal = (novaMedia, tipo) => {
         setMediaPrincipal(novaMedia);
         setTipoMedia(tipo);
     };
-    const handleUsuarioClick = (usuarioId) => {
-        navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
-      };
-      const handleEmpresaClick = (empresaId) => {
-        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
-      };
-      const handleProdutoClick = (produtoId) => {
-        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
-      };
 
+    const handleUsuarioClick = (usuarioId) => {
+        navigate(`/admin/perfiluser/${usuarioId}`);
+    };
+
+    const handleEmpresaClick = (empresaId) => {
+        navigate(`/admin/perfilempresa/${empresaId}`);
+    };
+
+    const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`);
+    };
 
     return (
         <div className="p-4">
-            {/* Card de Detalhes do Produto */}
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Mídia em tamanho grande"
+            >
+                {tipoMedia === 'imagem' ? (
+                    <img
+                        src={mediaPrincipal}
+                        alt="Visualização ampliada"
+                        className="max-w-full max-h-screen"
+                        onClick={closeModal}
+                    />
+                ) : (
+                    <video
+                        src={mediaPrincipal}
+                        controls
+                        autoPlay
+                        className="max-w-full max-h-screen"
+                    >
+                        <track kind="captions" src="" label="Legendas" />
+                    </video>
+                )}
+            </Modal>
+
             <Card extra="w-full h-full sm:overflow-auto p-6">
                 <div className="flex flex-col md:flex-row gap-6">
-                    {/* Coluna da Imagem */}
                     <div className="w-full md:w-1/2">
                         {tipoMedia === 'imagem' ? (
                             <img
                                 src={mediaPrincipal}
                                 alt={produto.nome}
-                                className="w-120 h-96 object-cover center rounded-lg"
+                                className="w-120 h-96 object-cover center rounded-lg cursor-pointer"
+                                onClick={openModal}
                             />
                         ) : (
                             <video
@@ -176,7 +214,6 @@ const DetalhesProduto = () => {
                             </video>
                         )}
 
-                        {/* Miniaturas de Imagens */}
                         <div className="mt-4 flex gap-2">
                             {produto.imagens.map((img, index) => (
                                 <img
@@ -189,7 +226,6 @@ const DetalhesProduto = () => {
                             ))}
                         </div>
 
-                        {/* Miniaturas de Vídeos */}
                         {produto.videos && produto.videos.length > 0 && (
                             <div className="mt-4 flex gap-2">
                                 {produto.videos.map((video, index) => (
@@ -206,12 +242,11 @@ const DetalhesProduto = () => {
                         )}
                     </div>
 
-                    {/* Coluna de Detalhes */}
                     <div className="w-full md:w-1/2">
                         <h1 className="text-3xl mt-3 mb-4 font-bold text-navy-700 dark:text-white">{produto.nome}</h1>
                         <p className="text-gray-600 text-justify">{produto.descricao}</p>
                         <div className="mt-2">
-                        <p className="text-gray-600">
+                            <p className="text-gray-600">
                                 <strong>Categoria:</strong> {produto.categoria.nome}
                             </p>
                             <p className="text-gray-600">
@@ -235,17 +270,14 @@ const DetalhesProduto = () => {
                 </div>
             </Card>
 
-            {/* Título dos Produtos Relacionados */}
             <div className="relative flex items-center justify-between pt-4">
                 <div className="text-2xl mt-2 mb-5 ml-2 font-bold text-navy-700 dark:text-white">
                     Produtos Relacionados
                 </div>
             </div>
 
-            {/* Grid de Produtos Relacionados */}
             <div className="z-20 grid grid-cols-1 gap-5 md:grid-cols-4">
                 {produtosemelhantes?.map((nft, index) => (
-                    
                     <div key={index} className="h-full">
                         <NftCard
                             key={nft.id}
@@ -258,18 +290,18 @@ const DetalhesProduto = () => {
                             status={nft.status}
                             descricao={nft?.descricao}
                             image_user={
-                              nft.usuario
-                                ? `${Config.getApiUrlMedia()}${nft.usuario.foto}`
-                                : `${Config.getApiUrlMedia()}${nft.empresa?.imagens?.[0]?.imagem}`
+                                nft.usuario
+                                    ? `${Config.getApiUrlMedia()}${nft.usuario.foto}`
+                                    : `${Config.getApiUrlMedia()}${nft.empresa?.imagens?.[0]?.imagem}`
                             }
-                            onImageClick={() =>handleProdutoClick(nft.id)}
-                            onNameClick={ () =>handleProdutoClick(nft.id)}
+                            onImageClick={() => handleProdutoClick(nft.id)}
+                            onNameClick={() => handleProdutoClick(nft.id)}
                             onUserClick={
-                              nft.usuario
-                                ? () => handleUsuarioClick(nft.usuario.id)
-                                : () =>handleEmpresaClick(nft.empresa.id)
+                                nft.usuario
+                                    ? () => handleUsuarioClick(nft.usuario.id)
+                                    : () => handleEmpresaClick(nft.empresa.id)
                             }
-                            extraClasses="h-full" // Garante que o card ocupe toda a altura do container
+                            extraClasses="h-full"
                         />
                     </div>
                 ))}

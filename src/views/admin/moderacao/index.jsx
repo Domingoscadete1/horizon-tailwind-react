@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom"; // Importação necessária
-
-import { FaTrash, FaExclamationTriangle, FaBan, FaUserSlash } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
+import { FaTrash, FaExclamationTriangle, FaBan, FaUserSlash, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Card from 'components/card';
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
-import styled from 'styled-components'; // Para estilização adicional
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
 
@@ -21,40 +20,54 @@ const API_BASE_URL = Config.getApiUrl();
 const ModeracaoConteudo = () => {
     const [reportes, setReportes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate(); // Hook de navegação
+    const navigate = useNavigate();
 
-    const handleUsuarioClick = (usuarioId) => {
-        navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
-    };
-    const handleEmpresaClick = (empresaId) => {
-        navigate(`/admin/perfilempresa/${empresaId}`); // Redireciona para o perfil da empresa
-    };
-    const handleProdutoClick = (produtoId) => {
-        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 10,
+        totalPages: 1,
+        totalCount: 0
+    });
+
+    const fetchReportes = async (pageIndex = 0) => {
+        try {
+            setLoading(true);
+            const response = await fetchWithToken(`api/reportes/?page=${pageIndex + 1}&page_size=${pagination.pageSize}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setReportes(data.results);
+            setPagination(prev => ({
+                ...prev,
+                pageIndex,
+                totalPages: Math.ceil(data.count / pagination.pageSize),
+                totalCount: data.count
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar reportes:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        const fetchReportes = async () => {
-            try {
-                const response = await fetchWithToken(`api/reportes/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "true",
-                    },
-                });
-                const data = await response.json();
-                console.log(data);
-                setReportes(data.results);
-            } catch (error) {
-                console.error('Erro ao buscar reportes:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchReportes();
     }, []);
+
+    const handleUsuarioClick = (usuarioId) => {
+        navigate(`/admin/perfiluser/${usuarioId}`);
+    };
+    const handleEmpresaClick = (empresaId) => {
+        navigate(`/admin/perfilempresa/${empresaId}`);
+    };
+    const handleProdutoClick = (produtoId) => {
+        navigate(`/admin/detalhes/${produtoId}`);
+    };
 
     const reportesEmpresas = reportes.filter(rep => rep.tipo === 'empresa');
     const reportesUsuarios = reportes.filter(rep => rep.tipo === 'usuario');
@@ -63,6 +76,18 @@ const ModeracaoConteudo = () => {
     const removerReporte = (id) => {
         setReportes(reportes.filter(rep => rep.id !== id));
         alert(`Reporte com ID ${id} removido.`);
+    };
+
+    const handlePreviousPage = () => {
+        if (pagination.pageIndex > 0) {
+            fetchReportes(pagination.pageIndex - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (pagination.pageIndex + 1 < pagination.totalPages) {
+            fetchReportes(pagination.pageIndex + 1);
+        }
     };
 
     const renderTabela = (titulo, dados) => (
@@ -91,7 +116,6 @@ const ModeracaoConteudo = () => {
                         <tbody>
                             {dados.map(rep => (
                                 <tr key={rep.id} className="border-b border-gray-200">
-                                    {/* Célula do Denunciante */}
                                     <td
                                         className="py-2 px-4 text-sm cursor-pointer text-brand-500 font-bold hover:underline"
                                         onClick={() => {
@@ -105,7 +129,6 @@ const ModeracaoConteudo = () => {
                                         {rep.usuario_denunciante?.nome || rep.empresa_denunciante?.nome || 'N/A'}
                                     </td>
 
-                                    {/* Célula do Denunciado */}
                                     <td
                                         className="py-2 px-4 text-sm cursor-pointer text-brand-500 font-bold hover:underline"
                                         onClick={() => {
@@ -121,7 +144,6 @@ const ModeracaoConteudo = () => {
                                         {rep.denunciado_usuario?.nome || rep.denunciado_empresa?.nome || rep.produto?.nome || 'N/A'}
                                     </td>
 
-                                    {/* Outras células */}
                                     <td className="py-2 px-4">{rep.motivo}</td>
                                     <td className="py-2 px-4">{rep.descricao}</td>
                                     <td className="py-2 px-4">
@@ -139,6 +161,27 @@ const ModeracaoConteudo = () => {
                     </table>
                 </div>
             )}
+            <div className="flex items-center justify-between mt-4 mb-4">
+                <div className="flex items-center space-x-2">
+                    <button
+                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                        onClick={handlePreviousPage}
+                        disabled={pagination.pageIndex === 0}
+                    >
+                        <FaArrowLeft className="mr-2" /> Anterior
+                    </button>
+                    <button
+                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                        onClick={handleNextPage}
+                        disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                    >
+                        Próxima <FaArrowRight className="ml-2" />
+                    </button>
+                </div>
+                <span className="text-sm text-gray-600 dark:text-white">
+                    Página {pagination.pageIndex + 1} de {pagination.totalPages}
+                </span>
+            </div>
         </Card>
     );
 

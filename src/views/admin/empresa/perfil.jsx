@@ -14,10 +14,34 @@ import avatar2 from "assets/img/avatars/avatar2.png";
 import avatar3 from "assets/img/avatars/avatar3.png";
 import NftCard from "components/card/NftCard";
 import ImageModal from "../marketplace/components/modal";
-import { SyncLoader } from 'react-spinners'; // Importe o spinner
-import styled from 'styled-components'; // Para estilização adicional
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        maxWidth: '90%',
+        maxHeight: '90%',
+        padding: 0,
+        border: 'none',
+        background: 'transparent',
+        overflow: 'hidden'
+    },
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        zIndex: 1000
+    }
+};
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -27,17 +51,10 @@ const LoaderContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.0); 
 `;
 
-
-const nfts = [
-    { title: "Computador", author: "Esthera Jackson", price: "0.91", image: NFt3, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
-    { title: "Telefone", author: "Nick Wilson", price: "0.7", image: NFt2, additionalImages: [NFt3, NFt4, NFt5, NFt6] },
-    { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
-    { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
-];
 const API_BASE_URL = Config.getApiUrl();
 
 const PerfilEmpresa = () => {
-    const navigate = useNavigate(); // Hook de navegação
+    const navigate = useNavigate();
 
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
@@ -94,17 +111,29 @@ const PerfilEmpresa = () => {
             descricao: 'Enviar uma mensagem específica'
         }
     ];
+
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const openModal = () => {
+        if (empresa.imagens[0]?.imagem) {
+            setModalIsOpen(true);
+        }
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
     const enviarNotificacao = async () => {
         if (!notificacao.tipo || !notificacao.conteudo) {
             alert('Selecione o tipo e preencha o conteúdo da notificação.');
             return;
         }
-    
+
         try {
-            // Encontra o tipo selecionado para obter o título correspondente
             const tipoSelecionado = tiposNotificacao.find(t => t.tipo === notificacao.tipo);
             const titulo = tipoSelecionado ? tipoSelecionado.titulo : 'Notificação';
-    
+
             const response = await fetchWithToken(`api/mandar-notificacao-empresa/`, {
                 method: "POST",
                 headers: {
@@ -117,7 +146,7 @@ const PerfilEmpresa = () => {
                     conteudo: notificacao.conteudo
                 }),
             });
-    
+
             if (response.ok) {
                 alert('Notificação enviada com sucesso!');
                 setMostrarModalNotificacao(false);
@@ -191,7 +220,7 @@ const PerfilEmpresa = () => {
             }
 
             alert("Empresa aprovada com sucesso!");
-            window.location.reload(); // Recarregar a página ou atualizar a lista
+            window.location.reload();
 
         } catch (error) {
             console.error("Erro:", error);
@@ -199,7 +228,6 @@ const PerfilEmpresa = () => {
         }
     };
 
-    // Função para negar uma empresa
     const negarEmpresa = async (empresaId) => {
         try {
             const response = await fetchWithToken(`api/negar-empresa/${empresaId}/`, {
@@ -216,7 +244,7 @@ const PerfilEmpresa = () => {
             }
 
             alert("Empresa negada com sucesso!");
-            window.history.back(); // Recarregar a página ou atualizar a lista
+            window.history.back();
 
         } catch (error) {
             console.error("Erro:", error);
@@ -250,7 +278,7 @@ const PerfilEmpresa = () => {
     useEffect(() => {
         const fetchData = async () => {
             await fetchEmpresa();
-            await fetchProdutos(); // Garante que a página 1 seja carregada por padrão
+            await fetchProdutos();
             await fetchTransacoes();
 
             setLoading(false);
@@ -272,7 +300,7 @@ const PerfilEmpresa = () => {
         return <div className="mt-10 text-center text-gray-500">Empresa não encontrada.</div>;
     }
     const handleProdutoClick = (produtoId) => {
-        navigate(`/admin/detalhes/${produtoId}`); // Redireciona para o perfil da empresa
+        navigate(`/admin/detalhes/${produtoId}`);
     };
     const handleSalvarEdicao = async () => {
         try {
@@ -315,11 +343,6 @@ const PerfilEmpresa = () => {
     const handleImageClick = (nft) => {
         setSelectedNft(nft);
         setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedNft(null);
     };
 
     const suspenderUsuario = async (novoStatus) => {
@@ -384,7 +407,6 @@ const PerfilEmpresa = () => {
     return (
         <>
             <div>
-                {/* Modal para exibir a imagem em tamanho grande */}
                 {selectedImage && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
                         <div className="bg-white p-6 rounded-lg relative">
@@ -401,17 +423,34 @@ const PerfilEmpresa = () => {
 
                 <div className="mt-5 mb-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
                     <Card extra={"items-center w-full h-full p-[16px] bg-cover"}>
-                        {/* Background and profile */}
-                        <div
-                            className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover"
-                            style={{ backgroundImage: `url(${banner})` }}
-                        >
+                        <div className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover"
+                            style={{ backgroundImage: `url(${banner})` }}>
                             <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-navy-700">
-                                <img className="h-full w-full rounded-full" src={empresa.imagens[0]?.imagem || 'ol'} alt="Logo" />
+                                <img
+                                    className="h-full w-full rounded-full object-cover cursor-pointer"
+                                    src={empresa.imagens[0]?.imagem || 'ol'}
+                                    alt="Logo"
+                                    onClick={openModal}
+                                />
                             </div>
                         </div>
 
-                        {/* Name and position */}
+                        <Modal
+                            isOpen={modalIsOpen}
+                            onRequestClose={closeModal}
+                            style={customStyles}
+                            contentLabel="Logo da Empresa Ampliada"
+                        >
+                            {empresa.imagens[0]?.imagem && (
+                                <img
+                                    src={empresa.imagens[0].imagem}
+                                    alt="Logo da Empresa Ampliada"
+                                    className="max-w-full max-h-screen rounded-lg"
+                                    onClick={closeModal}
+                                />
+                            )}
+                        </Modal>
+
                         <div className="mt-16 flex flex-col items-center">
                             <h4 className="text-xl font-bold text-navy-700 dark:text-white">
                                 {empresa.nome}
@@ -419,7 +458,6 @@ const PerfilEmpresa = () => {
                             <p className="text-base font-normal text-gray-600">{empresa.email}</p>
                         </div>
 
-                        {/* Post followers */}
                         <div className="mt-6 mb-3 flex gap-4 md:!gap-14">
                             <div className="flex flex-col items-center justify-center">
                                 <p className="text-2xl font-bold text-navy-700 dark:text-white">{empresa?.quantidade_produtos}</p>
@@ -427,7 +465,7 @@ const PerfilEmpresa = () => {
                             </div>
                             <div className="flex flex-col items-center justify-center">
                                 <p className="text-2xl font-bold text-navy-700 dark:text-white">
-                                {empresa?.quantidade_vendas}
+                                    {empresa?.quantidade_vendas}
                                 </p>
                                 <p className="text-sm font-normal text-gray-600">Produtos Vendidos</p>
                             </div>
@@ -662,7 +700,7 @@ const PerfilEmpresa = () => {
                                     </a>
                                 )}
                             </div>
-                            
+
                             {/* Exibir ativar/desativar conta apenas se a empresa estiver verificada */}
                             {empresa.verificada && (
                                 <div className="flex space-x-2 mt-4">
@@ -681,12 +719,12 @@ const PerfilEmpresa = () => {
                                             <FaCheck className="mr-2" /> Ativar Conta
                                         </button>
                                     )}
-                                     <button 
-                    onClick={() => setMostrarModalNotificacao(true)}
-                    className="bg-blue-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
-                >
-                    Enviar Notificação
-                </button>
+                                    <button
+                                        onClick={() => setMostrarModalNotificacao(true)}
+                                        className="bg-blue-500 mb-5 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
+                                    >
+                                        Enviar Notificação
+                                    </button>
                                 </div>
                             )}
 
@@ -715,79 +753,79 @@ const PerfilEmpresa = () => {
 
                 </div>
                 {mostrarModalNotificacao && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <header className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-navy-700">
-                    Enviar Notificação para {empresa.nome}
-                </h2>
-                <button
-                    onClick={() => setMostrarModalNotificacao(false)}
-                    className="text-navy-700 hover:text-blue-700"
-                >
-                    <FaTimes />
-                </button>
-            </header>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
+                        <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                            <header className="flex justify-between items-center mb-4">
+                                <h2 className="text-xl font-bold text-navy-700">
+                                    Enviar Notificação para {empresa.nome}
+                                </h2>
+                                <button
+                                    onClick={() => setMostrarModalNotificacao(false)}
+                                    className="text-navy-700 hover:text-blue-700"
+                                >
+                                    <FaTimes />
+                                </button>
+                            </header>
 
-            <div className="mt-4">
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Tipo de Notificação *
-                    </label>
-                    <select
-                        value={notificacao.tipo}
-                        onChange={(e) => setNotificacao({...notificacao, tipo: e.target.value})}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        required
-                    >
-                        <option value="">Selecione um tipo</option>
-                        {tiposNotificacao.map((tipo) => (
-                            <option key={tipo.tipo} value={tipo.tipo}>
-                                {tipo.descricao}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                            <div className="mt-4">
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Tipo de Notificação *
+                                    </label>
+                                    <select
+                                        value={notificacao.tipo}
+                                        onChange={(e) => setNotificacao({ ...notificacao, tipo: e.target.value })}
+                                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                        required
+                                    >
+                                        <option value="">Selecione um tipo</option>
+                                        {tiposNotificacao.map((tipo) => (
+                                            <option key={tipo.tipo} value={tipo.tipo}>
+                                                {tipo.descricao}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
-                {notificacao.tipo && (
-                    <div className="mb-4 bg-blue-50 p-3 rounded-lg">
-                        <p className="text-sm font-medium text-blue-800">
-                            Título: {tiposNotificacao.find(t => t.tipo === notificacao.tipo)?.titulo}
-                        </p>
+                                {notificacao.tipo && (
+                                    <div className="mb-4 bg-blue-50 p-3 rounded-lg">
+                                        <p className="text-sm font-medium text-blue-800">
+                                            Título: {tiposNotificacao.find(t => t.tipo === notificacao.tipo)?.titulo}
+                                        </p>
+                                    </div>
+                                )}
+
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Conteúdo da Mensagem *
+                                    </label>
+                                    <textarea
+                                        value={notificacao.conteudo}
+                                        onChange={(e) => setNotificacao({ ...notificacao, conteudo: e.target.value })}
+                                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                        rows="4"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="flex justify-end space-x-2">
+                                    <button
+                                        onClick={() => setMostrarModalNotificacao(false)}
+                                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={enviarNotificacao}
+                                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                                    >
+                                        Enviar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
-
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Conteúdo da Mensagem *
-                    </label>
-                    <textarea
-                        value={notificacao.conteudo}
-                        onChange={(e) => setNotificacao({...notificacao, conteudo: e.target.value})}
-                        className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        rows="4"
-                        required
-                    />
-                </div>
-
-                <div className="flex justify-end space-x-2">
-                    <button
-                        onClick={() => setMostrarModalNotificacao(false)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-                    >
-                        Cancelar
-                    </button>
-                    <button
-                        onClick={enviarNotificacao}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-                    >
-                        Enviar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-)}
 
                 {/* Modal com imagens adicionais */}
                 {isModalOpen && selectedNft && (
