@@ -177,14 +177,14 @@ const Dashboard = () => {
           >
             {ethicalMessages.map((message, index) => (
               <div key={index} className="flex flex-col md:flex-row items-center p-4">
-                <div className="md:w-1/3 mb-4 md:mb-0 md:mr-6">
+                <div className="md:w-1/3 mb-2 md:mb-0 md:mr-6">
                   <img
                     src={message.image}
                     alt={message.title}
                     className="rounded-lg shadow-lg w-full h-48 object-cover"
                   />
                 </div>
-                <div className="md:w-2/3">
+                <div className="md:w-2/3 ">
                   <div className="flex items-center mb-3">
                     <div className="p-3 rounded-full bg-red-100 dark:bg-navy-700 mr-3">
                       {message.icon}
@@ -196,11 +196,6 @@ const Dashboard = () => {
                   <p className="text-gray-600 dark:text-gray-300">
                     {message.content}
                   </p>
-                  {index === 1 && (
-                    <button className="mt-3 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
-                      Como Denunciar
-                    </button>
-                  )}
                 </div>
               </div>
             ))}
