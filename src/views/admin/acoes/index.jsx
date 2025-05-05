@@ -264,7 +264,7 @@ const AcoesSistema = () => {
         },
         {
             accessorKey: "dispositivo",
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Dispositivo</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">DISPOSITIVO</p>,
             cell: ({ row }) => (
                 <p className="text-sm text-gray-500">
                     {row.original.dispositivo || '-'}
@@ -286,7 +286,7 @@ const AcoesSistema = () => {
         },
         {
             accessorKey: "localizacao",
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Localização</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">LOCALIZAÇÃO</p>,
             cell: ({ row }) => {
                 try {
                     let locStr = row.original.localizacao;

@@ -475,7 +475,7 @@ const GerenciamentoPostos = () => {
             cell: (info) => info.getValue() || "Não informado",
         }),
         columnHelper.accessor('capacidade', {
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Capacidade</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">CAPACIDADE</p>,
             cell: (info) => info.getValue() || "Não informado",
         }),
         columnHelper.accessor('responsavel', {

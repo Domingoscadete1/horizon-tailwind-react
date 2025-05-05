@@ -82,7 +82,7 @@ const EmpresasParaAprovar = () => {
             cell: (info) => <p className="text-sm text-navy-700 dark:text-white">{info.getValue()}</p>,
         }),
         columnHelper.accessor('created_at', {
-            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">Data de Solicitação</p>,
+            header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">DATA DE SOLICITAÇÃO</p>,
             cell: (info) => (
                 <p className="text-sm font-bold text-navy-700">
                     {info.getValue()}
