@@ -243,8 +243,40 @@ const DetalhesProduto = () => {
                     </div>
 
                     <div className="w-full md:w-1/2">
+
+                        <div className="mb-4">
+                            <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
+                                <div
+                                    className="cursor-pointer"
+                                    onClick={produto.usuario
+                                        ? () => handleUsuarioClick(produto.usuario.id)
+                                        : () => handleEmpresaClick(produto.empresa.id)}
+                                >
+                                    <img
+                                        src={produto.usuario
+                                            ? `${Config.getApiUrlMedia()}${produto.usuario.foto}`
+                                            : `${Config.getApiUrlMedia()}${produto.empresa?.imagens?.[0]?.imagem}`}
+                                        alt="..."
+                                        className="w-12 h-12 rounded-full object-cover"
+                                    />
+                                </div>
+                                <div>
+                                    <p
+                                        className="font-medium text-xl cursor-pointer hover:text-blue-500"
+                                        onClick={produto.usuario
+                                            ? () => handleUsuarioClick(produto.usuario.id)
+                                            : () => handleEmpresaClick(produto.empresa.id)}
+                                    >
+                                        {produto.usuario ? produto.usuario.nome : produto.empresa.nome}
+                                    </p>
+                                    <p className="text-sm text-gray-500">Vendedor</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <h1 className="text-3xl mt-3 mb-4 font-bold text-navy-700 dark:text-white">{produto.nome}</h1>
                         <p className="text-gray-600 text-justify">{produto.descricao}</p>
+
                         <div className="mt-2">
                             <p className="text-gray-600">
                                 <strong>Categoria:</strong> {produto.categoria.nome}

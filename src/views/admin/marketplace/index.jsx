@@ -79,7 +79,7 @@ const Marketplace = () => {
     try {
       const url = `api/produtos/?page=${page}`;
       const response = await fetchWithToken(url, {
-        method:'GET',
+        method: 'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -104,7 +104,7 @@ const Marketplace = () => {
     try {
       const url = `api/produtos/`;
       const response = await fetchWithToken(url, {
-        method:'GET',
+        method: 'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -117,7 +117,7 @@ const Marketplace = () => {
       const data = await response.json();
       const produtosList = Array.isArray(data.results) ? data.results : [];
       setProdutosMapa(produtosList);
-      
+
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
     }
@@ -126,7 +126,7 @@ const Marketplace = () => {
     try {
       const url = `api/categorias/`;
       const response = await fetchWithToken(url, {
-        method:'GET',
+        method: 'GET',
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -139,9 +139,9 @@ const Marketplace = () => {
       const data = await response.json();
       console.log("categorias:", data);
 
-      
+
       setCategorias(data);
-      
+
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
     }
@@ -179,7 +179,7 @@ const Marketplace = () => {
     setSelectedNft(produto);
     setIsModalOpen(true);
   };
-  
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedNft(null);
@@ -188,25 +188,25 @@ const Marketplace = () => {
     // Função para extrair latitude e longitude do campo endereco
     const extrairCoordenadas = (localizacao) => {
       if (!localizacao) return null;
-  
+
       // Divide o endereco em partes usando a vírgula como separador
       const partes = localizacao.split(',');
-  
+
       // Verifica se há exatamente duas partes (latitude e longitude)
       if (partes.length === 2) {
         const latitude = parseFloat(partes[0].trim());
         const longitude = parseFloat(partes[1].trim());
-  
+
         // Verifica se os valores são números válidos
         if (!isNaN(latitude) && !isNaN(longitude)) {
           return { latitude, longitude };
         }
       }
-  
+
       // Retorna null se as coordenadas não forem válidas
       return null;
     };
-  
+
     // Filtra usuários com coordenadas válidas
     const produtosComCoordenadas = produtos
       .map((produto) => {
@@ -214,7 +214,7 @@ const Marketplace = () => {
         return coordenadas ? { ...produto, ...coordenadas } : null;
       })
       .filter((produto) => produto !== null); // Remove usuários sem coordenadas válidas
-  
+
     return (
       <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
         <TileLayer
@@ -222,9 +222,9 @@ const Marketplace = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {produtosComCoordenadas.map((produto) => (
-          <Marker key={produto.id} position={[produto.latitude, produto.longitude]}  icon={criarIconeUsuario(produto?.imagens[0]?.imagem)}>
+          <Marker key={produto.id} position={[produto.latitude, produto.longitude]} icon={criarIconeUsuario(produto?.imagens[0]?.imagem)}>
             <Popup  >
-            <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleProdutoClick(produto.id)}>{produto.nome}</p> <br /> {produto.localizacao}
+              <p className="text-sm text-navy-700 dark:text-white" onClick={() => handleProdutoClick(produto.id)}>{produto.nome}</p> <br /> {produto.localizacao}
             </Popup>
           </Marker>
         ))}
@@ -242,14 +242,13 @@ const Marketplace = () => {
             Categorias
           </h4>
           <ul className="mt-4 flex items-center justify-between md:mt-0 md:justify-center md:!gap-5 2xl:!gap-12">
-          {categoria.map((categoria) => (
+            {categoria.map((categoria) => (
               <li key={categoria.id}>
                 <a
-                  className={`text-base font-medium ${
-                    selectedCategoria?.id === categoria.id
+                  className={`text-base font-medium ${selectedCategoria?.id === categoria.id
                       ? "text-brand-500"
                       : "text-gray-500 hover:text-brand-500"
-                  } dark:text-white`}
+                    } dark:text-white`}
                   href="#!"
                   onClick={() => handleCategoriaClick(categoria)}
                 >
@@ -313,12 +312,12 @@ const Marketplace = () => {
                     ? produto.usuario.foto
                     : produto.empresa?.imagens?.[0]?.imagem
                 }
-                onImageClick={() =>handleProdutoClick(produto.id)}
-                onNameClick={ () =>handleProdutoClick(produto.id)}
+                onImageClick={() => handleProdutoClick(produto.id)}
+                onNameClick={() => handleProdutoClick(produto.id)}
                 onUserClick={
                   produto.usuario
                     ? () => handleUsuarioClick(produto.usuario.id)
-                    : () =>handleEmpresaClick(produto.empresa.id)
+                    : () => handleEmpresaClick(produto.empresa.id)
                 }
               />
             );
@@ -334,10 +333,10 @@ const Marketplace = () => {
           />
         )}
         <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-            <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-5">Mapa de Produtos</div>
-            <ProductMap produtos={produtosMapa} />
-          </Card>
-        
+          <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-5">Mapa de Produtos</div>
+          <ProductMap produtos={produtosMapa} />
+        </Card>
+
 
         {/* Paginação */}
         <div className="flex justify-center mt-10 mb-4">

@@ -527,7 +527,7 @@ const GerenciamentoPostos = () => {
                 <img
                     src={`${Config.getApiUrlMedia()}${info.getValue()}`}
                     alt="Funcionário"
-                    className="w-10 h-10 rounded-full object-cover"
+                    className="w-10 h-10 cursor-pointer rounded-full object-cover"
                     onClick={() => handleFuncionarioClick(info.row.original.id)}
                 />
             ),
