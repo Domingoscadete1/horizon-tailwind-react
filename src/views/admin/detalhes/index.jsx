@@ -254,8 +254,8 @@ const DetalhesProduto = () => {
                                 >
                                     <img
                                         src={produto.usuario
-                                            ? `${Config.getApiUrlMedia()}${produto.usuario.foto}`
-                                            : `${Config.getApiUrlMedia()}${produto.empresa?.imagens?.[0]?.imagem}`}
+                                            ? `${produto.usuario.foto}`
+                                            : `${produto.empresa?.imagens?.[0]?.imagem}`}
                                         alt="..."
                                         className="w-12 h-12 rounded-full object-cover"
                                     />
