@@ -148,7 +148,7 @@ export default function Auth() {
                         </p>
 
                         <form onSubmit={onSubmit}>
-                          <label className="block text-gray-700 text-sm font-bold mb-2">Nome</label>
+                          <label className="block text-gray-700 text-sm font-bold mb-2">NOME</label>
                           <input
                             className="w-full px-3 py-2 border rounded-lg"
                             type="text"
@@ -158,7 +158,7 @@ export default function Auth() {
                             onChange={handleInputChange}
                           />
 
-                          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">Senha</label>
+                          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">SENHA</label>
                           <input
                             className="w-full px-3 py-2 border rounded-lg"
                             type={showPassword ? "text" : "password"}
@@ -175,7 +175,7 @@ export default function Auth() {
                             className="mt-4 w-full bg-brand-500 py-2 text-white rounded-lg"
                             disabled={isPending}
                           >
-                            {isPending ? 'Signing In...' : 'Sign In'}
+                            {isPending ? 'Logando...' : 'Login'}
                           </button>
 
                           <button
