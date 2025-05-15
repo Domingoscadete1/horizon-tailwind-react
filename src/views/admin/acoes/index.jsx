@@ -32,7 +32,8 @@ import {
     FaStar,
     FaBullhorn,
     FaSync,
-    FaGavel
+    FaGavel,
+    FaAngry,
 } from 'react-icons/fa';
 import {
     MdHome,
@@ -99,6 +100,7 @@ const moduloIcones = {
     anuncio: <FaBullhorn className="text-orange-400" />,
     sistema: <FaCog className="text-gray-500" />,
     autenticacao: <FaLock className="text-blue-600" />,
+    reporte: <FaAngry className="text-green-500" />,
 };
 
 const columnHelper = createColumnHelper();
