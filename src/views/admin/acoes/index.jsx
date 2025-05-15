@@ -580,7 +580,6 @@ const AcoesSistema = () => {
                 )}
 
                 <div className="mt-5">
-                    {/* Versão para desktop (telas maiores) */}
                     <div className="hidden sm:block overflow-x-auto">
                         <table className="w-full">
                             <thead>

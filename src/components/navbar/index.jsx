@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Dropdown from "components/dropdown";
 import { FiAlignJustify } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -28,48 +28,48 @@ const Navbar = (props) => {
   useEffect(() => {
     const token = localStorage.getItem('userData');
     if (token) {
-        const userData = JSON.parse(token);
-        const postoId = userData;
-        console.log(userData);
-        if (postoId) {
-            setfuncionarioId(postoId);
-        }
+      const userData = JSON.parse(token);
+      const postoId = userData;
+      console.log(userData);
+      if (postoId) {
+        setfuncionarioId(postoId);
+      }
     }
-}, []);
+  }, []);
   const handleLogout = async () => {
     try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        console.log('Token sendo enviado:', refreshToken);
+      const refreshToken = localStorage.getItem('refreshToken');
+      console.log('Token sendo enviado:', refreshToken);
 
-        
 
-        const response = await fetchWithToken(`api/logout/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                "ngrok-skip-browser-warning": "true",
 
-            },
-            body: JSON.stringify({ refresh: refreshToken }),
-        });
+      const response = await fetchWithToken(`api/logout/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Erro no logout:', errorData);
-            return;
-        }
+        },
+        body: JSON.stringify({ refresh: refreshToken }),
+      });
 
-        console.log('Logout realizado com sucesso');
-        await localStorage.removeItem('custom-auth-token');
-        await localStorage.removeItem('userData');
-        await localStorage.removeItem('refreshToken');
-        await localStorage.removeItem('accessToken');
-        await localStorage.removeItem('registeredDeviceToken');
-        window.location.reload();
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Erro no logout:', errorData);
+        return;
+      }
+
+      console.log('Logout realizado com sucesso');
+      await localStorage.removeItem('custom-auth-token');
+      await localStorage.removeItem('userData');
+      await localStorage.removeItem('refreshToken');
+      await localStorage.removeItem('accessToken');
+      await localStorage.removeItem('registeredDeviceToken');
+      window.location.reload();
     } catch (error) {
-        console.error('Erro durante logout:', error);
+      console.error('Erro durante logout:', error);
     }
-};
+  };
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
       <div className="ml-[6px]">
@@ -137,7 +137,7 @@ const Navbar = (props) => {
                 </p>
               </div>
 
-              
+
 
               <button className="flex w-full items-center">
                 <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
@@ -156,7 +156,7 @@ const Navbar = (props) => {
           }
           classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
         />
-        
+
         <div
           className="cursor-pointer text-gray-600"
           onClick={() => {
@@ -211,7 +211,7 @@ const Navbar = (props) => {
                   <a
                     onClick={handleLogout}
                     className="mt-2 text-sm font-medium text-red-500 hover:text-red-500 transition cursor-pointer duration-150 ease-out hover:ease-in">
-                    Terminar Sessão 
+                    Terminar Sessão
                   </a>
                 </span>
               </div>

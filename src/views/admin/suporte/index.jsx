@@ -122,11 +122,6 @@ const SuporteCliente = () => {
                 };
             });
         };
-
-
-
-
-
     };
 
     const enviarMensagem = () => {
@@ -237,7 +232,7 @@ const SuporteCliente = () => {
                             type="text"
                             value={novaMensagem}
                             onChange={(e) => setNovaMensagem(e.target.value)}
-                            className='p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500'
+                            className='p-2 w-full border rounded-lg focus:outline-none text-navy-700 focus:ring-2 focus:ring-brand-500'
                             placeholder="Digite sua resposta..."
                         />
                         <button onClick={enviarMensagem} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
@@ -247,7 +242,7 @@ const SuporteCliente = () => {
                 </Card>
             )}
 
-            {/* Seção de Acompanhamento de Feedbacks */}
+            {/* Seção de Acompanhamento de Feedbacks
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -282,7 +277,7 @@ const SuporteCliente = () => {
                         </tbody>
                     </table>
                 </div>
-            </Card>
+            </Card> */}
         </div>
     );
 };

@@ -178,7 +178,7 @@ const routes = [
   {
     name: "Configurações Gerais",
     layout: "/admin",
-    admin: true,
+    admin: false,
     path: "geral",
     icon: <FaCog className="h-6 w-6" />,
     component: <ConfiguracaoPlataforma />,
@@ -186,10 +186,18 @@ const routes = [
   {
     name: "Segurança",
     layout: "/admin",
-    admin: true,
+    admin: false,
     path: "seguranca",
     icon: <FaShieldAlt className="h-6 w-6" />,
     component: <Seguranca />,
+  },
+  {
+    name: "Admins",
+    layout: "/admin",
+    icon: <FaKey className="inline-block h-5 w-5" />,
+    path: "admins",
+    admin: true,
+    component: <GerenciamentoAdmins />,
   },
   {
     name: "Perfil",
@@ -230,14 +238,6 @@ const routes = [
     icon: <MdPerson className="h-6 w-6" />,
     admin: false,
     component: <PerfilEmpresa />,
-  },
-  {
-    name: "Admins",
-    layout: "/admin",
-    icon: <FaKey className="inline-block h-5 w-5" />,
-    path: "admins",
-    admin: true,
-    component: <GerenciamentoAdmins />,
   },
 ];
 

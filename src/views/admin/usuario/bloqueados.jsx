@@ -7,12 +7,13 @@ import styled from 'styled-components';
 
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
+
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.0); /* Fundo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.0);
 `;
 
 const API_BASE_URL = Config.getApiUrl();
@@ -28,15 +29,22 @@ const UsuariosBloqueados = () => {
     imagem: null,
   });
 
+  // Paginação
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(categorias.length / itemsPerPage);
+  const paginatedCategorias = categorias.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   const fetchCategorias = async () => {
     try {
       const response = await fetchWithToken(`api/categorias/`, {
         method: 'GET',
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-        },
+        headers: { "ngrok-skip-browser-warning": "true" },
       });
-
       const data = await response.json();
       setCategorias(data);
       setLoading(false);
@@ -78,7 +86,6 @@ const UsuariosBloqueados = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     const formDataToSend = new FormData();
     formDataToSend.append("nome", formData.nome);
     formDataToSend.append("descricao", formData.descricao);
@@ -88,60 +95,45 @@ const UsuariosBloqueados = () => {
 
     try {
       if (currentCategoria) {
-        // Editar categoria existente
         await fetchWithToken(`api/categoria/${currentCategoria.id}/atualizar/`, {
           method: 'PUT',
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: formDataToSend
+          headers: { "ngrok-skip-browser-warning": "true" },
+          body: formDataToSend,
         });
-
       } else {
         await fetchWithToken(`api/categoria/create/`, {
           method: 'POST',
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: formDataToSend
+          headers: { "ngrok-skip-browser-warning": "true" },
+          body: formDataToSend,
         });
-
       }
       fetchCategorias();
       closeModal();
       setLoading(false);
-
     } catch (error) {
       console.error("Erro ao salvar categoria:", error);
       setLoading(false);
-
     }
   };
 
   const handleDelete = async (id) => {
     setLoading(true);
     const confirmacao = window.confirm("Tem certeza que deseja apagar esta categoria?");
-
     if (!confirmacao) {
       setLoading(false);
-
-      return; 
+      return;
     }
 
     try {
       await fetchWithToken(`api/categoria/${id}/deletar/`, {
         method: 'DELETE',
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-        },
+        headers: { "ngrok-skip-browser-warning": "true" },
       });
       fetchCategorias();
       setLoading(false);
-
     } catch (error) {
       console.error("Erro ao excluir categoria:", error);
       setLoading(false);
-
     }
   };
 
@@ -160,50 +152,74 @@ const UsuariosBloqueados = () => {
               <SyncLoader color="#3B82F6" size={15} />
             </LoaderContainer>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="!border-px !border-gray-400">
-                  <th className="text-start py-2">Nome</th>
-                  <th className="text-start py-2">Descrição</th>
-                  <th className="text-start py-2">Imagem</th>
-                  <th className="text-start py-2">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categorias.map((categoria) => (
-                  <tr key={categoria.id} className="border-b border-gray-200">
-                    <td className="py-3">{categoria.nome}</td>
-                    <td className="py-3">{categoria.descricao}</td>
-                    <td className="py-3">
-                      {categoria.imagem && (
-                        <img
-                          src={categoria.imagem}
-                          alt={categoria.nome}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                      )}
-                    </td>
-                    <td className="py-3">
-                      <button
-                        onClick={() => openModal(categoria)}
-                        className="text-green-500 hover:text-green-700 mr-2"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(categoria.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <FaTrash />
-                      </button>
-                    </td>
+            <>
+              <table className="w-full">
+                <thead>
+                  <tr className="!border-px !border-gray-400">
+                    <th className="text-start py-2">Nome</th>
+                    <th className="text-start py-2">Descrição</th>
+                    <th className="text-start py-2">Imagem</th>
+                    <th className="text-start py-2">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {paginatedCategorias.map((categoria) => (
+                    <tr key={categoria.id} className="border-b border-gray-200">
+                      <td className="py-3">{categoria.nome}</td>
+                      <td className="py-3">{categoria.descricao}</td>
+                      <td className="py-3">
+                        {categoria.imagem && (
+                          <img
+                            src={categoria.imagem}
+                            alt={categoria.nome}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        )}
+                      </td>
+                      <td className="py-3">
+                        <button
+                          onClick={() => openModal(categoria)}
+                          className="text-green-500 hover:text-green-700 mr-2"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(categoria.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Paginação */}
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Anterior
+                </button>
+                <span className="text-sm text-gray-600">
+                  Página {currentPage} de {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Próxima
+                </button>
+              </div>
+            </>
           )}
         </div>
       </Card>
+
       <div className="flex justify-end mt-4">
         <button
           onClick={() => openModal()}
@@ -213,7 +229,7 @@ const UsuariosBloqueados = () => {
         </button>
       </div>
 
-      {/* Modal para adicionar/editar categoria */}
+      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
           <div className="bg-white p-6 rounded-lg w-1/3">

@@ -37,6 +37,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
 
         return null;
     };
+
     function LocationMarker() {
         const map = useMapEvents({
             click(e) {
@@ -52,6 +53,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
             })} />
         ) : null;
     }
+
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -65,7 +67,6 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
             );
         }
     }, []);
-
 
     const handleGetCurrentLocation = () => {
         if (navigator.geolocation) {
@@ -107,9 +108,6 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
         setOpenMapModal(false);
     };
 
-
-
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setPosto({ ...posto, [name]: value });
@@ -124,7 +122,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                     "ngrok-skip-browser-warning": "true",
                 },
                 body: JSON.stringify({
-                    id: posto.id, // Certifique-se de que o ID está sendo enviado
+                    id: posto.id,
                     nome: posto.nome,
                     localizacao: posto.localizacao,
                     imagem: posto.imagem,
@@ -144,8 +142,8 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
             const data = await response.json();
             if (response.ok) {
                 alert("Posto atualizado com sucesso!");
-                atualizarPostoNaAPI(); // Atualiza a lista de postos
-                onClose(); // Fecha o modal após a atualização
+                atualizarPostoNaAPI();
+                onClose();
             } else {
                 alert(data.detail || "Erro ao atualizar o posto.");
             }
@@ -164,7 +162,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                     >
                         <header className="flex justify-between items-center mb-2">
                             <h2 className="text-lg font-semibold text-navy-700">Escolha a Localização</h2>
-                            
+
                             <button
                                 onClick={() => setOpenMapModal(false)}
                                 className="text-navy-700 hover:text-blue-700"
@@ -197,11 +195,12 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                     </div>
                 </div>
             )}
+            
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <header className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-navy-700">Atualizar Posto</h2>
                     <button
-                        onClick={onClose} // Usa a função onClose para fechar o modal
+                        onClick={onClose} 
                         className="text-navy-700 hover:text-blue-700"
                     >
                         <svg
@@ -266,7 +265,7 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                             className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                             disabled
                         /> */}
-                         
+
                         <button
                             onClick={handleGetCurrentLocation}
                             className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
