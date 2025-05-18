@@ -36,9 +36,8 @@ const GerenciamentoAdmins = () => {
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-    const [pendingAction, setPendingAction] = useState(null); // 'add' ou 'delete'
+    const [pendingAction, setPendingAction] = useState(null); 
 
-    // Fetch admins on component mount
     useEffect(() => {
         const fetchAdmins = async () => {
             try {
@@ -61,7 +60,6 @@ const GerenciamentoAdmins = () => {
         fetchAdmins();
     }, []);
 
-    // Verify admin identity
     const handleVerifyAdmin = async () => {
         setLoading(true);
         try {
@@ -98,7 +96,6 @@ const GerenciamentoAdmins = () => {
         }
     };
 
-    // Add new admin
     const handleAddAdmin = async () => {
         setLoading(true);
         try {
@@ -136,7 +133,6 @@ const GerenciamentoAdmins = () => {
         }
     };
 
-    // Delete admin
     const handleDeleteAdmin = async () => {
         setLoading(true);
         try {
@@ -187,7 +183,6 @@ const GerenciamentoAdmins = () => {
         setShowVerifyModal(true);
     };
 
-    // Table columns
     const columnHelper = createColumnHelper();
     const columns = [
         columnHelper.accessor('id', {
@@ -250,7 +245,6 @@ const GerenciamentoAdmins = () => {
 
     return (
         <div>
-            {/* Alert Messages */}
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 sm:mt-10 mb-4" role="alert">
                     <span className="block sm:inline">{error}</span>
@@ -262,7 +256,6 @@ const GerenciamentoAdmins = () => {
                 </div>
             )}
 
-            {/* Main Card */}
             <Card extra="w-full h-full overflow-auto px-2 sm:px-6 mt-4 sm:mt-6 mb-4 sm:mb-6">
                 <header className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 sm:pt-4 gap-2 sm:gap-0">
                     <div className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">Lista de Administradores</div>
@@ -284,7 +277,6 @@ const GerenciamentoAdmins = () => {
                     </div>
                 </header>
 
-                {/* Table Container */}
                 <div className="mt-3 sm:mt-5 overflow-x-auto">
                     <div className="min-w-[600px] sm:min-w-0">
                         <table className="w-full">

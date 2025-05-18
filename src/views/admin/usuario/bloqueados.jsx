@@ -233,58 +233,61 @@ const UsuariosBloqueados = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
-          <div className="bg-white p-6 rounded-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">
-              {currentCategoria ? "Editar Categoria" : "Adicionar Categoria"}
-            </h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Nome</label>
-                <input
-                  type="text"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Descrição</label>
-                <textarea
-                  name="descricao"
-                  value={formData.descricao}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Imagem</label>
-                <input
-                  type="file"
-                  name="imagem"
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-lg hover:bg-brand-800"
-                >
-                  {currentCategoria ? "Salvar" : "Adicionar"}
-                </button>
-              </div>
-            </form>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70 p-4">
+          <div className="bg-white rounded-lg w-full max-w-md sm:max-w-lg md:max-w-xl lg:w-1/3">
+            <div className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-4">
+                {currentCategoria ? "Editar Categoria" : "Adicionar Categoria"}
+              </h2>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">Nome</label>
+                  <input
+                    type="text"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded-lg mt-1"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">Descrição</label>
+                  <textarea
+                    name="descricao"
+                    value={formData.descricao}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded-lg mt-1"
+                    rows="3"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">Imagem</label>
+                  <input
+                    type="file"
+                    name="imagem"
+                    onChange={handleChange}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 mt-1"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-0">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 order-2 sm:order-1 sm:mr-2"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-lg hover:bg-brand-800 order-1 sm:order-2"
+                  >
+                    {currentCategoria ? "Salvar" : "Adicionar"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

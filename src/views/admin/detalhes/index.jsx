@@ -169,31 +169,6 @@ const DetalhesProduto = () => {
 
     return (
         <div className="p-4">
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Mídia em tamanho grande"
-            >
-                {tipoMedia === 'imagem' ? (
-                    <img
-                        src={mediaPrincipal}
-                        alt="Visualização ampliada"
-                        className="max-w-full max-h-screen"
-                        onClick={closeModal}
-                    />
-                ) : (
-                    <video
-                        src={mediaPrincipal}
-                        controls
-                        autoPlay
-                        className="max-w-full max-h-screen"
-                    >
-                        <track kind="captions" src="" label="Legendas" />
-                    </video>
-                )}
-            </Modal>
-
             <Card extra="w-full h-full sm:overflow-auto p-6">
                 <div className="flex flex-col md:flex-row gap-6">
                     <div className="w-full md:w-1/2">
@@ -214,29 +189,35 @@ const DetalhesProduto = () => {
                             </video>
                         )}
 
-                        <div className="mt-4 flex gap-2">
+                        <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
                             {produto.imagens.map((img, index) => (
                                 <img
                                     key={index}
                                     src={`${img.imagem}`}
                                     alt={`Imagem adicional ${index + 1}`}
-                                    className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-75"
+                                    className="w-full aspect-square object-cover rounded-lg cursor-pointer hover:opacity-75 transition-opacity"
                                     onClick={() => trocarMediaPrincipal(img.imagem, 'imagem')}
                                 />
                             ))}
                         </div>
 
                         {produto.videos && produto.videos.length > 0 && (
-                            <div className="mt-4 flex gap-2">
+                            <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
                                 {produto.videos.map((video, index) => (
-                                    <video
-                                        key={index}
-                                        src={`${video.video}`}
-                                        className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-75"
-                                        onClick={() => trocarMediaPrincipal(video.video, 'video')}
-                                    >
-                                        <track kind="captions" src="" label="Legendas" />
-                                    </video>
+                                    <div key={index} className="relative w-full aspect-square">
+                                        <video
+                                            src={`${video.video}`}
+                                            className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-75 transition-opacity"
+                                            onClick={() => trocarMediaPrincipal(video.video, 'video')}
+                                        >
+                                            <track kind="captions" src="" label="Legendas" />
+                                        </video>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <svg className="w-8 h-8 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M6.3 2.8L16 10 6.3 17.2V2.8z" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         )}
@@ -338,6 +319,31 @@ const DetalhesProduto = () => {
                     </div>
                 ))}
             </div>
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Mídia em tamanho grande"
+            >
+                {tipoMedia === 'imagem' ? (
+                    <img
+                        src={mediaPrincipal}
+                        alt="Visualização ampliada"
+                        className="max-w-full max-h-screen"
+                        onClick={closeModal}
+                    />
+                ) : (
+                    <video
+                        src={mediaPrincipal}
+                        controls
+                        autoPlay
+                        className="max-w-full max-h-screen"
+                    >
+                        <track kind="captions" src="" label="Legendas" />
+                    </video>
+                )}
+            </Modal>
         </div>
     );
 };

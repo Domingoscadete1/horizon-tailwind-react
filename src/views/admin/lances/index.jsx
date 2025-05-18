@@ -150,7 +150,7 @@ const LancesList = () => {
           {row.original.id || 'N-A'}
         </p>
       ),
-    }, 
+    },
     columnHelper.accessor(row => row.produto?.imagens?.[0]?.imagem, {
       id: "imagem_produto",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">IMAGEM</p>,
@@ -294,58 +294,69 @@ const LancesList = () => {
           />
         </header>
 
-        <div className="mt-3 sm:mt-5 overflow-x-auto">
-          <div className="min-w-[600px] sm:min-w-0">
-            <table className="w-full">
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th key={header.id} className="border-b py-2 text-start text-sm sm:text-base">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
+        <div className="mt-3 sm:mt-5">
+          <div className="overflow-x-auto">
+            <div className="min-w-[600px] sm:min-w-full">
+              <table className="w-full">
+                <thead>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id} className="bg-gray-50">
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          className="border-b py-3 px-3 sm:px-4 text-start text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap"
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
 
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="py-2 text-sm sm:text-base">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                <tbody className="divide-y divide-gray-200">
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id} className="hover:bg-gray-50">
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="py-3 px-3 sm:px-4 text-xs sm:text-sm text-gray-700 whitespace-nowrap"
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-4 mb-5 gap-3 sm:gap-4 px-2 sm:px-0">
+            <button
+              onClick={() => setPagination(prev => ({ ...prev, pageIndex: Math.max(prev.pageIndex - 1, 0) }))}
+              disabled={pagination.pageIndex === 0}
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm w-full sm:w-auto"
+            >
+              <FaArrowLeft size={14} />
+              <span className="sm:hidden">Voltar</span>
+              <span className="hidden sm:inline">Anterior</span>
+            </button>
+
+            <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
+              Página {pagination.pageIndex + 1} de {pagination.totalPages}
+            </span>
+
+            <button
+              onClick={() => setPagination(prev => ({ ...prev, pageIndex: Math.min(prev.pageIndex + 1, prev.totalPages - 1) }))}
+              disabled={pagination.pageIndex >= pagination.totalPages - 1}
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm w-full sm:w-auto"
+            >
+              <span className="sm:hidden">Avançar</span>
+              <span className="hidden sm:inline">Próxima</span>
+              <FaArrowRight size={14} />
+            </button>
           </div>
         </div>
-
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 mb-5 gap-2 sm:gap-0">
-          <button
-            onClick={() => setPagination(prev => ({ ...prev, pageIndex: Math.max(prev.pageIndex - 1, 0) }))}
-            disabled={pagination.pageIndex === 0}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 text-sm sm:text-base"
-          >
-            <FaArrowLeft /> <span className="hidden sm:inline">Anterior</span>
-          </button>
-
-          <span className="text-sm sm:text-base">
-            Página {pagination.pageIndex + 1} de {pagination.totalPages}
-          </span>
-
-          <button
-            onClick={() => setPagination(prev => ({ ...prev, pageIndex: Math.min(prev.pageIndex + 1, prev.totalPages - 1) }))}
-            disabled={pagination.pageIndex >= pagination.totalPages - 1}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 text-sm sm:text-base"
-          >
-            <span className="hidden sm:inline">Próxima</span> <FaArrowRight />
-          </button>
-        </div>
-
       </Card>
 
       {
