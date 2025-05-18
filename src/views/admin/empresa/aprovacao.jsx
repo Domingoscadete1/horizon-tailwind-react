@@ -124,7 +124,7 @@ const EmpresasParaAprovar = () => {
 
                 <div className="mt-4 overflow-x-auto">
                     <table className="w-full min-w-[600px]">
-                        <thead className="bg-gray-50 dark:bg-gray-700">
+                        <thead>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => (

@@ -654,7 +654,10 @@ const GerenciamentoPostos = () => {
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id} className="!border-px !border-gray-400">
                                     {headerGroup.headers.map((header) => (
-                                        <th key={header.id} className="border-b text-start p-2">
+                                        <th
+                                            key={header.id}
+                                            className="border-b dark:border-gray-600 py-3 px-3 sm:px-4 text-start text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+                                        >
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                         </th>
                                     ))}
@@ -665,7 +668,10 @@ const GerenciamentoPostos = () => {
                             {table.getRowModel().rows.map((row) => (
                                 <tr key={row.id}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="py-2">
+                                        <td
+                                            key={cell.id}
+                                            className="py-3 px-3 sm:px-4 text-xs sm:text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
+                                        >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
@@ -679,44 +685,56 @@ const GerenciamentoPostos = () => {
             {postoSelecionado && postoSelecionado.id && (
                 <div>
                     {funcionarios.length >= 0 && (
-                        <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                            <header className="relative flex items-center justify-between pt-4">
-                                <div className="text-xl font-bold text-navy-700 dark:text-white">
+                        <Card extra="w-full h-full p-4 sm:p-6 mt-4 sm:mt-6 mb-4 sm:mb-6">
+                            <header className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 pt-2 sm:pt-4">
+                                <div className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
                                     Funcionários do Posto
                                 </div>
-                                <input
-                                    type="text"
-                                    placeholder="Filtrar por nome..."
-                                    value={globalFilter}
-                                    onChange={(e) => setGlobalFilter(e.target.value)}
-                                    className="p-2 border rounded-lg"
-                                />
-                                <button
-                                    onClick={() => setMostrarModalFuncionario(true)}
-                                    className="bg-brand-900 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
-                                >
-                                    <FaPlus className="mr-2" />
-                                    Adicionar Funcionário
-                                </button>
+
+                                <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Filtrar por nome..."
+                                        value={globalFilter}
+                                        onChange={(e) => setGlobalFilter(e.target.value)}
+                                        className="w-full sm:w-48 p-2 border rounded-lg text-sm dark:bg-navy-800 dark:border-gray-600 dark:text-white"
+                                    />
+
+                                    <button
+                                        onClick={() => setMostrarModalFuncionario(true)}
+                                        className="bg-brand-900 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center text-sm sm:text-base whitespace-nowrap"
+                                    >
+                                        <FaPlus className="mr-1 sm:mr-2" size={14} />
+                                        <span>Adicionar</span>
+                                        <span className="hidden sm:inline ml-1">Funcionário</span>
+                                    </button>
+                                </div>
                             </header>
-                            <div className="mt-5 overflow-x-auto">
-                                <table className="w-full">
+
+                            <div className="mt-4 sm:mt-6 overflow-x-auto">
+                                <table className="w-full min-w-[600px] sm:min-w-full">
                                     <thead>
                                         {funcionariosTable.getHeaderGroups().map((headerGroup) => (
                                             <tr key={headerGroup.id}>
                                                 {headerGroup.headers.map((header) => (
-                                                    <th key={header.id} className="border-b py-2 text-start">
+                                                    <th
+                                                        key={header.id}
+                                                        className="border-b dark:border-gray-600 py-3 px-3 sm:px-4 text-start text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+                                                    >
                                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                                     </th>
                                                 ))}
                                             </tr>
                                         ))}
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
                                         {funcionariosTable.getRowModel().rows.map((row) => (
-                                            <tr key={row.id}>
+                                            <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-navy-600/50">
                                                 {row.getVisibleCells().map((cell) => (
-                                                    <td key={cell.id} className="py-2">
+                                                    <td
+                                                        key={cell.id}
+                                                        className="py-3 px-3 sm:px-4 text-xs sm:text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
+                                                    >
                                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                     </td>
                                                 ))}
@@ -729,10 +747,10 @@ const GerenciamentoPostos = () => {
                     )}
 
                     {atividades.length > 0 && (
-                        <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                            <div className="mt-5 overflow-x-auto">
-                                <header className="relative mb-6 flex items-center justify-between pt-4">
-                                    <div className="text-xl font-bold text-navy-700 dark:text-white">
+                        <Card extra="w-full h-full p-4 sm:p-6 mt-4 sm:mt-6 mb-4 sm:mb-6">
+                            <div className="mt-2 sm:mt-3">
+                                <header className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 pt-2 sm:pt-4 pb-4">
+                                    <div className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
                                         Últimas Actividades
                                     </div>
                                     <input
@@ -740,56 +758,74 @@ const GerenciamentoPostos = () => {
                                         placeholder="Filtrar por nome..."
                                         value={globalFilter}
                                         onChange={(e) => setGlobalFilter(e.target.value)}
-                                        className="p-2 border rounded-lg"
+                                        className="w-full sm:w-64 p-2 border rounded-lg text-sm dark:bg-navy-800 dark:border-gray-600 dark:text-white"
                                     />
                                 </header>
-                                <table className="w-full">
-                                    <thead>
-                                        {atividadesTable.getHeaderGroups().map((headerGroup) => (
-                                            <tr key={headerGroup.id}>
-                                                {headerGroup.headers.map((header) => (
-                                                    <th key={header.id} className="border-b py-2 text-start">
-                                                        {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </thead>
-                                    <tbody>
-                                        {atividadesTable.getRowModel().rows.map((row) => (
-                                            <tr key={row.id}>
-                                                {row.getVisibleCells().map((cell) => (
-                                                    <td key={cell.id} className="py-2">
-                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="flex justify-center mt-10 mb-4">
-                                    <div className="flex items-center space-x-2">
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full min-w-[600px] sm:min-w-full">
+                                        <thead>
+                                            {atividadesTable.getHeaderGroups().map((headerGroup) => (
+                                                <tr key={headerGroup.id}>
+                                                    {headerGroup.headers.map((header) => (
+                                                        <th
+                                                            key={header.id}
+                                                            className="border-b dark:border-gray-600 py-3 px-3 sm:px-4 text-start text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+                                                        >
+                                                            {flexRender(header.column.columnDef.header, header.getContext())}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
+                                            {atividadesTable.getRowModel().rows.map((row) => (
+                                                <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-navy-600/50">
+                                                    {row.getVisibleCells().map((cell) => (
+                                                        <td
+                                                            key={cell.id}
+                                                            className="py-3 px-3 sm:px-4 text-xs sm:text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
+                                                        >
+                                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Paginação */}
+                                <div className="flex justify-center mt-6 sm:mt-10 mb-3 sm:mb-4">
+                                    <div className="flex items-center gap-2 sm:gap-4">
                                         <button
                                             onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual - 1)}
                                             disabled={!paginaAnterior}
-                                            className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${paginaAnterior === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                            className={`px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-full flex items-center gap-1 ${paginaAnterior
+                                                ? "bg-brand-900 text-white hover:bg-brand-800"
+                                                : "bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                                                }`}
                                         >
-                                            <FaArrowLeft className="w-20" />
+                                            <FaArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                                            <span className="hidden sm:inline">Anterior</span>
                                         </button>
 
-                                        <span className="text-sm text-gray-600 dark:text-white">
+                                        <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 px-2">
                                             Página {paginaAtual}
                                         </span>
 
                                         <button
                                             onClick={() => fetchAtividades(postoSelecionado.id, paginaAtual + 1)}
                                             disabled={!proximaPagina}
-                                            className={`"px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center" ${proximaPagina ? "bg-blue-500 text-white" : ""}`}
+                                            className={`px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-full flex items-center gap-1 ${proximaPagina
+                                                ? "bg-brand-900 text-white hover:bg-brand-800"
+                                                : "bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                                                }`}
                                         >
-                                            <FaArrowRight className="w-20" />
+                                            <span className="hidden sm:inline">Próxima</span>
+                                            <FaArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                         </Card>
@@ -816,26 +852,35 @@ const GerenciamentoPostos = () => {
 
             {/* Modal de Informação de Posto */}
             {modalInfo && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <header className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-navy-700">Informações do Posto</h2> <br />
-                            <h2 className="text-xl font-bold text-navy-700">{postoSelecionadoinformacao.nome}</h2>
-                            <br />
-                            <img src={`${postoSelecionadoinformacao.imagem}`} alt="" />
-
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70 dark:bg-opacity-70 p-4 sm:p-6">
+                    <div className="bg-white rounded-lg w-full max-w-md mx-auto overflow-hidden shadow-xl">
+                        <header className="flex justify-between items-start p-4 sm:p-6 border-b">
+                            <div className="flex-1">
+                                <h2 className="text-lg sm:text-xl font-bold text-gray-800">Informações do Posto</h2>
+                                <h3 className="text-md sm:text-lg font-semibold text-gray-700 mt-1">{postoSelecionadoinformacao.nome}</h3>
+                            </div>
                             <button
                                 onClick={fecharModalInfo}
-                                className="text-navy-700 hover:text-blue-700"
-                                title="Visualizar"
+                                className="text-gray-500 hover:text-gray-700 ml-4"
+                                aria-label="Fechar modal"
                             >
-                                <FaTimes />
+                                <FaTimes className="h-5 w-5" />
                             </button>
                         </header>
+
+                        <div className="p-4 sm:p-6">
+                            <div className="mb-4 flex justify-center">
+                                <img
+                                    src={`${postoSelecionadoinformacao.imagem}`}
+                                    alt={`Imagem do posto ${postoSelecionadoinformacao.nome}`}
+                                    className="max-h-60 sm:max-h-80 w-auto rounded-lg object-cover"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             )}
+
             {mostrarModalFuncionario && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0B] bg-opacity-70">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">

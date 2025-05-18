@@ -36,7 +36,7 @@ const GerenciamentoAdmins = () => {
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-    const [pendingAction, setPendingAction] = useState(null); 
+    const [pendingAction, setPendingAction] = useState(null);
 
     useEffect(() => {
         const fetchAdmins = async () => {
@@ -256,9 +256,9 @@ const GerenciamentoAdmins = () => {
                 </div>
             )}
 
-            <Card extra="w-full h-full overflow-auto px-2 sm:px-6 mt-4 sm:mt-6 mb-4 sm:mb-6">
+            <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
                 <header className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 sm:pt-4 gap-2 sm:gap-0">
-                    <div className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">Lista de Administradores</div>
+                    <div className="text-lg sm:text-xl font-bold text-navy-700 mt-3 dark:text-white">Lista de Administradores</div>
                     <div className="flex flex-col sm:flex-row w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-2">
                         <input
                             type="text"

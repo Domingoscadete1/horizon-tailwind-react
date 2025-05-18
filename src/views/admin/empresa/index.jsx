@@ -249,7 +249,6 @@ const GerenciamentoEmpresas = () => {
 
             <div>
                 <div className="flex flex-col gap-4 p-2 sm:p-4">
-                    {/* Card de Lista de Empresas */}
                     <Card extra="w-full h-full overflow-x-auto p-4 sm:p-6">
                         <header className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between pt-2 sm:pt-4">
                             <h1 className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
@@ -268,7 +267,7 @@ const GerenciamentoEmpresas = () => {
 
                         <div className="mt-4 overflow-x-auto">
                             <table className="w-full min-w-[600px]">
-                                <thead className="bg-gray-50 dark:bg-gray-700">
+                                <thead>
                                     {table.getHeaderGroups().map((headerGroup) => (
                                         <tr key={headerGroup.id}>
                                             {headerGroup.headers.map((header) => (
@@ -303,7 +302,6 @@ const GerenciamentoEmpresas = () => {
                         </div>
                     </Card>
 
-                    {/* Card de Funcionários (condicional) */}
                     {empresaSelecionada && (
                         <Card extra="w-full h-full overflow-x-auto p-4 sm:p-6 mt-4">
                             <header className="pt-2 sm:pt-4">
@@ -314,7 +312,7 @@ const GerenciamentoEmpresas = () => {
 
                             <div className="mt-4 overflow-x-auto">
                                 <table className="w-full min-w-[600px]">
-                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                    <thead>
                                         {funcionariosTable.getHeaderGroups().map((headerGroup) => (
                                             <tr key={headerGroup.id}>
                                                 {headerGroup.headers.map((header) => (
