@@ -395,15 +395,17 @@ const AcoesSistema = () => {
     return (
         <div className="px-2 sm:px-4">
             <Card extra={"w-full h-full overflow-x-auto px-2 sm:px-4 mt-4 mb-4"}>
-                <header className="relative flex items-center justify-between pt-4">
-                    <div className="text-xl font-bold text-navy-700 dark:text-white">Registro de Ações do Sistema</div>
+                <header className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 pt-4 px-4 sm:px-6">
+                    <div className="text-xl font-bold text-navy-700 dark:text-white w-full md:w-auto text-center md:text-left">
+                        Registro de Ações do Sistema
+                    </div>
 
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                        <div className="relative w-full sm:w-64">
                             <input
                                 type="text"
                                 placeholder="Pesquisar..."
-                                className="pl-10 pr-4 py-2 border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="pl-10 pr-4 py-2 border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                                 value={filters.search}
                                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             />
@@ -412,7 +414,7 @@ const AcoesSistema = () => {
 
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-lg flex items-center space-x-2"
+                            className="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-lg flex items-center justify-center space-x-2 w-full sm:w-auto"
                         >
                             <FaFilter />
                             <span>Filtros</span>

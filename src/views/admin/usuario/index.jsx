@@ -67,7 +67,7 @@ const GerenciamentoUsuarios = () => {
     pageSize: 10,
     totalPages: 1,
   });
-  
+
   const fetchUsuarios = async () => {
     try {
       const response = await fetchWithToken(`api/usuarios/?page=${pagination.pageIndex + 1}`, {
@@ -267,14 +267,16 @@ const GerenciamentoUsuarios = () => {
       ) : (
         <>
           <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-            <header className="relative flex items-center justify-between pt-4">
-              <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Usuários</div>
+            <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
+              <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                Lista de Usuários
+              </div>
               <input
                 type="text"
                 placeholder="Pesquise aqui..."
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="p-2 border text-navy-700 rounded-lg"
+                className="w-full md:w-auto p-2 border text-navy-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </header>
 

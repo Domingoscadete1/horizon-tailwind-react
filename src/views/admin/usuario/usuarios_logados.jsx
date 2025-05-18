@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  FaArrowLeft, 
-  FaArrowRight, 
-  FaSearch, 
-  FaFilter, 
-  FaUser,
-  FaUserShield,
-  FaUserTie,
-  FaBuilding,
-  FaGasPump,
-  FaSignInAlt,
-  FaSignOutAlt,
-  FaInfoCircle,
-  FaPowerOff
+import {
+    FaArrowLeft,
+    FaArrowRight,
+    FaSearch,
+    FaFilter,
+    FaUser,
+    FaUserShield,
+    FaUserTie,
+    FaBuilding,
+    FaGasPump,
+    FaSignInAlt,
+    FaSignOutAlt,
+    FaInfoCircle,
+    FaPowerOff
 } from "react-icons/fa";
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import Card from "components/card";
@@ -61,10 +61,10 @@ const UsuariosLogados = () => {
         try {
             let url = `api/logged-in-users/?page=${pagination.pageIndex + 1}`;
             const params = new URLSearchParams();
-            
+
             if (filters.search) params.append('search', filters.search);
             if (filters.userType) params.append('user_type', filters.userType);
-            
+
             if (params.toString()) {
                 url += `&${params.toString()}`;
             }
@@ -75,7 +75,7 @@ const UsuariosLogados = () => {
                     "ngrok-skip-browser-warning": "true",
                 },
             });
-            
+
             const data = await response.json();
             console.log(data);
             setUsers(data.results || []);
@@ -105,7 +105,7 @@ const UsuariosLogados = () => {
             }
 
             setActionMessage({ type: 'success', text: 'Todas as sessões foram desconectadas com sucesso' });
-            fetchLoggedInUsers(); 
+            fetchLoggedInUsers();
         } catch (error) {
             console.error("Erro ao desconectar sessões", error);
             setActionMessage({ type: 'error', text: error.message });
@@ -197,7 +197,7 @@ const UsuariosLogados = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">AÇÕES</p>,
             cell: ({ row }) => (
                 <div className="flex gap-2">
-                    
+
                     <button
                         onClick={() => console.log('Detalhes:', row.original)}
                         className="text-blue-500 hover:text-blue-700"
@@ -231,37 +231,40 @@ const UsuariosLogados = () => {
                     {actionMessage.text}
                 </div>
             )}
+
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
-                <header className="relative flex items-center justify-between pt-4">
-                    <div className="text-xl font-bold text-navy-700 dark:text-white">Usuários Ativos no Sistema</div>
-                    
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
+                <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
+                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Usuários Ativos no Sistema
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center w-full sm:w-auto space-y-3 sm:space-y-0 sm:space-x-4">
+                        <div className="relative w-full sm:w-auto">
                             <input
                                 type="text"
                                 placeholder="Pesquisar..."
-                                className="pl-10 pr-4 py-2 border text-navy-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-10 pr-4 py-2 border text-navy-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value={filters.search}
-                                onChange={(e) => setFilters({...filters, search: e.target.value})}
+                                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             />
-                            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         </div>
-                        
+
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-lg flex items-center space-x-2"
+                            className="w-full sm:w-auto px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-lg flex items-center justify-center space-x-2 text-white"
                         >
                             <FaFilter />
                             <span>Filtros</span>
                         </button>
+
                         <button
-                        onClick={() => setShowLogoutModal(true)
-                        }
-                        className="px-4 py-3 bg-red-500 hover:bg-red-600 rounded-lg flex items-center space-x-2"
-                        title="Desconectar todas as sessões"
-                    >
-                        <FaPowerOff />
-                    </button>
+                            onClick={() => setShowLogoutModal(true)}
+                            className="w-full sm:w-auto px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg flex items-center justify-center space-x-2 text-white"
+                            title="Desconectar todas as sessões"
+                        >
+                            <FaPowerOff />
+                        </button>
                     </div>
                 </header>
 
@@ -284,7 +287,7 @@ const UsuariosLogados = () => {
                                     <option value="usuario" className='text-navy-700'>Usuário</option>
                                 </select>
                             </div>
-                            
+
                             <div className="flex items-end space-x-2">
                                 <button
                                     onClick={resetFilters}
@@ -363,7 +366,7 @@ const UsuariosLogados = () => {
             </div>
 
             {/* Modal de Confirmação de Logout */}
-            {showLogoutModal  && (
+            {showLogoutModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                         <h3 className="text-lg font-semibold mb-4">Confirmar Logout em Todas as Sessões</h3>
@@ -374,7 +377,7 @@ const UsuariosLogados = () => {
                             <button
                                 onClick={() => {
                                     setShowLogoutModal(false);
-                                   
+
                                 }}
                                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
                                 disabled={actionLoading}

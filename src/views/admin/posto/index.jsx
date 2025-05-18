@@ -251,9 +251,9 @@ const GerenciamentoPostos = () => {
         try {
             const response = await fetchWithToken(`api/postos/`, {
                 headers: {
-                    "ngrok-skip-browser-warning": "true", 
+                    "ngrok-skip-browser-warning": "true",
                 },
-            }); 
+            });
             if (!response.ok) {
                 throw new Error("Erro ao buscar postos");
             }
@@ -264,7 +264,7 @@ const GerenciamentoPostos = () => {
             console.error("Erro ao buscar postos:", error);
             setPostos([]);
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
@@ -301,14 +301,14 @@ const GerenciamentoPostos = () => {
             setOpenMapModal(true);
         }
     };
- 
+
     const fecharModalInfo = () => {
         setModalInfo(false);
     };
 
     const fecharModal = () => {
         setMostrarModal(false);
-        setNovoPosto({ nome: '', criadoPor: '', dataCriacao: '' }); 
+        setNovoPosto({ nome: '', criadoPor: '', dataCriacao: '' });
     };
 
     const handleInputChange = (e) => {
@@ -370,7 +370,7 @@ const GerenciamentoPostos = () => {
         const confirmacao = window.confirm("Tem certeza que deseja suspender este posto?");
 
         if (!confirmacao) {
-            return; 
+            return;
         }
         try {
             const response = await fetchWithToken(`api/posto/${id}/delete/`, {
@@ -426,7 +426,7 @@ const GerenciamentoPostos = () => {
                 const data = await response.json();
                 alert('Funcionário cadastrado com sucesso!');
                 setMostrarModalFuncionario(false);
-                fetchFuncionarios(postoSelecionado.id); 
+                fetchFuncionarios(postoSelecionado.id);
                 setNovoFuncionario({
                     nome: '',
                     email: '',
@@ -444,13 +444,13 @@ const GerenciamentoPostos = () => {
             alert('Erro ao cadastrar funcionário.');
         }
     };
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleFileChange = (e) => {
         setNovoFuncionario({ ...novoFuncionario, foto: e.target.files[0] });
     };
     const handleFuncionarioClick = (funcionarioId) => {
-        navigate(`/admin/funcionario-posto/${funcionarioId}`); 
+        navigate(`/admin/funcionario-posto/${funcionarioId}`);
     };
 
     const columnHelper = createColumnHelper();
@@ -594,9 +594,9 @@ const GerenciamentoPostos = () => {
         data: postos,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), 
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
-            globalFilter, 
+            globalFilter,
         },
         onGlobalFilterChange: setGlobalFilter,
     });
@@ -605,9 +605,9 @@ const GerenciamentoPostos = () => {
         data: funcionarios,
         columns: funcionariosColumns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), 
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
-            globalFilter, 
+            globalFilter,
         },
         onGlobalFilterChange: setGlobalFilter,
     });
@@ -616,9 +616,9 @@ const GerenciamentoPostos = () => {
         data: atividades,
         columns: atividadesColumns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), 
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
-            globalFilter, 
+            globalFilter,
         },
         onGlobalFilterChange: setGlobalFilter,
     });
@@ -635,19 +635,17 @@ const GerenciamentoPostos = () => {
         <div className="p-2">
 
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
-                <header className="relative flex items-center justify-between pt-4">
-                    <div className="text-xl font-bold text-navy-700 dark:text-white">
+                <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
+                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
                         Lista de Postos Registrados
                     </div>
-
                     <input
                         type="text"
                         placeholder="Pesquise aqui..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="p-2 border text-gray-700 rounded-lg"
+                        className="w-full md:w-auto p-2 border border-gray-300 text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-
                 </header>
 
                 <div className="mt-5 overflow-x-auto">
@@ -951,7 +949,7 @@ const GerenciamentoPostos = () => {
                 <UpdatePostoModal
                     postoParaEditar={postoSelecionadoUpdate}
                     atualizarPostoNaAPI={fetchPostos}
-                    onClose={() => setMostrarModalUpdate(false)} 
+                    onClose={() => setMostrarModalUpdate(false)}
                 />
             )}
 

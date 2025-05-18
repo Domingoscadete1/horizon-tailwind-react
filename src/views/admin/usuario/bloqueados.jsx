@@ -140,8 +140,8 @@ const UsuariosBloqueados = () => {
   return (
     <div className="p-4">
       <Card extra="w-full h-full sm:overflow-auto p-6">
-        <div className="relative flex items-center justify-between pt-4">
-          <header className="text-xl font-bold text-navy-700 dark:text-white">
+        <div className="relative flex items-center justify-between pt-2 sm:pt-4">
+          <header className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
             Gerenciamento de Categorias
           </header>
         </div>
@@ -153,47 +153,49 @@ const UsuariosBloqueados = () => {
             </LoaderContainer>
           ) : (
             <>
-              <table className="w-full">
-                <thead>
-                  <tr className="!border-px !border-gray-400">
-                    <th className="text-start py-2">Nome</th>
-                    <th className="text-start py-2">Descrição</th>
-                    <th className="text-start py-2">Imagem</th>
-                    <th className="text-start py-2">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedCategorias.map((categoria) => (
-                    <tr key={categoria.id} className="border-b border-gray-200">
-                      <td className="py-3">{categoria.nome}</td>
-                      <td className="py-3">{categoria.descricao}</td>
-                      <td className="py-3">
-                        {categoria.imagem && (
-                          <img
-                            src={categoria.imagem}
-                            alt={categoria.nome}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        )}
-                      </td>
-                      <td className="py-3">
-                        <button
-                          onClick={() => openModal(categoria)}
-                          className="text-green-500 hover:text-green-700 mr-2"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(categoria.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FaTrash />
-                        </button>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[600px]">
+                  <thead>
+                    <tr className="!border-px !border-gray-400">
+                      <th className="text-start py-2">Nome</th>
+                      <th className="text-start py-2">Descrição</th>
+                      <th className="text-start py-2">Imagem</th>
+                      <th className="text-start py-2">Ações</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {paginatedCategorias.map((categoria) => (
+                      <tr key={categoria.id} className="border-b border-gray-200">
+                        <td className="py-3">{categoria.nome}</td>
+                        <td className="py-3">{categoria.descricao}</td>
+                        <td className="py-3">
+                          {categoria.imagem && (
+                            <img
+                              src={categoria.imagem}
+                              alt={categoria.nome}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          )}
+                        </td>
+                        <td className="py-3">
+                          <button
+                            onClick={() => openModal(categoria)}
+                            className="text-green-500 hover:text-green-700 mr-2"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(categoria.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
               {/* Paginação */}
               <div className="flex justify-between items-center mt-4">

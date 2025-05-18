@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import Card from 'components/card';
 import {
     createColumnHelper,
@@ -12,8 +12,8 @@ import {
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { SyncLoader } from 'react-spinners'; 
-import styled from 'styled-components'; 
+import { SyncLoader } from 'react-spinners';
+import styled from 'styled-components';
 import Config from "../../../Config";
 import { fetchWithToken } from '../../../authService';
 
@@ -33,37 +33,37 @@ L.Icon.Default.mergeOptions({
 });
 const criarIconeUsuario = (fotoUrl) => {
     return new L.Icon({
-        iconUrl: fotoUrl || 'https://via.placeholder.com/150', 
-        iconSize: [32, 32], 
-        iconAnchor: [16, 32], 
-        popupAnchor: [0, -32], 
-        className: 'icone-usuario', 
+        iconUrl: fotoUrl || 'https://via.placeholder.com/150',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+        className: 'icone-usuario',
     });
 };
 
 const API_BASE_URL = Config.getApiUrl();
 
 const GerenciamentoEmpresas = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const handleEmpresaClick = (empresaId) => {
-        navigate(`/admin/perfilempresa/${empresaId}`); 
+        navigate(`/admin/perfilempresa/${empresaId}`);
     };
     const handleFuncionarioClick = (funcionarioId) => {
-        navigate(`/admin/funcionario/${funcionarioId}`); 
+        navigate(`/admin/funcionario/${funcionarioId}`);
     };
-    const mediaUrl=Config.getApiUrlMedia();
+    const mediaUrl = Config.getApiUrlMedia();
     const [empresas, setEmpresas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [funcionarios, setFuncionarios] = useState([]);
     const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
     const [nomeEmpresaSelecionada, setNomeEmpresaSelecionada] = useState('');
-    const [globalFilter, setGlobalFilter] = useState(''); 
+    const [globalFilter, setGlobalFilter] = useState('');
 
     useEffect(() => {
         fetchWithToken(`api/empresas`, {
-            method:'GET',
+            method: 'GET',
             headers: {
-                "ngrok-skip-browser-warning": "true", 
+                "ngrok-skip-browser-warning": "true",
             },
         })
             .then((response) => response.json())
@@ -73,9 +73,9 @@ const GerenciamentoEmpresas = () => {
     const fetchFuncionarios = (empresaId, empresaNome) => {
         try {
             fetchWithToken(`api/empresa/funcionarios/${empresaId}/`, {
-                method:'GET',
+                method: 'GET',
                 headers: {
-                    "ngrok-skip-browser-warning": "true", 
+                    "ngrok-skip-browser-warning": "true",
                 },
             })
                 .then((response) => response.json())
@@ -190,11 +190,11 @@ const GerenciamentoEmpresas = () => {
         data: empresas,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), 
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
-            globalFilter, 
+            globalFilter,
         },
-        onGlobalFilterChange: setGlobalFilter, 
+        onGlobalFilterChange: setGlobalFilter,
     });
 
     const funcionariosTable = useReactTable({
@@ -203,7 +203,7 @@ const GerenciamentoEmpresas = () => {
         getCoreRowModel: getCoreRowModel(),
     });
     const EmpresaMap = ({ empresas }) => {
-        
+
         const extrairCoordenadas = (endereco) => {
             if (!endereco) return null;
 
@@ -225,7 +225,7 @@ const GerenciamentoEmpresas = () => {
                 const coordenadas = extrairCoordenadas(empresa.endereco);
                 return coordenadas ? { ...empresa, ...coordenadas } : null;
             })
-            .filter((empresa) => empresa !== null); 
+            .filter((empresa) => empresa !== null);
 
         return (
             <MapContainer center={[-8.8383, 13.2344]} zoom={13} style={{ height: '400px', width: '100%' }}>
@@ -244,65 +244,38 @@ const GerenciamentoEmpresas = () => {
         );
     };
 
-
-
     return (
         <div>
 
             <div>
-                <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                    <header className="relative flex items-center justify-between pt-4">
-                        <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Empresas</div>
-                        <input
-                            type="text"
-                            placeholder="Pesquise aqui..."
-                            value={globalFilter}
-                            onChange={(e) => setGlobalFilter(e.target.value)}
-                            className="p-2 border text-gray-700 rounded-lg"
-                        />
-                    </header>
-                    <div className="mt-5 overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                {table.getHeaderGroups().map((headerGroup) => (
-                                    <tr key={headerGroup.id}>
-                                        {headerGroup.headers.map((header) => (
-                                            <th key={header.id} className="border-b py-2 text-start">
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-                            <tbody>
-                                {table.getRowModel().rows.map((row) => (
-                                    <tr key={row.id}>
-                                        {row.getVisibleCells().map((cell) => (
-                                            <td key={cell.id} className="py-2">
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </Card>
-
-                {empresaSelecionada && (
-                    <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
-                        <header className="relative flex items-center justify-between pt-4">
-                            <div className="text-xl font-bold text-navy-700 dark:text-white">
-                                Funcionários da Empresa: {nomeEmpresaSelecionada}
+                <div className="flex flex-col gap-4 p-2 sm:p-4">
+                    {/* Card de Lista de Empresas */}
+                    <Card extra="w-full h-full overflow-x-auto p-4 sm:p-6">
+                        <header className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between pt-2 sm:pt-4">
+                            <h1 className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
+                                Lista de Empresas
+                            </h1>
+                            <div className="w-full sm:w-64">
+                                <input
+                                    type="text"
+                                    placeholder="Pesquise aqui..."
+                                    value={globalFilter}
+                                    onChange={(e) => setGlobalFilter(e.target.value)}
+                                    className="w-full p-2 border text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
                             </div>
                         </header>
-                        <div className="mt-5 overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    {funcionariosTable.getHeaderGroups().map((headerGroup) => (
+
+                        <div className="mt-4 overflow-x-auto">
+                            <table className="w-full min-w-[600px]">
+                                <thead className="bg-gray-50 dark:bg-gray-700">
+                                    {table.getHeaderGroups().map((headerGroup) => (
                                         <tr key={headerGroup.id}>
                                             {headerGroup.headers.map((header) => (
-                                                <th key={header.id} className="border-b py-2 text-start">
+                                                <th
+                                                    key={header.id}
+                                                    className="border-b py-3 px-3 text-start text-sm sm:text-base whitespace-nowrap"
+                                                >
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                                 </th>
                                             ))}
@@ -310,10 +283,16 @@ const GerenciamentoEmpresas = () => {
                                     ))}
                                 </thead>
                                 <tbody>
-                                    {funcionariosTable.getRowModel().rows.map((row) => (
-                                        <tr key={row.id}>
+                                    {table.getRowModel().rows.map((row) => (
+                                        <tr
+                                            key={row.id}
+                                            className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                        >
                                             {row.getVisibleCells().map((cell) => (
-                                                <td key={cell.id} className="py-2">
+                                                <td
+                                                    key={cell.id}
+                                                    className="py-3 px-3 border-b text-sm sm:text-base"
+                                                >
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </td>
                                             ))}
@@ -324,8 +303,54 @@ const GerenciamentoEmpresas = () => {
                         </div>
                     </Card>
 
+                    {/* Card de Funcionários (condicional) */}
+                    {empresaSelecionada && (
+                        <Card extra="w-full h-full overflow-x-auto p-4 sm:p-6 mt-4">
+                            <header className="pt-2 sm:pt-4">
+                                <h2 className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
+                                    Funcionários da Empresa: {nomeEmpresaSelecionada}
+                                </h2>
+                            </header>
 
-                )}
+                            <div className="mt-4 overflow-x-auto">
+                                <table className="w-full min-w-[600px]">
+                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                        {funcionariosTable.getHeaderGroups().map((headerGroup) => (
+                                            <tr key={headerGroup.id}>
+                                                {headerGroup.headers.map((header) => (
+                                                    <th
+                                                        key={header.id}
+                                                        className="border-b py-3 px-3 text-start text-sm sm:text-base whitespace-nowrap"
+                                                    >
+                                                        {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </thead>
+                                    <tbody>
+                                        {funcionariosTable.getRowModel().rows.map((row) => (
+                                            <tr
+                                                key={row.id}
+                                                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                            >
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <td
+                                                        key={cell.id}
+                                                        className="py-3 px-3 border-b text-sm sm:text-base"
+                                                    >
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Card>
+                    )}
+                </div>
+
                 <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                     <div className="text-xl font-bold text-navy-700 dark:text-white mb-4 mt-4">Mapa de Empresas</div>
                     <EmpresaMap empresas={empresas} />
