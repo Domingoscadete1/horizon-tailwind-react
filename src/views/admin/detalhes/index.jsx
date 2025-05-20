@@ -176,24 +176,28 @@ const DetalhesProduto = () => {
                             <img
                                 src={mediaPrincipal}
                                 alt={produto.nome}
-                                className="w-120 h-96 object-cover center rounded-lg cursor-pointer"
+                                className="w-full h-96 object-cover rounded-lg cursor-pointer"
                                 onClick={openModal}
                             />
                         ) : (
-                            <video
-                                src={mediaPrincipal}
-                                controls
-                                className="w-120 h-96 object-cover center rounded-lg"
-                            >
-                                <track kind="captions" src="" label="Legendas" />
-                            </video>
+                            <div className="relative w-full h-96">
+                                <video
+                                    src={mediaPrincipal}
+                                    controls
+                                    autoPlay
+                                    className="w-full h-full object-cover rounded-lg"
+                                    onClick={(e) => e.preventDefault()}
+                                >
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                            </div>
                         )}
 
                         <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
                             {produto.imagens.map((img, index) => (
                                 <img
                                     key={index}
-                                    src={`${img.imagem}`}
+                                    src={img.imagem}
                                     alt={`Imagem adicional ${index + 1}`}
                                     className="w-full aspect-square object-cover rounded-lg cursor-pointer hover:opacity-75 transition-opacity"
                                     onClick={() => trocarMediaPrincipal(img.imagem, 'imagem')}
@@ -204,11 +208,18 @@ const DetalhesProduto = () => {
                         {produto.videos && produto.videos.length > 0 && (
                             <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
                                 {produto.videos.map((video, index) => (
-                                    <div key={index} className="relative w-full aspect-square">
+                                    <div
+                                        key={index}
+                                        className="relative w-full aspect-square cursor-pointer"
+                                        onClick={() => {
+                                            trocarMediaPrincipal(video.video, 'video');
+                                            setMediaPrincipal(prev => video.video + '?t=' + Date.now());
+                                        }}
+                                    >
                                         <video
-                                            src={`${video.video}`}
-                                            className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-75 transition-opacity"
-                                            onClick={() => trocarMediaPrincipal(video.video, 'video')}
+                                            src={video.video}
+                                            className="w-full h-full object-cover rounded-lg hover:opacity-75 transition-opacity"
+                                            preload="metadata"
                                         >
                                             <track kind="captions" src="" label="Legendas" />
                                         </video>
