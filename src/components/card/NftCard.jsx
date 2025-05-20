@@ -4,13 +4,13 @@ import Card from "components/card";
 
 
 
-const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade, status, image_user,onNameClick,onUserClick ,descricao}) => {
+const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade, status, image_user, onNameClick, onUserClick, descricao }) => {
   return (
     <Card
       extra={`flex flex-col w-full h-full !p-4 3xl:p-![18px] bg-white ${extra}`}
     >
       <div className="h-full w-full">
-        <div className="relative w-full h-64 mb-4"> 
+        <div className="relative w-full h-64 mb-4">
           <img
             src={image}
             alt={title}
@@ -49,8 +49,12 @@ const NftCard = ({ price, extra, title, author, image, onImageClick, quantidade,
               {/* reservado */}
               {/* esgotado */}
             </p>
-            <p className="mt-2 mb-2 text-sm font-bold text-brand-500 dark:text-white">
-               {price} <span>AOA</span>
+            <p className="mt-2 mb-2 text-sm font-bold text-orange-400 dark:text-white">
+              {new Intl.NumberFormat('pt-AO', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }).format(price | 0)} <span>AOA</span>
             </p>
           </div>
         </div>

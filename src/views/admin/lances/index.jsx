@@ -172,7 +172,7 @@ const LancesList = () => {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">USUÁRIO</p>,
       cell: ({ row }) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {row.original.usuario?.username || row.original?.empresa_compradora?.nome || 'N/A'}
+          {row.original.usuario?.nome || row.original?.empresa_compradora?.nome || 'N/A'}
         </p>
       ),
     },
@@ -190,7 +190,11 @@ const LancesList = () => {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">PREÇO</p>,
       cell: ({ row }) => (
         <p className="text-sm text-gray-500">
-          {parseFloat(row.getValue("preco")).toFixed(2)} AOA
+          {new Intl.NumberFormat('pt-AO', {
+                      style: 'decimal',
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    }).format(parseFloat(row.getValue("preco")))} AOA
         </p>
       ),
     },

@@ -143,7 +143,11 @@ const GerenciamentoEmpresas = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">SALDO</p>,
             cell: (info) => (
                 <p className="text-sm font-bold text-gray-51">
-                    {parseFloat(info.getValue()).toFixed(2) | '0'} AOA
+                    {new Intl.NumberFormat('pt-AO', {
+                      style: 'decimal',
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    }).format(info.getValue() | 0)} AOA
                 </p>
             ),
         }),

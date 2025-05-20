@@ -590,7 +590,11 @@ const PerfilUsuario = () => {
                                             {produto.descricao}
                                         </p>
                                         <p className="mt-2 text-sm text-gray-600">
-                                            {produto.preco}Kzs
+                                            {new Intl.NumberFormat('pt-AO', {
+                                                style: 'decimal',
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }).format(produto.preco | 0)} Kzs
                                         </p>
                                     </div>
                                 </div>
@@ -648,7 +652,11 @@ const PerfilUsuario = () => {
                                                 {transacao.produto.descricao}
                                             </p>
                                             <p className=" text-sm text-gray-600">
-                                                {transacao.transacao.lance?.preco} AOA
+                                                 {new Intl.NumberFormat('pt-AO', {
+                                                style: 'decimal',
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }).format(transacao.transacao.lance?.preco | 0)}AOA
                                             </p>
                                             <p className=" text-sm text-gray-600">
                                                 {
