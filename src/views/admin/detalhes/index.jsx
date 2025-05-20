@@ -270,8 +270,13 @@ const DetalhesProduto = () => {
                             </p>
                         </div>
                         <div className="mt-2">
-                            <p className="text-xl font-bold text-navy-700 dark:text-white">
-                                {produto.preco} AOA
+                            <p className="text-xl font-bold text-orange-400 dark:text-white">
+                                {new Intl.NumberFormat('pt-AO', {
+                                    style: 'decimal',
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }).format(produto.preco | 0)}
+                                AOA
                             </p>
                         </div>
                         <div className="mt-4">

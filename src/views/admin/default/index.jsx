@@ -132,7 +132,11 @@ const Dashboard = () => {
         <Widget
           icon={<FaMoneyCheckAlt className="h-7 w-7" />}
           title={"Saldo Total"}
-          subtitle={`${dados?.saldo} AOA`}
+          subtitle={`${new Intl.NumberFormat('pt-AO', {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(dados?.saldo | 0)}AOA`}
         />
         <Widget
           icon={<FaUsersCog className="h-6 w-6" />}

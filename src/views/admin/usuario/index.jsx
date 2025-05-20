@@ -217,7 +217,11 @@ const GerenciamentoUsuarios = () => {
             className="p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         ) : (
-          <p className="text-sm text-gray-51">{info.getValue()?.toFixed(2) || '0.0'} AOA</p>
+          <p className="text-sm text-gray-51"> {new Intl.NumberFormat('pt-AO', {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(info.getValue() | 0) }AOA</p>
         ),
     }),
     columnHelper.accessor("status", {
