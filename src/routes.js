@@ -57,7 +57,7 @@ const routes = [
   {
     name: "Dashboard",
     layout: "/admin",
-    path: "default",
+    path: "principal",
     admin: true,
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
@@ -65,7 +65,7 @@ const routes = [
   {
     name: "Produtos Divulgados",
     layout: "/admin",
-    path: "nft-marketplace",
+    path: "produtos",
     admin: true,
     icon: <MdOutlineShoppingCart className="h-6 w-6" />,
     component: <NFTMarketplace />,

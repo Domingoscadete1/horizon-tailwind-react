@@ -95,7 +95,7 @@ const ModeracaoConteudo = () => {
             <header className="relative flex items-center justify-between pt-4">
                 <div className="text-xl font-bold text-navy-700 dark:text-white">
                     <FaExclamationTriangle className="inline-block mr-2" />
-                    {titulo}
+                    {titulo} ({dados.length})
                 </div>
             </header>
 
@@ -161,27 +161,6 @@ const ModeracaoConteudo = () => {
                     </table>
                 </div>
             )}
-            <div className="flex items-center justify-between mt-4 mb-4">
-                <div className="flex items-center space-x-2">
-                    <button
-                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                        onClick={handlePreviousPage}
-                        disabled={pagination.pageIndex === 0}
-                    >
-                        <FaArrowLeft className="mr-2" /> Anterior
-                    </button>
-                    <button
-                        className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
-                        onClick={handleNextPage}
-                        disabled={pagination.pageIndex + 1 >= pagination.totalPages}
-                    >
-                        Próxima <FaArrowRight className="ml-2" />
-                    </button>
-                </div>
-                <span className="text-sm text-gray-600 dark:text-white">
-                    Página {pagination.pageIndex + 1} de {pagination.totalPages}
-                </span>
-            </div>
         </Card>
     );
 
@@ -196,6 +175,28 @@ const ModeracaoConteudo = () => {
                     {renderTabela('Reportes de Empresas', reportesEmpresas)}
                     {renderTabela('Reportes de Usuários', reportesUsuarios)}
                     {renderTabela('Reportes de Produtos', reportesProdutos)}
+
+                    <div className="flex items-center justify-between mt-4 mb-4">
+                        <div className="flex items-center space-x-2">
+                            <button
+                                className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                onClick={handlePreviousPage}
+                                disabled={pagination.pageIndex === 0}
+                            >
+                                <FaArrowLeft className="mr-2" /> Anterior
+                            </button>
+                            <button
+                                className="px-4 py-2 text-sm font-medium text-white bg-brand-900 rounded-[20px] hover:bg-brand-800 flex items-center justify-center"
+                                onClick={handleNextPage}
+                                disabled={pagination.pageIndex + 1 >= pagination.totalPages}
+                            >
+                                Próxima <FaArrowRight className="ml-2" />
+                            </button>
+                        </div>
+                        <span className="text-sm text-gray-600 dark:text-white">
+                            Página {pagination.pageIndex + 1} de {pagination.totalPages} - Total: {pagination.totalCount} reportes
+                        </span>
+                    </div>
                 </>
             )}
         </div>
