@@ -136,7 +136,7 @@ const Dashboard = () => {
             style: 'decimal',
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
-          }).format(dados?.saldo | 0)}AOA`}
+          }).format(dados?.saldo | 0)} AOA`}
         />
         <Widget
           icon={<FaUsersCog className="h-6 w-6" />}

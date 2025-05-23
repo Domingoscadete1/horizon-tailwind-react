@@ -29,7 +29,6 @@ const UsuariosBloqueados = () => {
     imagem: null,
   });
 
-  // Paginação
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -157,6 +156,7 @@ const UsuariosBloqueados = () => {
                 <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="!border-px !border-gray-400">
+                    <th className="text-start py-2">Id</th>
                       <th className="text-start py-2">Nome</th>
                       <th className="text-start py-2">Descrição</th>
                       <th className="text-start py-2">Imagem</th>
@@ -165,9 +165,8 @@ const UsuariosBloqueados = () => {
                   </thead>
                   <tbody>
                     {paginatedCategorias.map((categoria) => (
-                      <tr key={categoria.id} className="border-b border-gray-200">
-                        <td className="py-3">{categoria.nome}</td>
-                        <td className="py-3">{categoria.descricao}</td>
+                      <tr key={categoria.id}>
+                        <td className="py-3">{categoria.id}</td>
                         <td className="py-3">
                           {categoria.imagem && (
                             <img
@@ -177,6 +176,8 @@ const UsuariosBloqueados = () => {
                             />
                           )}
                         </td>
+                        <td className="py-3">{categoria.nome}</td>
+                        <td className="py-3">{categoria.descricao}</td>
                         <td className="py-3">
                           <button
                             onClick={() => openModal(categoria)}

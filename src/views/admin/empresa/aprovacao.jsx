@@ -142,12 +142,12 @@ const EmpresasParaAprovar = () => {
                             {table.getRowModel().rows.map((row) => (
                                 <tr
                                     key={row.id}
-                                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                    className=" transition-colors"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <td
                                             key={cell.id}
-                                            className="py-3 px-3 border-b text-sm sm:text-base"
+                                            className="py-3 px-3 text-sm sm:text-base"
                                         >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>

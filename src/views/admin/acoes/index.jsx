@@ -257,7 +257,7 @@ const AcoesSistema = () => {
             accessorKey: "descricao",
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">DESCRIÇÃO</p>,
             cell: ({ row }) => (
-                <p className="text-sm text-gray-500 truncate max-w-xs">
+                <p className="text-sm text-gray-500">
                     {row.getValue("descricao")}
                 </p>
             ),
