@@ -222,6 +222,20 @@ const LancesList = () => {
       ),
     },
     {
+      accessorKey: "status_pos_pagamento",
+      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">STATUS Pós pagamento</p>,
+      cell: ({ row }) => (
+        <span className="flex items-center gap-2">
+          {row.getValue("status_pos_pagamento") === 'entregue' ? (
+            <FaCheckCircle className="text-green-500" />
+          ) : (
+            <FaTimesCircle className="text-red-500" />
+          )}
+          <p className="text-sm text-gray-500">{row.getValue("status_pos_pagamento")}</p>
+        </span>
+      ),
+    },
+    {
       accessorKey: "created_at",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">DATA</p>,
       cell: ({ row }) => (
