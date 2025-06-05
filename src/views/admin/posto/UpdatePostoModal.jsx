@@ -26,6 +26,19 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
     const [posto, setPosto] = useState(postoParaEditar || {});
     const [location, setLocation] = useState({ lat: 0, lng: 0 });
     const [openMapModal, setOpenMapModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(`${postoParaEditar?.imagem}` || null);
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     const MapWithInvalidate = ({ location }) => {
         const map = useMap();
 
@@ -115,28 +128,30 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
 
     const atualizarPosto = async () => {
         try {
+            const formData = new FormData();
+            formData.append('id', posto.id);
+            formData.append('nome', posto.nome);
+            formData.append('localizacao', posto.localizacao);
+            formData.append('horario', posto.horario);
+            formData.append('responsavel', posto.responsavel);
+            formData.append('telefone', posto.telefone);
+            formData.append('email', posto.email);
+            formData.append('capacidade', posto.capacidade);
+            formData.append('status', posto.status);
+            formData.append('created_at', posto.created_at);
+            formData.append('updated_at', posto.updated_at);
+            formData.append('deleted', posto.deleted);
+            
+            if (selectedImage) {
+                formData.append('imagem', selectedImage);
+            }
             const response = await fetchWithToken(`api/posto/${posto.id}/atualizar/`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
+                   // "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "true",
                 },
-                body: JSON.stringify({
-                    id: posto.id,
-                    nome: posto.nome,
-                    localizacao: posto.localizacao,
-                    imagem: posto.imagem,
-                    horario: posto.horario,
-                    responsavel: posto.responsavel,
-                    telefone: posto.telefone,
-                    email: posto.email,
-                    capacidade: posto.capacidade,
-                    imagem: posto.imagem,
-                    status: posto.status,
-                    created_at: posto.created_at,
-                    updated_at: posto.updated_at,
-                    deleted: posto.deleted
-                }),
+                body: formData,
             });
 
             const data = await response.json();
@@ -219,6 +234,26 @@ const UpdatePostoModal = ({ postoParaEditar, atualizarPostoNaAPI, onClose }) => 
                         </svg>
                     </button>
                 </header>
+                <div className="mt-4">
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Imagem do Posto</label>
+                        {imagePreview && (
+                            <div className="mb-2">
+                                <img 
+                                    src={imagePreview} 
+                                    alt="Preview" 
+                                    className="h-32 w-full object-cover rounded-lg"
+                                />
+                            </div>
+                        )}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="mt-1 p-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        />
+                    </div>
+                </div>
 
                 <div className="mt-4">
                     <div className="mb-4">

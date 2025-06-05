@@ -67,7 +67,7 @@ export default function SignIn() {
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
         localStorage.setItem('custom-auth-token', data.access);
-        navigate('/admin/default');
+        navigate('/admin/principal');
       } else {
         setError('Usuário não autorizado.');
       }

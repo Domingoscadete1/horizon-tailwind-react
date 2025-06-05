@@ -68,7 +68,7 @@ const SuporteCliente = () => {
                 console.log("Mensagens carregadas:", data);
                 setChatAtivo({
                     ...chat,
-                    mensagens: data.mensagens || [] // Garante que seja uma lista
+                    mensagens: data.mensagens || [] 
                 });
                 conectarWebSocket(chat);
             })
