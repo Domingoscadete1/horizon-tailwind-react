@@ -168,7 +168,7 @@ const Dashboard = () => {
       <div className="mt-5">
         <Card extra="w-full p-6">
           <h2 className="text-xl font-bold text-navy-700 dark:text-white mb-4">
-            Ética Digital - Diga Não às Fraudess
+            Ética Digital - Diga Não às Fraudes
           </h2>
           <Carousel
             showArrows={true}
