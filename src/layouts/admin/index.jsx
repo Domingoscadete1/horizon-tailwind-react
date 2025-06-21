@@ -33,6 +33,7 @@ export default function Admin(props) {
     }
     return activeRoute;
   };
+  
   const getActiveNavbar = (routes) => {
     let activeNavbar = false;
     for (let i = 0; i < routes.length; i++) {
@@ -44,6 +45,7 @@ export default function Admin(props) {
     }
     return activeNavbar;
   };
+
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {

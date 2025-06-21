@@ -1,7 +1,5 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
-import RtlLayout from "layouts/rtl";
 import AdminLayout from "layouts/admin";
 import AuthLayout from "layouts/auth";
 
@@ -12,12 +10,11 @@ const App = () => {
   return (
     <Routes>
       {/* Bloqueia usuários logados de acessarem /auth */}
-      <Route path="auth/*" element={isAuthenticated ? <Navigate to="/admin" replace /> : <AuthLayout />} />
+      <Route path="auth/*" element={isAuthenticated ? <Navigate to="/admin/principal" replace /> : <AuthLayout />} />
 
       {/* Bloqueia usuários não logados de acessarem /admin */}
       <Route path="admin/*" element={isAuthenticated ? <AdminLayout /> : <Navigate to="/auth/sign-in" replace />} />
 
-      <Route path="rtl/*" element={<RtlLayout />} />
 
       {/* Redireciona a raiz para o Admin se logado, senão para Login */}
       <Route path="/" element={<Navigate to={isAuthenticated ? "/admin" : "/auth/sign-in"} replace />} />
