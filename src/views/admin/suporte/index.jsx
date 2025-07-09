@@ -164,7 +164,7 @@ const SuporteCliente = () => {
                     <table className="w-full">
                         <thead>
                             <tr className="!border-px !border-gray-400">
-                                <th className="text-left py-2 px-4">Usuário</th>
+                                <th className="text-left py-2 px-4">Chats</th>
                                 <th className="text-left py-2 px-4">Tipo</th>
                                 <th className="text-left py-2 px-4">Mensagem</th>
                                 <th className="text-left py-2 px-4">Status</th>
