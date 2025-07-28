@@ -37,6 +37,37 @@ const UsuariosBloqueados = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  const [dados, setDados] = useState();
+  const obterDataAtual = () => {
+    const data = new Date();
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+  const dataAtual = obterDataAtual();
+
+  const fetchDados = async () => {
+    try {
+      const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+        method: 'GET',
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao buscar postos");
+      }
+      const data = await response.json();
+      console.log(data);
+      setDados(data);
+    } catch (error) {
+      console.error("Erro ao buscar postos:", error);
+      setDados([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchCategorias = async () => {
     try {
@@ -55,6 +86,7 @@ const UsuariosBloqueados = () => {
 
   useEffect(() => {
     fetchCategorias();
+    fetchDados();
   }, []);
 
   const openModal = (categoria = null) => {
@@ -141,7 +173,7 @@ const UsuariosBloqueados = () => {
       <Card extra="w-full h-full sm:overflow-auto p-6">
         <div className="relative flex items-center justify-between pt-2 sm:pt-4">
           <header className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
-            Gerenciamento de Categorias
+            Gerenciamento de Categorias    total de categorias {dados?.categorias_total}
           </header>
         </div>
 

@@ -34,6 +34,40 @@ const Transacao = () => {
     useEffect(() => {
         fetchTransacoes();
     }, [pagination.pageIndex]);
+    const [dados, setDados] = useState();
+    const obterDataAtual = () => {
+      const data = new Date();
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    };
+    const dataAtual = obterDataAtual();
+  
+    const fetchDados = async () => {
+      try {
+        const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+          method: 'GET',
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Erro ao buscar postos");
+        }
+        const data = await response.json();
+        console.log(data);
+        setDados(data);
+      } catch (error) {
+        console.error("Erro ao buscar postos:", error);
+        setDados([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    useEffect(() => {
+        fetchDados();
+    }, []);
 
     const fetchTransacoes = async () => {
         try {
@@ -175,6 +209,8 @@ const Transacao = () => {
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Transações</div>
+                    <div className="text-xl font-bold text-navy-700 dark:text-white">Total de Transações {dados?.transacoes_total}</div>
+
                 </header>
 
                 <div className="mt-5 overflow-x-scroll xl:overflow-x-hidden">

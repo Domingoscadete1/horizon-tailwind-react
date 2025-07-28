@@ -163,7 +163,40 @@ const GerenciamentoPostos = () => {
             setFuncionarios([]);
         }
     };
-
+    const [dados, setDados] = useState();
+    const obterDataAtual = () => {
+      const data = new Date();
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    };
+    const dataAtual = obterDataAtual();
+  
+    const fetchDados = async () => {
+      try {
+        const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+          method: 'GET',
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Erro ao buscar postos");
+        }
+        const data = await response.json();
+        console.log(data);
+        setDados(data);
+      } catch (error) {
+        console.error("Erro ao buscar postos:", error);
+        setDados([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    useEffect(() => {
+        fetchDados();
+    }, []);
     function LocationMarker() {
         const map = useMapEvents({
             click(e) {
@@ -270,6 +303,7 @@ const GerenciamentoPostos = () => {
 
     useEffect(() => {
         fetchPostos();
+        fetchDados();
     }, []);
 
     const abrirModal = () => {
@@ -638,6 +672,9 @@ const GerenciamentoPostos = () => {
                 <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
                     <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
                         Lista de Postos Registrados
+                    </div>
+                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Total de postos {dados?.postos_total}
                     </div>
                     <input
                         type="text"

@@ -35,6 +35,7 @@ const API_BASE_URL = Config.getApiUrl();
 
 const UsuariosLogados = () => {
     const [users, setUsers] = useState([]);
+    const [usersLogados, setLogados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -79,6 +80,7 @@ const UsuariosLogados = () => {
             const data = await response.json();
             console.log(data);
             setUsers(data.results || []);
+            setLogados(data);
             console.log(data);
             setPagination((prev) => ({
                 ...prev,
@@ -236,6 +238,9 @@ const UsuariosLogados = () => {
                 <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
                     <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
                         Usuários Ativos no Sistema
+                    </div>
+                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Total {usersLogados?.logados_total}
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center w-full sm:w-auto space-y-3 sm:space-y-0 sm:space-x-4">

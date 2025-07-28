@@ -119,12 +119,13 @@ const GerenciamentoAdmins = () => {
             setSuccess('Admin adicionado com sucesso!');
             setShowAddModal(false);
             setFormData({ nome: '', email: '', senha: '' });
+            window.location.reload();
 
             // Refresh admin list
             const refreshResponse = await fetchWithToken('api/list-admins/');
             const refreshData = await refreshResponse.json();
             setAdmins(refreshData.admins || []);
-            window.location.reload();
+            
         } catch (error) {
             console.error('Add admin error:', error);
             setError(error.message);

@@ -35,8 +35,40 @@ const LancesList = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5, totalPages: 1 });
 
+  const [dados, setDados] = useState();
+  const obterDataAtual = () => {
+    const data = new Date();
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+  const dataAtual = obterDataAtual();
+
+  const fetchDados = async () => {
+    try {
+      const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+        method: 'GET',
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao buscar postos");
+      }
+      const data = await response.json();
+      console.log(data);
+      setDados(data);
+    } catch (error) {
+      console.error("Erro ao buscar postos:", error);
+      setDados([]);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchLances();
+    fetchDados();
   }, [pagination.pageIndex]);
 
   const fetchLances = async () => {
@@ -301,7 +333,7 @@ const LancesList = () => {
       <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
         <header className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 sm:pt-4 gap-2 sm:gap-0">
           <div className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
-            Lista de Lances
+            Lista de Lances total de lances {dados?.lances_total}
           </div>
           <input
             type="text"

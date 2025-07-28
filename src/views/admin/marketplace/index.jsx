@@ -65,6 +65,40 @@ const Marketplace = () => {
     { title: "Carro", author: "Will Smith", price: "2.91", image: NFt4, additionalImages: [NFt2, NFt3, NFt5, NFt6] },
     { title: "Teclado", author: "Esthera Jackson", price: "0.91", image: NFt5, additionalImages: [NFt2, NFt4, NFt5, NFt6] },
   ];
+  const [dados, setDados] = useState();
+  const [loading, setLoading] = useState(true);
+  const obterDataAtual = () => {
+    const data = new Date();
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+  const dataAtual = obterDataAtual();
+
+  const fetchDados = async () => {
+    try {
+      const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+        method: 'GET',
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao buscar postos");
+      }
+      const data = await response.json();
+      console.log(data);
+      setDados(data);
+    } catch (error) {
+      console.error("Erro ao buscar postos:", error);
+      setDados([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ 
   const handleUsuarioClick = (usuarioId) => {
     navigate(`/admin/perfiluser/${usuarioId}`); // Redireciona para o perfil da empresa
   };
@@ -151,6 +185,8 @@ const Marketplace = () => {
     fetchProdutos(currentPage);
     fetchProdutosMapa();
     fetchCategorias();
+    fetchDados();
+
   }, [currentPage]);
 
   useEffect(() => {
@@ -279,6 +315,9 @@ const Marketplace = () => {
         <div className="relative flex items-center justify-between pt-4">
           <div className="text-xl mt-5 mb-5 ml-2 font-bold text-navy-700 dark:text-white">
             Para Você
+          </div>
+          <div className="text-xl mt-5 mb-5 ml-2 font-bold text-navy-700 dark:text-white">
+            Quantidade de Produtos {dados?.produtos_total}
           </div>
           <input
             type="text"
