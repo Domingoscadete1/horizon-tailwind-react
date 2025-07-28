@@ -129,36 +129,36 @@ const AcoesSistema = () => {
     });
     const [showFilters, setShowFilters] = useState(false);
     const [dados, setDados] = useState();
-  const obterDataAtual = () => {
-    const data = new Date();
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  };
-  const dataAtual = obterDataAtual();
+    const obterDataAtual = () => {
+        const data = new Date();
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        return `${ano}-${mes}-${dia}`;
+    };
+    const dataAtual = obterDataAtual();
 
-  const fetchDados = async () => {
-    try {
-      const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
-        method: 'GET',
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Erro ao buscar postos");
-      }
-      const data = await response.json();
-      console.log(data);
-      setDados(data);
-    } catch (error) {
-      console.error("Erro ao buscar postos:", error);
-      setDados([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchDados = async () => {
+        try {
+            const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+                method: 'GET',
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Erro ao buscar postos");
+            }
+            const data = await response.json();
+            console.log(data);
+            setDados(data);
+        } catch (error) {
+            console.error("Erro ao buscar postos:", error);
+            setDados([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchAcoes();
@@ -429,7 +429,11 @@ const AcoesSistema = () => {
             <Card extra={"w-full h-full overflow-x-auto px-2 sm:px-4 mt-4 mb-4"}>
                 <header className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 pt-4 px-4 sm:px-6">
                     <div className="text-xl font-bold text-navy-700 dark:text-white w-full md:w-auto text-center md:text-left">
-                        Registro de Ações do Sistema total de ações {dados?.acoes_total}
+                        Registro de Ações do Sistema
+                    </div>
+
+                    <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Total de Ações - {dados?.acoes_total}
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">

@@ -304,11 +304,11 @@ const GerenciamentoUsuarios = () => {
         <>
           <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
             <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
-              <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+              <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
                 Lista de Usuários
               </div>
-              <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
-                Total de Usuários {dados?.usuarios_total}
+              <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                Total de Usuários - {dados?.usuarios_total}
               </div>
               <input
                 type="text"

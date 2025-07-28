@@ -223,10 +223,10 @@ const LancesList = () => {
       cell: ({ row }) => (
         <p className="text-sm text-gray-500">
           {new Intl.NumberFormat('pt-AO', {
-                      style: 'decimal',
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    }).format(parseFloat(row.getValue("preco")))} AOA
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(parseFloat(row.getValue("preco")))} AOA
         </p>
       ),
     },
@@ -333,8 +333,13 @@ const LancesList = () => {
       <Card extra="w-full h-full sm:overflow-auto px-6 mt-6 mb-6">
         <header className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 sm:pt-4 gap-2 sm:gap-0">
           <div className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
-            Lista de Lances total de lances {dados?.lances_total}
+            Lista de Lances 
           </div>
+
+          <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+            Total de Lances - {dados?.lances_total}
+          </div>
+
           <input
             type="text"
             placeholder="Pesquise aqui..."

@@ -36,34 +36,34 @@ const Transacao = () => {
     }, [pagination.pageIndex]);
     const [dados, setDados] = useState();
     const obterDataAtual = () => {
-      const data = new Date();
-      const ano = data.getFullYear();
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const dia = String(data.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
+        const data = new Date();
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        return `${ano}-${mes}-${dia}`;
     };
     const dataAtual = obterDataAtual();
-  
+
     const fetchDados = async () => {
-      try {
-        const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
-          method: 'GET',
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Erro ao buscar postos");
+        try {
+            const response = await fetchWithToken(`api/admin-analise?data=${dataAtual}`, {
+                method: 'GET',
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Erro ao buscar postos");
+            }
+            const data = await response.json();
+            console.log(data);
+            setDados(data);
+        } catch (error) {
+            console.error("Erro ao buscar postos:", error);
+            setDados([]);
+        } finally {
+            setLoading(false);
         }
-        const data = await response.json();
-        console.log(data);
-        setDados(data);
-      } catch (error) {
-        console.error("Erro ao buscar postos:", error);
-        setDados([]);
-      } finally {
-        setLoading(false);
-      }
     };
     useEffect(() => {
         fetchDados();
@@ -72,12 +72,12 @@ const Transacao = () => {
     const fetchTransacoes = async () => {
         try {
             const response = await fetchWithToken(`api/transacaos?page=${pagination.pageIndex + 1}`, {
-                method:'GET',
+                method: 'GET',
                 headers: {
                     "ngrok-skip-browser-warning": "true", // Evita bloqueios do ngrok
                 },
             });
-            const data =await response.json();
+            const data = await response.json();
             console.log(data.results);
             setTransacoes(data.results || []);
             setPagination((prev) => ({
@@ -106,8 +106,6 @@ const Transacao = () => {
         console.log(`Deletando transação ID: ${id}`);
         // Implementar lógica de exclusão
     };
-
-
 
     const transacaoColumns = [
         columnHelper.accessor(row => row.lance?.produto?.imagens?.[0]?.imagem, {
@@ -140,10 +138,10 @@ const Transacao = () => {
             header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">VALOR</p>,
             cell: ({ row }) => (
                 <p className="text-sm text-gray-500"> {new Intl.NumberFormat('pt-AO', {
-                      style: 'decimal',
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    }).format(parseFloat(row.getValue("valor")))} AOA</p>
+                    style: 'decimal',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(parseFloat(row.getValue("valor")))} AOA</p>
             ),
         },
         {
@@ -209,7 +207,10 @@ const Transacao = () => {
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                 <header className="relative flex items-center justify-between pt-4">
                     <div className="text-xl font-bold text-navy-700 dark:text-white">Lista de Transações</div>
-                    <div className="text-xl font-bold text-navy-700 dark:text-white">Total de Transações {dados?.transacoes_total}</div>
+
+                    <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Total de Transações - {dados?.transacoes_total}
+                    </div>
 
                 </header>
 

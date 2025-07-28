@@ -293,7 +293,7 @@ const GerenciamentoEmpresas = () => {
                                 Lista de Empresas
                             </h1>
                             <h1 className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
-                                Total De Empresas{dados?.empresas_total}
+                                Total De Empresas - {dados?.empresas_total}
                             </h1>
                             <div className="w-full sm:w-64">
                                 <input

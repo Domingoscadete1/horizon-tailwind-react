@@ -236,11 +236,11 @@ const UsuariosLogados = () => {
 
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-6 mb-6"}>
                 <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
-                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                    <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
                         Usuários Ativos no Sistema
                     </div>
-                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
-                        Total {usersLogados?.logados_total}
+                    <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Total - {usersLogados?.logados_total}
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center w-full sm:w-auto space-y-3 sm:space-y-0 sm:space-x-4">

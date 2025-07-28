@@ -171,11 +171,14 @@ const UsuariosBloqueados = () => {
   return (
     <div className="p-4">
       <Card extra="w-full h-full sm:overflow-auto p-6">
-        <div className="relative flex items-center justify-between pt-2 sm:pt-4">
-          <header className="text-lg sm:text-xl font-bold text-navy-700 dark:text-white">
-            Gerenciamento de Categorias    total de categorias {dados?.categorias_total}
-          </header>
-        </div>
+        <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
+          <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+            Gerenciamento de Categorias
+          </div>
+          <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+            Total De Categorias - {dados?.categorias_total}
+          </div>
+        </header>
 
         <div className="mt-5">
           {loading ? (
@@ -188,7 +191,7 @@ const UsuariosBloqueados = () => {
                 <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="!border-px !border-gray-400">
-                    <th className="text-start py-2">Id</th>
+                      <th className="text-start py-2">Id</th>
                       <th className="text-start py-2">Nome</th>
                       <th className="text-start py-2">Descrição</th>
                       <th className="text-start py-2">Imagem</th>

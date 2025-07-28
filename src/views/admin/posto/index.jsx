@@ -426,6 +426,7 @@ const GerenciamentoPostos = () => {
             alert('Erro ao alterar o status da conta.');
         }
     };
+
     const cadastrarFuncionario = async () => {
         if (!novoFuncionario.nome || !novoFuncionario.email || !novoFuncionario.numero_telefone) {
             alert('Preencha todos os campos obrigatórios.');
@@ -670,11 +671,11 @@ const GerenciamentoPostos = () => {
 
             <Card extra={"w-full h-full sm:overflow-auto px-6 mt-2 mb-6"}>
                 <header className="relative flex flex-col md:flex-row items-center justify-between pt-4 gap-4">
-                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                    <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
                         Lista de Postos Registrados
                     </div>
-                    <div className="text-xl md:text-2xl font-bold text-navy-700 dark:text-white text-center md:text-left">
-                        Total de postos {dados?.postos_total}
+                    <div className="text-xl md:text-xl font-bold text-navy-700 dark:text-white text-center md:text-left">
+                        Total de Postos - {dados?.postos_total}
                     </div>
                     <input
                         type="text"
